@@ -1,0 +1,133 @@
+import { useMemo, useState } from "react";
+import { BarChart3, Clock3, UserRound, BadgePercent, Download } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { PALETTE } from "@/lib/constants";
+import { exportStatsPdf } from "@/lib/pdf-export";
+
+import StatsOverviewTab from "@/components/stats/StatsOverviewTab";
+import StatsTimeTab from "@/components/stats/StatsTimeTab";
+import StatsPeopleTab from "@/components/stats/StatsPeopleTab";
+import StatsScoresTab from "@/components/stats/StatsScoresTab";
+
+/**
+ * Renders the full statistics screen with tab navigation.
+ * It prepares shared data and delegates each section to a dedicated tab component.
+ */
+export default function StatsScreen({ people, t }) {
+  // Track the currently selected stats tab.
+  const [tab, setTab] = useState("overview");
+
+  /**
+   * Flatten all events and preserve their parent person.
+   * This shared dataset is reused across multiple stats tabs.
+   */
+  const allEvents = useMemo(
+    () =>
+      people.flatMap((person) =>
+        (person.events || []).map((event) => ({ ...event, person })),
+      ),
+    [people],
+  );
+
+  // Define the available tab options and their labels.
+  const statTabs = [
+    {
+      key: "overview",
+      label: t.overview,
+      icon: BarChart3,
+      helper: t.statsGroupOverview,
+    },
+    {
+      key: "time",
+      label: t.time,
+      icon: Clock3,
+      helper: t.statsGroupTime,
+    },
+    {
+      key: "people",
+      label: t.peopleStats,
+      icon: UserRound,
+      helper: t.statsGroupPeople,
+    },
+    {
+      key: "scores",
+      label: t.scores,
+      icon: BadgePercent,
+      helper: t.statsGroupScores,
+    },
+  ];
+
+  // Resolve the active tab metadata for subtitle rendering.
+  const activeTab = statTabs.find((item) => item.key === tab);
+
+  return (
+    <div className="space-y-4 pb-8">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h2
+            className="text-2xl font-bold tracking-tight"
+            style={{ color: PALETTE.text }}
+          >
+            {t.analyticsTitle}
+          </h2>
+          <p className="text-sm" style={{ color: PALETTE.textSoft }}>
+            {activeTab?.helper || t.analyticsDesc}
+          </p>
+        </div>
+
+        <Button
+          variant="outline"
+          className="rounded-2xl bg-white/85"
+          style={{ borderColor: "#ecd6e0" }}
+          onClick={() => exportStatsPdf(people, t)}
+        >
+          <Download className="mr-2 h-4 w-4" />
+          {t.exportPdf}
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2">
+        {statTabs.map((item) => {
+          const Icon = item.icon;
+          const active = tab === item.key;
+
+          return (
+            <button
+              key={item.key}
+              onClick={() => setTab(item.key)}
+              className="flex items-center gap-2 rounded-2xl px-4 py-3 text-left transition"
+              style={{
+                border: active ? "none" : "1px solid #ecd6e0",
+                background: active
+                  ? `linear-gradient(90deg, ${PALETTE.rose}, ${PALETTE.roseSoft})`
+                  : "rgba(255,255,255,0.86)",
+                color: active ? "white" : PALETTE.text,
+                boxShadow: active
+                  ? "0 6px 16px rgba(226,115,150,0.18)"
+                  : "none",
+              }}
+            >
+              <Icon className="h-4 w-4 shrink-0" />
+              <span className="text-sm font-medium">{item.label}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {tab === "overview" ? (
+        <StatsOverviewTab people={people} allEvents={allEvents} t={t} />
+      ) : null}
+
+      {tab === "time" ? (
+        <StatsTimeTab people={people} allEvents={allEvents} t={t} />
+      ) : null}
+
+      {tab === "people" ? <StatsPeopleTab people={people} t={t} /> : null}
+
+      {tab === "scores" ? (
+        <StatsScoresTab people={people} allEvents={allEvents} t={t} />
+      ) : null}
+    </div>
+  );
+}
