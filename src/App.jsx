@@ -14,7 +14,7 @@ import {
 } from "@/lib/device-storage";
 
 import LanguageSwitcher from "@/components/app/LanguageSwitcher";
-import PeopleScreen from "@/components/people/PeopleScreen";
+import PeopleManagerScreen from "@/components/people/PeopleManagerScreen";
 import HomeScreen from "./components/app/HomeScreen";
 import AddPersonScreen from "./components/app/AddPersonScreen";
 import IntroScreen from "./components/app/IntroScreen";
@@ -298,7 +298,7 @@ export default function KissRecorderApp() {
 
           {/* People management screen */}
           {screen === "people" ? (
-            <PeopleScreen
+            <PeopleManagerScreen
               people={people}
               onUpdatePerson={updatePerson}
               onDeletePerson={deletePerson}

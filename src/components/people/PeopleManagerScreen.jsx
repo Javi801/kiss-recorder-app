@@ -23,7 +23,7 @@ import FiltersPanel from "@/components/forms/FiltersPanel";
  * Displays the full people list with search, filters, sorting, and grouping.
  * It keeps all list-specific UI state isolated from the app root.
  */
-export default function PeopleScreen({
+export default function PeopleManagerScreen({
   people,
   onUpdatePerson,
   onDeletePerson,
