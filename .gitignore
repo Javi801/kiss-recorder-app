@@ -1,4 +1,25 @@
+# =========================
+# Dependencies (Node)
+# =========================
+node_modules
+
+# =========================
+# Build outputs (web)
+# =========================
+dist
+dist-ssr
+build
+
+# =========================
+# Environment variables
+# =========================
+.env
+.env.*
+*.local
+
+# =========================
 # Logs
+# =========================
 logs
 *.log
 npm-debug.log*
@@ -7,30 +28,56 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-.expo
-dist
-dist-ssr
-*.local
+# =========================
+# Test / coverage
+# =========================
+coverage
 
-coverage/
-*.log
-.env
-.env.*
+# =========================
+# Expo
+# =========================
+.expo
+
+# =========================
+# Android (Capacitor / Gradle)
+# =========================
 android/.gradle
-android/app/build
 android/build
+android/app/build
+
+# =========================
+# iOS (Capacitor)
+# =========================
 ios/build
 ios/Pods
 
-# Editor directories and files
+# =========================
+# Gradle global
+# =========================
+.gradle
+
+# =========================
+# Editor / IDE
+# =========================
 .vscode/*
 !.vscode/extensions.json
 .idea
+*.iml
+
+# =========================
+# OS files
+# =========================
 .DS_Store
-EOF
+
+# =========================
+# Windows / Visual Studio leftovers
+# =========================
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
+
+# =========================
+# Temporary files
+# =========================
 *.sw?
