@@ -8,7 +8,7 @@ import HeroVisualPlaceholder from "@/components/visuals/HeroVisualPlaceholder";
  * Initial splash-like screen with hidden entry.
  * Acts as a playful gate before entering the main app.
  */
-export default function CatGiftScreen({ onOpenMain, t }) {
+export default function IntroScreen({ onOpenMain, t }) {
   return (
     <button
       type="button"

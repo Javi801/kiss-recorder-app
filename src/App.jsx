@@ -17,7 +17,7 @@ import LanguageSwitcher from "@/components/app/LanguageSwitcher";
 import PeopleScreen from "@/components/people/PeopleScreen";
 import MainScreen from "./components/app/MainScreen";
 import AddPersonScreen from "./components/app/AddPersonScreen";
-import CatGiftScreen from "./components/app/CatGiftScreen";
+import IntroScreen from "./components/app/IntroScreen";
 import StatsScreen from "@/components/stats/StatsScreen";
 
 /**
@@ -29,7 +29,7 @@ export default function KissRecorderApp() {
   const [people, setPeople] = useState([]);
 
   // Current visible screen.
-  const [screen, setScreen] = useState("gift");
+  const [screen, setScreen] = useState("intro");
 
   // Current UI language.
   const [language, setLanguage] = useState("en");
@@ -121,7 +121,7 @@ export default function KissRecorderApp() {
     // Reset in-memory state.
     setPeople([]);
     setLanguage("en");
-    setScreen("gift");
+    setScreen("intro");
   }
 
   /**
@@ -145,7 +145,7 @@ export default function KissRecorderApp() {
     setPeople((prev) => [newPerson, ...prev]);
 
     // Return to the entry screen after saving.
-    setScreen("gift");
+    setScreen("intro");
   }
 
   /**
@@ -253,7 +253,7 @@ export default function KissRecorderApp() {
   ];
 
   // Hide bottom navigation on screens that use a focused layout.
-  const hideBottomBar = screen === "add" || screen === "gift";
+  const hideBottomBar = screen === "add" || screen === "intro";
 
   return (
     <div
@@ -272,8 +272,8 @@ export default function KissRecorderApp() {
           style={{ WebkitOverflowScrolling: "touch" }}
         >
           {/* Entry screen */}
-          {screen === "gift" ? (
-            <CatGiftScreen onOpenMain={() => setScreen("main")} t={t} />
+          {screen === "intro" ? (
+            <IntroScreen onOpenMain={() => setScreen("main")} t={t} />
           ) : null}
 
           {/* Main dashboard */}
@@ -290,7 +290,7 @@ export default function KissRecorderApp() {
           {screen === "add" ? (
             <AddPersonScreen
               onSave={addPerson}
-              onBack={() => setScreen("gift")}
+              onBack={() => setScreen("intro")}
               t={t}
               language={language}
             />
