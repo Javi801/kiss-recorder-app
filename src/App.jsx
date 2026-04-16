@@ -13,7 +13,6 @@ import {
   clearPeopleFromDevice,
 } from "@/lib/device-storage";
 
-import LanguageSwitcher from "@/components/app/LanguageSwitcher";
 import PeopleManagerScreen from "@/components/people/PeopleManagerScreen";
 import HomeScreen from "./components/app/HomeScreen";
 import AddPersonScreen from "./components/app/AddPersonScreen";
@@ -350,8 +349,6 @@ export default function KissRecorderApp() {
           </div>
         ) : null}
 
-        {/* Floating language selector */}
-        <LanguageSwitcher language={language} setLanguage={setLanguage} />
       </div>
     </div>
   );
