@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { BarChart3, Clock3, UserRound, BadgePercent, Download } from "lucide-react";
+import { BarChart3, Clock3, UserRound, BadgePercent, Download, CheckCircle2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -161,6 +161,25 @@ export default function StatsScreen({ people, t }) {
           <DialogHeader>
             <DialogTitle>{t.pdfEmptyTitle}</DialogTitle>
             <DialogDescription>{t.pdfEmptyDesc}</DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button onClick={() => setPdfStatus(null)}>{t.close}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Success dialog */}
+      <Dialog
+        open={pdfStatus === "success"}
+        onOpenChange={(open) => { if (!open) setPdfStatus(null); }}
+      >
+        <DialogContent showCloseButton={false}>
+          <DialogHeader>
+            <div className="flex items-center gap-2 text-green-600">
+              <CheckCircle2 className="h-5 w-5 shrink-0" />
+              <DialogTitle className="text-green-600">{t.pdfSuccessTitle}</DialogTitle>
+            </div>
+            <DialogDescription>{t.pdfSuccessDesc}</DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button onClick={() => setPdfStatus(null)}>{t.close}</Button>
