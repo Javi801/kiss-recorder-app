@@ -248,6 +248,14 @@ export const COPY = {
     clearDataConfirmDesc:
       "This will permanently delete all saved people and events. This action cannot be undone.",
     clearDataConfirmAction: "Delete everything",
+    pdfSuccessTitle: "PDF exported",
+    pdfSuccessDesc: "Your report has been saved successfully.",
+    pdfErrorTitle: "Export failed",
+    pdfErrorDesc: "Something went wrong while generating the PDF.",
+    pdfEmptyTitle: "No data to export",
+    pdfEmptyDesc: "You need at least one person and one event to export statistics.",
+    savePdfErrorLog: "Save error log",
+    close: "Close",
   },
   es: {
     appTitle: "KissRecorder",
@@ -406,5 +414,13 @@ export const COPY = {
     clearDataConfirmDesc:
       "Se eliminarán definitivamente todas las personas y eventos guardados. Esta acción no se puede deshacer.",
     clearDataConfirmAction: "Eliminar todo",
+    pdfSuccessTitle: "PDF exportado",
+    pdfSuccessDesc: "Tu informe se ha guardado correctamente.",
+    pdfErrorTitle: "Error al exportar",
+    pdfErrorDesc: "Ocurrió un error al generar el PDF.",
+    pdfEmptyTitle: "Sin datos para exportar",
+    pdfEmptyDesc: "Necesitas al menos una persona y un evento para exportar estadísticas.",
+    savePdfErrorLog: "Guardar registro de error",
+    close: "Cerrar",
   },
 };
