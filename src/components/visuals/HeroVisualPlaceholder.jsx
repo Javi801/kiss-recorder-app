@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { PALETTE, MAIN_VISUAL_ASSET } from "@/lib/constants";
+import { PALETTE } from "@/lib/constants";
+import mainBackground from "@/assets/main-background.png";
 
 /**
  * Displays the main circular hero visual.
@@ -27,11 +28,11 @@ export default function HeroVisualPlaceholder() {
       <motion.div
         animate={{ y: [0, -8, 0] }}
         transition={{ repeat: Infinity, duration: 4.2, ease: "easeInOut" }}
-        className="relative z-10 flex h-48 w-48 items-center justify-center overflow-hidden rounded-[32px] border border-white/45 bg-white/25 text-center shadow-sm"
+        className="relative z-10 flex h-48 w-48 items-center justify-center overflow-hidden rounded-[32px] text-center"
       >
         {hasImage ? (
           <img
-            src={MAIN_VISUAL_ASSET}
+            src={mainBackground}
             alt="KissRecorder visual"
             className="h-full w-full object-contain"
             onError={() => setHasImage(false)}
