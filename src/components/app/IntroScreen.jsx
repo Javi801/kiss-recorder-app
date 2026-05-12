@@ -1,6 +1,7 @@
 import { PALETTE } from "@/lib/constants";
 import BubbleStarsBackground from "@/components/visuals/BubbleStarsBackground";
 import HeroVisualPlaceholder from "@/components/visuals/HeroVisualPlaceholder";
+import InteractiveBubbles from "@/components/visuals/InteractiveBubbles";
 
 /**
  * Initial splash-like screen with hidden entry.
@@ -22,6 +23,9 @@ export default function IntroScreen({ onOpenMain, t }) {
     >
       {/* Floating animated background elements */}
       <BubbleStarsBackground />
+
+      {/* Interactive poppable bubbles */}
+      <InteractiveBubbles />
 
       {/* Top radial overlay */}
       <div
