@@ -2,6 +2,14 @@ import { useMemo, useState } from "react";
 import { BarChart3, Clock3, UserRound, BadgePercent, Download } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { PALETTE } from "@/lib/constants";
 import { exportStatsPdf } from "@/lib/pdf-export";
 
@@ -15,8 +23,23 @@ import StatsScoresTab from "@/components/stats/StatsScoresTab";
  * It prepares shared data and delegates each section to a dedicated tab component.
  */
 export default function StatsScreen({ people, t }) {
-  // Track the currently selected stats tab.
   const [tab, setTab] = useState("overview");
+  // null = idle, "success" = exported OK, Error instance = export failed
+  const [pdfStatus, setPdfStatus] = useState(null);
+
+  async function handleExport() {
+    const hasEvents = people.some((p) => p.events?.length > 0);
+    if (people.length === 0 || !hasEvents) {
+      setPdfStatus("empty");
+      return;
+    }
+    try {
+      await exportStatsPdf(people, t);
+      setPdfStatus("success");
+    } catch (err) {
+      setPdfStatus(err instanceof Error ? err : new Error(String(err)));
+    }
+  }
 
   /**
    * Flatten all events and preserve their parent person.
@@ -80,7 +103,7 @@ export default function StatsScreen({ people, t }) {
           variant="outline"
           className="rounded-2xl bg-white/85"
           style={{ borderColor: "#ecd6e0" }}
-          onClick={() => exportStatsPdf(people, t)}
+          onClick={handleExport}
         >
           <Download className="mr-2 h-4 w-4" />
           {t.exportPdf}
@@ -128,6 +151,22 @@ export default function StatsScreen({ people, t }) {
       {tab === "scores" ? (
         <StatsScoresTab people={people} allEvents={allEvents} t={t} />
       ) : null}
+
+      {/* Empty data dialog */}
+      <Dialog
+        open={pdfStatus === "empty"}
+        onOpenChange={(open) => { if (!open) setPdfStatus(null); }}
+      >
+        <DialogContent showCloseButton={false}>
+          <DialogHeader>
+            <DialogTitle>{t.pdfEmptyTitle}</DialogTitle>
+            <DialogDescription>{t.pdfEmptyDesc}</DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button onClick={() => setPdfStatus(null)}>{t.close}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
