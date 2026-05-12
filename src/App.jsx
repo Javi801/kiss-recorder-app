@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Search, Users, BarChart3, UserPlus } from "lucide-react";
+import { App as CapacitorApp } from "@capacitor/app";
 
 import { LANGUAGE_KEY, PALETTE, COPY } from "@/lib/constants";
 import { todayString } from "@/lib/date";
@@ -30,11 +31,61 @@ export default function KissRecorderApp() {
   // Current visible screen.
   const [screen, setScreen] = useState("intro");
 
+  // Navigation history stack for hardware back button support.
+  const screenHistoryRef = useRef([]);
+  // Ref keeps the latest screen value accessible inside the Capacitor listener.
+  const screenRef = useRef("intro");
+
   // Current UI language.
   const [language, setLanguage] = useState("en");
 
   // Prevents saving before the initial load completes.
   const [isLoaded, setIsLoaded] = useState(false);
+
+  // Keep screenRef in sync so the Capacitor listener always sees the latest value.
+  useEffect(() => {
+    screenRef.current = screen;
+  }, [screen]);
+
+  /**
+   * Navigates forward to a new screen and pushes the current one onto the history stack.
+   */
+  function navigateTo(newScreen) {
+    screenHistoryRef.current = [...screenHistoryRef.current, screenRef.current];
+    setScreen(newScreen);
+  }
+
+  /**
+   * Handles the hardware back button.
+   * From the "add" screen always returns to "intro" (privacy rule).
+   * From "intro" exits the app.
+   * From any other screen pops the history stack.
+   */
+  useEffect(() => {
+    const listenerPromise = CapacitorApp.addListener("backButton", () => {
+      const current = screenRef.current;
+
+      if (current === "add") {
+        screenHistoryRef.current = [];
+        setScreen("intro");
+      } else if (current === "intro") {
+        CapacitorApp.exitApp();
+      } else {
+        const history = screenHistoryRef.current;
+        if (history.length > 0) {
+          const prev = history[history.length - 1];
+          screenHistoryRef.current = history.slice(0, -1);
+          setScreen(prev);
+        } else {
+          setScreen("intro");
+        }
+      }
+    });
+
+    return () => {
+      listenerPromise.then((h) => h.remove());
+    };
+  }, []);
 
   /**
    * Bootstraps persisted app data on first render.
@@ -120,6 +171,7 @@ export default function KissRecorderApp() {
     // Reset in-memory state.
     setPeople([]);
     setLanguage("en");
+    screenHistoryRef.current = [];
     setScreen("intro");
   }
 
@@ -144,6 +196,7 @@ export default function KissRecorderApp() {
     setPeople((prev) => [newPerson, ...prev]);
 
     // Return to the entry screen after saving.
+    screenHistoryRef.current = [];
     setScreen("intro");
   }
 
@@ -272,13 +325,13 @@ export default function KissRecorderApp() {
         >
           {/* Entry screen */}
           {screen === "intro" ? (
-            <IntroScreen onOpenMain={() => setScreen("main")} t={t} />
+            <IntroScreen onOpenMain={() => navigateTo("main")} t={t} />
           ) : null}
 
           {/* Main dashboard */}
           {screen === "main" ? (
             <HomeScreen
-              onNavigate={setScreen}
+              onNavigate={navigateTo}
               onClearData={clearAllAppData}
               people={people}
               t={t}
@@ -333,7 +386,7 @@ export default function KissRecorderApp() {
                 return (
                   <button
                     key={item.key}
-                    onClick={() => setScreen(item.key)}
+                    onClick={() => navigateTo(item.key)}
                     className="flex flex-col items-center justify-center gap-1 rounded-2xl px-2 py-2 text-xs font-medium transition"
                     style={{
                       background: active
