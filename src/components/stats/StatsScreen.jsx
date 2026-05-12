@@ -157,13 +157,23 @@ export default function StatsScreen({ people, t }) {
         open={pdfStatus === "empty"}
         onOpenChange={(open) => { if (!open) setPdfStatus(null); }}
       >
-        <DialogContent showCloseButton={false}>
+        <DialogContent
+          showCloseButton={false}
+          className="rounded-2xl"
+          style={{ background: PALETTE.bgSoft, borderColor: PALETTE.line }}
+        >
           <DialogHeader>
-            <DialogTitle>{t.pdfEmptyTitle}</DialogTitle>
-            <DialogDescription>{t.pdfEmptyDesc}</DialogDescription>
+            <DialogTitle style={{ color: PALETTE.deep2 }}>{t.pdfEmptyTitle}</DialogTitle>
+            <DialogDescription style={{ color: PALETTE.textSoft }}>{t.pdfEmptyDesc}</DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button onClick={() => setPdfStatus(null)}>{t.close}</Button>
+            <Button
+              className="rounded-xl"
+              style={{ background: `linear-gradient(90deg, ${PALETTE.rose}, ${PALETTE.roseSoft})`, color: "white", border: "none" }}
+              onClick={() => setPdfStatus(null)}
+            >
+              {t.close}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -173,16 +183,26 @@ export default function StatsScreen({ people, t }) {
         open={pdfStatus === "success"}
         onOpenChange={(open) => { if (!open) setPdfStatus(null); }}
       >
-        <DialogContent showCloseButton={false}>
+        <DialogContent
+          showCloseButton={false}
+          className="rounded-2xl"
+          style={{ background: PALETTE.bgSoft, borderColor: PALETTE.line }}
+        >
           <DialogHeader>
-            <div className="flex items-center gap-2 text-green-600">
+            <div className="flex items-center gap-2" style={{ color: PALETTE.rose }}>
               <CheckCircle2 className="h-5 w-5 shrink-0" />
-              <DialogTitle className="text-green-600">{t.pdfSuccessTitle}</DialogTitle>
+              <DialogTitle style={{ color: PALETTE.rose }}>{t.pdfSuccessTitle}</DialogTitle>
             </div>
-            <DialogDescription>{t.pdfSuccessDesc}</DialogDescription>
+            <DialogDescription style={{ color: PALETTE.textSoft }}>{t.pdfSuccessDesc}</DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button onClick={() => setPdfStatus(null)}>{t.close}</Button>
+            <Button
+              className="rounded-xl"
+              style={{ background: `linear-gradient(90deg, ${PALETTE.rose}, ${PALETTE.roseSoft})`, color: "white", border: "none" }}
+              onClick={() => setPdfStatus(null)}
+            >
+              {t.close}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -192,20 +212,30 @@ export default function StatsScreen({ people, t }) {
         open={pdfStatus instanceof Error}
         onOpenChange={(open) => { if (!open) setPdfStatus(null); }}
       >
-        <DialogContent showCloseButton={false}>
+        <DialogContent
+          showCloseButton={false}
+          className="rounded-2xl"
+          style={{ background: PALETTE.bgSoft, borderColor: PALETTE.line }}
+        >
           <DialogHeader>
-            <div className="flex items-center gap-2 text-red-600">
+            <div className="flex items-center gap-2" style={{ color: PALETTE.deep }}>
               <TriangleAlert className="h-5 w-5 shrink-0" />
-              <DialogTitle className="text-red-600">{t.pdfErrorTitle}</DialogTitle>
+              <DialogTitle style={{ color: PALETTE.deep }}>{t.pdfErrorTitle}</DialogTitle>
             </div>
-            <DialogDescription>{t.pdfErrorDesc}</DialogDescription>
+            <DialogDescription style={{ color: PALETTE.textSoft }}>{t.pdfErrorDesc}</DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setPdfStatus(null)}>
+            <Button
+              variant="outline"
+              className="rounded-xl"
+              style={{ borderColor: PALETTE.line, color: PALETTE.text }}
+              onClick={() => setPdfStatus(null)}
+            >
               {t.close}
             </Button>
             <Button
-              className="bg-red-600 text-white hover:bg-red-700"
+              className="rounded-xl"
+              style={{ background: PALETTE.deep, color: "white", border: "none" }}
               onClick={() => {
                 saveErrorLog(pdfStatus).catch(console.error);
                 setPdfStatus(null);
