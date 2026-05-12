@@ -244,6 +244,10 @@ export const COPY = {
     statsGroupScores: "Kisses and ratings",
     noScore: "No kisses",
     reportGenerated: "Generated from KissRecorder",
+    clearDataConfirmTitle: "Delete all data?",
+    clearDataConfirmDesc:
+      "This will permanently delete all saved people and events. This action cannot be undone.",
+    clearDataConfirmAction: "Delete everything",
   },
   es: {
     appTitle: "KissRecorder",
@@ -398,5 +402,9 @@ export const COPY = {
     statsGroupScores: "Besos y calificaciones",
     noScore: "Sin besos",
     reportGenerated: "Generado desde KissRecorder",
+    clearDataConfirmTitle: "¿Eliminar todos los datos?",
+    clearDataConfirmDesc:
+      "Se eliminarán definitivamente todas las personas y eventos guardados. Esta acción no se puede deshacer.",
+    clearDataConfirmAction: "Eliminar todo",
   },
 };
