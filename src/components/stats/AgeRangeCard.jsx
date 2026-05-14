@@ -35,7 +35,7 @@ function niceAxis(dataMin, dataMax) {
   const axisRange = axisMax - axisMin;
   const tickValues = [];
   for (let v = axisMin; v <= axisMax; v += step) tickValues.push(v);
-  const toPos = (v) => ((v - axisMin) / axisRange) * 100;
+  const toPos = (v) => 3 + ((v - axisMin) / axisRange) * 94;
   return { tickValues, toPos };
 }
 
@@ -160,7 +160,7 @@ export default function AgeRangeCard({ title, people, emptyText, t }) {
                 {/* Year label (Y-axis) */}
                 <div
                   style={{
-                    width: "2.75rem",
+                    width: "2rem",
                     textAlign: "right",
                     flexShrink: 0,
                     ...TEXT.body,
@@ -174,7 +174,7 @@ export default function AgeRangeCard({ title, people, emptyText, t }) {
                 {/* Boxplot row */}
                 <div style={{ position: "relative", flex: 1, height: "2rem" }}>
                   <div
-                    style={{ position: "absolute", left: 0, right: 0, top: "50%", height: "1px", transform: "translateY(-50%)", backgroundColor: "#e7d5de" }}
+                    style={{ position: "absolute", left: "3%", right: "3%", top: "50%", height: "1px", transform: "translateY(-50%)", backgroundColor: "#e7d5de" }}
                   />
                   <div
                     style={{ position: "absolute", top: "50%", height: "1.25rem", width: "2px", transform: "translateY(-50%)", left: `${minPos}%`, backgroundColor: PALETTE.rose }}
@@ -204,7 +204,7 @@ export default function AgeRangeCard({ title, people, emptyText, t }) {
 
             {/* Shared X-axis labels */}
             <div style={{ display: "flex", gap: "0.75rem" }}>
-              <div style={{ width: "2.75rem", flexShrink: 0 }} />
+              <div style={{ width: "2rem", flexShrink: 0 }} />
               <div style={{ position: "relative", flex: 1, height: "1.25rem" }}>
                 {multiYear.tickValues.map((v, i) => {
                   const pct = multiYear.toPos(v);
