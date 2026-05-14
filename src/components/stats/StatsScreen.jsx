@@ -10,7 +10,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { PALETTE } from "@/lib/constants";
+import { PALETTE, TEXT } from "@/lib/constants";
 import { exportStatsPdf, saveErrorLog } from "@/lib/pdf-export";
 
 import StatsOverviewTab from "@/components/stats/StatsOverviewTab";
@@ -89,11 +89,11 @@ export default function StatsScreen({ people, t }) {
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "0.75rem" }}>
         <div>
           <h2
-            style={{ fontSize: "1.5rem", lineHeight: "2rem", fontWeight: "700", letterSpacing: "-0.025em", color: PALETTE.text }}
+            style={{ ...TEXT.heading, letterSpacing: "-0.025em", color: PALETTE.text }}
           >
             {t.analyticsTitle}
           </h2>
-          <p style={{ fontSize: "0.875rem", lineHeight: "1.25rem", color: PALETTE.textSoft }}>
+          <p style={{ ...TEXT.body, color: PALETTE.textSoft }}>
             {activeTab?.helper || t.analyticsDesc}
           </p>
         </div>
@@ -102,7 +102,7 @@ export default function StatsScreen({ people, t }) {
         <Button
           variant="outline"
           className="rounded-2xl bg-white/85"
-          style={{ borderColor: "#ecd6e0" }}
+            style={{ borderColor: PALETTE.inputBorder }}
           onClick={handleExport}
         >
           <Download className="mr-2 h-4 w-4" />
@@ -131,10 +131,10 @@ export default function StatsScreen({ people, t }) {
                 paddingBottom: "0.75rem",
                 textAlign: "left",
                 transition: "all 150ms cubic-bezier(0.4, 0, 0.2, 1)",
-                border: active ? "none" : "1px solid #ecd6e0",
+                border: active ? "none" : `1px solid ${PALETTE.inputBorder}`,
                 background: active
                   ? `linear-gradient(90deg, ${PALETTE.rose}, ${PALETTE.roseSoft})`
-                  : "rgba(255,255,255,0.86)",
+                  : PALETTE.controlBg,
                 color: active ? "white" : PALETTE.text,
                 boxShadow: active
                   ? "0 6px 16px rgba(226,115,150,0.18)"
@@ -142,7 +142,7 @@ export default function StatsScreen({ people, t }) {
               }}
             >
               <Icon style={{ height: "1rem", width: "1rem", flexShrink: 0 }} />
-              <span style={{ fontSize: "0.875rem", lineHeight: "1.25rem", fontWeight: "500" }}>{item.label}</span>
+              <span style={{ ...TEXT.body, fontWeight: "500" }}>{item.label}</span>
             </button>
           );
         })}
