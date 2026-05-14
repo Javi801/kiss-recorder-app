@@ -78,3 +78,14 @@ describe("translateActivity", () => {
   });
 });
 
+describe("translateGender", () => {
+  it('translates "male"', () => {
+    expect(translateGender("male", t)).toBe(t.male);
+  });
+  it('translates "female"', () => {
+    expect(translateGender("female", t)).toBe(t.female);
+  });
+  it("falls back to other for unknown values", () => {
+    expect(translateGender("nonbinary", t)).toBe(t.other);
+  });
+});
