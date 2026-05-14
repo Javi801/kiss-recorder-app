@@ -16,6 +16,10 @@ A lightweight personal tracking web app to log interactions ("events") with peop
   - [Install](#install)
   - [Development](#development)
   - [Build](#build)
+- [Testing](#testing)
+  - [Running tests](#running-tests)
+  - [Coverage](#coverage)
+  - [What is tested](#what-is-tested)
 - [Capacitor / Mobile (iOS & Android)](#capacitor--mobile-ios--android)
   - [iOS notes and permissions](#ios-notes-and-permissions)
   - [Android notes](#android-notes)
@@ -82,6 +86,47 @@ Create the production web build (output goes to `dist`):
 ```bash
 npm run build
 ```
+
+## Testing
+
+The project uses [Vitest](https://vitest.dev/) as the test runner, which integrates with Vite out of the box.
+
+### Running tests
+
+```bash
+# run all tests once
+npm test
+
+# watch mode (re-runs on file changes)
+npm run test:watch
+
+# run with coverage report
+npm run test:coverage
+```
+
+### Coverage
+
+Coverage is collected with V8 and scoped to `src/lib/`. Minimum thresholds enforced by CI:
+
+| Metric     | Threshold |
+|------------|-----------|
+| Statements | 95%       |
+| Branches   | 90%       |
+| Functions  | 95%       |
+| Lines      | 95%       |
+
+### What is tested
+
+Unit tests live in `src/lib/__tests__/` and cover every pure function in the library layer:
+
+| File          | What's covered |
+|---------------|----------------|
+| `date.js`     | Date string validation, formatting, month/year key extraction |
+| `format.js`   | Score validation, kiss rendering, translations, zodiac labels, gender colors |
+| `helpers.js`  | ID generation, people normalization, hex-to-RGB conversion |
+| `stats.js`    | Event date helpers, all `getStatsData` aggregations |
+
+Files intentionally excluded from tests: `device-storage.js` (Capacitor/localStorage I/O) and `pdf-export.js` (DOM + file system side effects).
 
 ## Capacitor / Mobile (iOS & Android)
 
