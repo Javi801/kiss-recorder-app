@@ -36,9 +36,9 @@ export default function BarChartCard({
   };
 
   return (
-    <Card className="rounded-3xl shadow-sm backdrop-blur" style={cardStyle}>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-base" style={{ color: PALETTE.text }}>
+    <Card className="rounded-3xl" style={{ boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)", backdropFilter: "blur(8px)", ...cardStyle }}>
+      <CardHeader style={{ paddingBottom: "0.5rem" }}>
+        <CardTitle style={{ fontSize: "1rem", lineHeight: "1.5rem", color: PALETTE.text }}>
           {title}
         </CardTitle>
         <CardDescription>{subtitle}</CardDescription>
@@ -46,7 +46,7 @@ export default function BarChartCard({
 
       <CardContent>
         {data.length ? (
-          <div className="h-64 w-full">
+          <div style={{ height: "16rem", width: "100%" }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data}>
                 {/* Background grid */}
@@ -92,8 +92,8 @@ export default function BarChartCard({
           </div>
         ) : (
           <div
-            className="rounded-2xl border border-dashed p-8 text-center text-sm"
-            style={emptyStyle}
+            className="rounded-2xl"
+            style={{ border: "1px dashed", padding: "2rem", textAlign: "center", fontSize: "0.875rem", lineHeight: "1.25rem", ...emptyStyle }}
           >
             {emptyText}
           </div>
