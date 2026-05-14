@@ -27,7 +27,6 @@ export default function PersonForm({
   t,
   language,
   includeHowWeMet = true,
-  mode = "edit",
   saveLabel,
 }) {
   // Local form state initialization.
@@ -209,10 +208,10 @@ export default function PersonForm({
             </SelectTrigger>
 
             <SelectContent>
-              <SelectItem value="studies">{t.studies}</SelectItem>
-              <SelectItem value="works">{t.works}</SelectItem>
+              <SelectItem value="studies">{t.studiesForm}</SelectItem>
+              <SelectItem value="works">{t.worksForm}</SelectItem>
               <SelectItem value="studies and works">
-                {t.studiesWorks}
+                {t.studiesWorksForm}
               </SelectItem>
               <SelectItem value="other">{t.other}</SelectItem>
             </SelectContent>
