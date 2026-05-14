@@ -329,14 +329,14 @@ export default function KissRecorderApp() {
         background: `linear-gradient(180deg, ${PALETTE.bgGradientFrom}, ${PALETTE.bgSoft}, ${PALETTE.sky})`,
       }}
     >
-      <div className="mx-auto flex h-full w-full max-w-md flex-col px-4 pb-24 pt-5">
+      <div className="mx-auto flex h-full w-full max-w-md flex-col px-4 pt-5">
         {/* Main animated content area */}
         <motion.div
           ref={scrollRef}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.25 }}
-          className="flex-1 overflow-y-scroll"
+          className="flex-1 overflow-y-scroll pb-20"
           style={{ WebkitOverflowScrolling: "touch" }}
         >
           {/* Entry screen */}
@@ -393,7 +393,7 @@ export default function KissRecorderApp() {
             className="fixed bottom-0 left-0 right-0 backdrop-blur"
             style={{
               borderTop: "1px solid #ecd6e0",
-              backgroundColor: "rgba(255,255,255,0.6)",
+              backgroundColor: "rgba(255,255,255,0.8)",
             }}
           >
             <div className="mx-auto grid max-w-md grid-cols-4 gap-1 px-3 py-3">
