@@ -45,14 +45,14 @@ export function getColorForCategory(label) {
   // Normalize the label to simplify matching.
   const normalized = String(label).toLowerCase();
 
+  // Match female-related labels before male to avoid "female".includes("male") false match.
+  if (normalized.includes("female") || normalized.includes("femen")) {
+    return GENDER_COLORS.female;
+  }
+
   // Match male-related labels.
   if (normalized.includes("male") || normalized.includes("mascul")) {
     return GENDER_COLORS.male;
-  }
-
-  // Match female-related labels.
-  if (normalized.includes("female") || normalized.includes("femen")) {
-    return GENDER_COLORS.female;
   }
 
   // Match generic "other" labels.

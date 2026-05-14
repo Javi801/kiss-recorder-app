@@ -32,7 +32,7 @@ export async function loadPeopleFromDevice() {
 
       const parsed = JSON.parse(result.data || "[]");
       return Array.isArray(parsed) ? parsed : [];
-    } catch (error) {
+    } catch {
       return [];
     }
   }

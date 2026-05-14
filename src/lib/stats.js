@@ -1,3 +1,7 @@
+import { SCORE_OPTIONS } from "@/lib/constants";
+import { hasScore, renderKisses, getShortZodiacLabel, translateActivity, translateGender } from "@/lib/format";
+import { getMonthKey, getYearKey } from "@/lib/date";
+
 /**
  * Returns the earliest event date for a person.
  * Dates are stored as yyyy.MM.dd, so string sorting is safe here.
