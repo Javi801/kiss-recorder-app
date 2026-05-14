@@ -70,40 +70,41 @@ export default function PersonCard({
     <>
       <motion.div layout>
         <Card
-          className={`overflow-hidden rounded-3xl shadow-md ${
-            hasIncompleteEvent ? "ring-2" : ""
-          }`}
+          className="rounded-3xl"
           style={{
+            overflow: "hidden",
+            boxShadow: hasIncompleteEvent
+              ? "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 0 0 2px #f9d58a"
+              : "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
             borderColor: hasIncompleteEvent ? "#f9d58a" : "#efd8e4",
             background:
               "linear-gradient(180deg, rgba(255,255,255,0.97), rgba(255,248,252,0.95))",
           }}
         >
-          <CardContent className="p-0">
+          <CardContent style={{ padding: 0 }}>
             {/* Header */}
             <button
-              className="flex w-full items-start justify-between gap-3 p-5 text-left"
+              style={{ display: "flex", width: "100%", alignItems: "flex-start", justifyContent: "space-between", gap: "0.75rem", padding: "1.25rem", textAlign: "left" }}
               onClick={() => setExpanded((v) => !v)}
             >
-              <div className="min-w-0 flex-1">
+              <div style={{ minWidth: 0, flex: "1 1 0%" }}>
                 {/* Name + badges */}
-                <div className="flex flex-wrap items-center gap-2">
+                <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.5rem" }}>
                   <h3
-                    className="truncate text-base font-semibold"
-                    style={{ color: PALETTE.text }}
+                    style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: "1rem", lineHeight: "1.5rem", fontWeight: "600", color: PALETTE.text }}
                   >
                     {person.name}
                   </h3>
 
                   <Badge
-                    className="rounded-full border-0 px-3 py-1 text-[11px] font-semibold"
-                    style={{ backgroundColor: "#ffe2ec", color: PALETTE.deep }}
+                    className="rounded-full"
+                    style={{ border: "none", paddingLeft: "0.75rem", paddingRight: "0.75rem", paddingTop: "0.25rem", paddingBottom: "0.25rem", fontSize: "11px", fontWeight: "600", backgroundColor: "#ffe2ec", color: PALETTE.deep }}
                   >
                     {translateActivity(person.activity, t)}
                   </Badge>
 
                   {hasIncompleteEvent && (
-                    <Badge className="rounded-full border-0 bg-amber-100 text-amber-700">
+                    <Badge className="rounded-full" style={{ border: "none", backgroundColor: "#fef3c7", color: "#b45309" }}>
                       {t.missingEventDetailsBadge}
                     </Badge>
                   )}
@@ -111,8 +112,7 @@ export default function PersonCard({
 
                 {/* Basic info */}
                 <div
-                  className="mt-2 flex flex-wrap gap-2 text-xs"
-                  style={{ color: PALETTE.textSoft }}
+                  style={{ marginTop: "0.5rem", display: "flex", flexWrap: "wrap", gap: "0.5rem", fontSize: "0.75rem", lineHeight: "1rem", color: PALETTE.textSoft }}
                 >
                   <span>{person.age} {t.years}</span>
                   <span>•</span>
@@ -123,24 +123,24 @@ export default function PersonCard({
 
                 {/* Extra info */}
                 {person.howWeMet && (
-                  <p className="mt-2 text-sm" style={{ color: PALETTE.text }}>
+                  <p style={{ marginTop: "0.5rem", fontSize: "0.875rem", lineHeight: "1.25rem", color: PALETTE.text }}>
                     {t.met}: {person.howWeMet}
                   </p>
                 )}
 
                 {person.detail && (
-                  <p className="mt-1 text-sm" style={{ color: PALETTE.textSoft }}>
+                  <p style={{ marginTop: "0.25rem", fontSize: "0.875rem", lineHeight: "1.25rem", color: PALETTE.textSoft }}>
                     {person.detail}
                   </p>
                 )}
               </div>
 
               {/* Toggle icon */}
-              <div className="rounded-2xl p-2" style={{ backgroundColor: "#fff0f6" }}>
+              <div className="rounded-2xl" style={{ padding: "0.5rem", backgroundColor: "#fff0f6" }}>
                 {expanded ? (
-                  <ChevronUp className="h-5 w-5" style={{ color: PALETTE.rose }} />
+                  <ChevronUp style={{ height: "1.25rem", width: "1.25rem", color: PALETTE.rose }} />
                 ) : (
-                  <ChevronDown className="h-5 w-5" style={{ color: PALETTE.rose }} />
+                  <ChevronDown style={{ height: "1.25rem", width: "1.25rem", color: PALETTE.rose }} />
                 )}
               </div>
             </button>
@@ -152,13 +152,13 @@ export default function PersonCard({
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
-                  className="overflow-hidden"
+                  style={{ overflow: "hidden" }}
                 >
-                  <div className="space-y-4 p-5">
+                  <div style={{ display: "flex", flexDirection: "column", gap: "1rem", padding: "1.25rem" }}>
                     {/* Actions */}
-                    <div className="flex flex-wrap gap-2">
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
                       <Button onClick={() => setEditingPerson(true)}>
-                        <Pencil className="mr-2 h-4 w-4" />
+                        <Pencil style={{ marginRight: "0.5rem", height: "1rem", width: "1rem" }} />
                         {t.editPerson}
                       </Button>
 
@@ -167,27 +167,28 @@ export default function PersonCard({
                           setEventModal({ open: true, mode: "add", event: null })
                         }
                       >
-                        <Plus className="mr-2 h-4 w-4" />
+                        <Plus style={{ marginRight: "0.5rem", height: "1rem", width: "1rem" }} />
                         {t.addEvent}
                       </Button>
 
                       <Button
                         variant="outline"
-                        className="text-red-600"
+                        style={{ color: "#dc2626" }}
                         onClick={() => onDeletePerson(person.id)}
                       >
-                        <Trash2 className="mr-2 h-4 w-4" />
+                        <Trash2 style={{ marginRight: "0.5rem", height: "1rem", width: "1rem" }} />
                         {t.delete}
                       </Button>
                     </div>
 
                     {/* Event list */}
                     {sortedEvents.length ? (
-                      <div className="space-y-2">
+                      <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                         {sortedEvents.map((event) => (
                           <button
                             key={event.id}
-                            className="w-full rounded-2xl border bg-white p-3 text-left"
+                            className="rounded-2xl"
+                            style={{ width: "100%", border: "1px solid #e2e8f0", backgroundColor: "white", padding: "0.75rem", textAlign: "left" }}
                             onClick={() =>
                               setEventModal({
                                 open: true,
@@ -196,9 +197,9 @@ export default function PersonCard({
                               })
                             }
                           >
-                            <div className="flex justify-between">
+                            <div style={{ display: "flex", justifyContent: "space-between" }}>
                               <span>
-                                <Calendar className="inline mr-2 h-4 w-4" />
+                                <Calendar style={{ display: "inline", marginRight: "0.5rem", height: "1rem", width: "1rem" }} />
                                 {formatDisplayDate(event.date)}
                               </span>
 
@@ -207,14 +208,14 @@ export default function PersonCard({
                               )}
                             </div>
 
-                            <p className="mt-2 text-sm text-slate-500">
+                            <p style={{ marginTop: "0.5rem", fontSize: "0.875rem", lineHeight: "1.25rem", color: "#64748b" }}>
                               {event.details || t.noDetailsAdded}
                             </p>
                           </button>
                         ))}
                       </div>
                     ) : (
-                      <p className="text-sm text-center">{t.noEventsYet}</p>
+                      <p style={{ fontSize: "0.875rem", lineHeight: "1.25rem", textAlign: "center" }}>{t.noEventsYet}</p>
                     )}
                   </div>
                 </motion.div>
