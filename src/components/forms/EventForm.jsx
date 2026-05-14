@@ -108,6 +108,9 @@ export default function EventForm({ initialValues, onSave, onCancel, t }) {
           className="rounded-2xl"
           style={{ ...inputStyle, ...TEXT.input }}
         />
+        <p style={{ ...TEXT.caption, color: PALETTE.textSoft, textAlign: "right" }}>
+          {place.length}/200
+        </p>
         {errors.place && (
           <p style={{ ...TEXT.caption, color: "#ef4444" }}>{errors.place}</p>
         )}
@@ -124,6 +127,9 @@ export default function EventForm({ initialValues, onSave, onCancel, t }) {
           className="rounded-2xl"
           style={{ ...inputStyle, ...TEXT.input }}
         />
+        <p style={{ ...TEXT.caption, color: PALETTE.textSoft, textAlign: "right" }}>
+          {situation.length}/200
+        </p>
         {errors.situation && (
           <p style={{ ...TEXT.caption, color: "#ef4444" }}>{errors.situation}</p>
         )}
@@ -140,6 +146,9 @@ export default function EventForm({ initialValues, onSave, onCancel, t }) {
           className="rounded-2xl"
           style={{ ...inputStyle, ...TEXT.input }}
         />
+        <p style={{ ...TEXT.caption, color: PALETTE.textSoft, textAlign: "right" }}>
+          {details.length}/1000
+        </p>
       </div>
 
       {/* Observations */}
@@ -153,6 +162,9 @@ export default function EventForm({ initialValues, onSave, onCancel, t }) {
           className="rounded-2xl"
           style={{ ...inputStyle, ...TEXT.input }}
         />
+        <p style={{ ...TEXT.caption, color: PALETTE.textSoft, textAlign: "right" }}>
+          {observations.length}/1000
+        </p>
       </div>
 
       {/* Actions */}
