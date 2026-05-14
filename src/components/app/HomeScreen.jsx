@@ -23,7 +23,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 
-import { PALETTE } from "@/lib/constants";
+import { PALETTE, TEXT } from "@/lib/constants";
 import StatTile from "@/components/shared/StatTile";
 import ColorSelector from "@/components/app/ColorSelector";
 
@@ -74,11 +74,10 @@ export default function MainScreen({
   const outlineActionStyle = {
     height: "3.5rem",
     justifyContent: "flex-start",
-    fontSize: "1rem",
-    lineHeight: "1.5rem",
+    ...TEXT.base,
     boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
-    borderColor: "#ecd6e0",
-    backgroundColor: "rgba(255,255,255,0.86)",
+    borderColor: PALETTE.inputBorder,
+    backgroundColor: PALETTE.controlBg,
   };
 
   const languageOptions = [
@@ -129,9 +128,7 @@ export default function MainScreen({
 
           <h1
             style={{
-              fontSize: "1.5rem",
-              lineHeight: "2rem",
-              fontWeight: "bold",
+              ...TEXT.heading,
               letterSpacing: "-0.025em",
             }}
           >
@@ -240,7 +237,7 @@ export default function MainScreen({
               >
                 <Languages style={{ height: "1.5rem", width: "1.5rem", color: "white" }} />
               </div>
-              <DialogTitle style={{ color: PALETTE.deep2, fontSize: "1.125rem", fontWeight: "700" }}>
+              <DialogTitle style={{ ...TEXT.subheading, color: PALETTE.deep2 }}>
                 {t.language}
               </DialogTitle>
             </div>
@@ -258,7 +255,7 @@ export default function MainScreen({
                   style={{
                     height: "3.25rem",
                     justifyContent: "space-between",
-                    fontSize: "1rem",
+                    ...TEXT.base,
                     fontWeight: selected ? "600" : "400",
                     borderColor: selected ? PALETTE.rose : PALETTE.line,
                     backgroundColor: selected ? "#fff0f5" : "white",
@@ -301,7 +298,7 @@ export default function MainScreen({
               >
                 <Settings style={{ height: "1.5rem", width: "1.5rem", color: "white" }} />
               </div>
-              <DialogTitle style={{ color: PALETTE.deep2, fontSize: "1.125rem", fontWeight: "700" }}>
+              <DialogTitle style={{ ...TEXT.subheading, color: PALETTE.deep2 }}>
                 {t.settings}
               </DialogTitle>
             </div>
@@ -324,8 +321,7 @@ export default function MainScreen({
           style={{
             height: "3.5rem",
             justifyContent: "flex-start",
-            fontSize: "1rem",
-            lineHeight: "1.5rem",
+            ...TEXT.base,
             color: "white",
             boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
             background: `linear-gradient(90deg, ${PALETTE.rose}, ${PALETTE.roseSoft})`,
