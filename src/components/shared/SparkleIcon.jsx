@@ -5,8 +5,8 @@ export { SPARKLE_PALETTES, PALETTE_SWATCHES } from './SparkleIcon.constants'
 
 const PALETTES = {
   yellow:   { O: '#FF8101', M: '#FFA102', I: '#FFDC00', H: '#FFFBE3' },
-  pink:   { O: '#C53483', M: '#FE56A1', I: '#FABAD5', H: '#FEF1FB' },
-  blue:   { O: '#4675E1', M: '#74A1FC', I: '#97BDFC', H: '#F5F5F3' },
+  pink:   { O: '#da4496', M: '#e873a7', I: '#FABAD5', H: '#FEF1FB' },
+  blue:   { O: '#4675E1', M: '#6699fe', I: '#97BDFC', H: '#F5F5F3' },
   purple: { O: '#8950FF', M: '#B58DFF', I: '#D3C0F8', H: '#F8F2F3' },
 }
 
