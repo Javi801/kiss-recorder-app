@@ -64,15 +64,13 @@ export default function AgeRangeBox({ title, subtitle, people, emptyText }) {
           className="rounded-3xl"
           style={{ padding: "1.25rem", backgroundColor: PALETTE.surfaceBg }}
         >
-          {/* Labels row */}
+          {/* Labels row — deduplicated so repeated stat values appear only once */}
           <div
             style={{ marginBottom: "1rem", display: "flex", justifyContent: "space-between", ...TEXT.body, fontWeight: "500", color: PALETTE.deep }}
           >
-            <span>{min}</span>
-            <span>{q1}</span>
-            <span>{median}</span>
-            <span>{q3}</span>
-            <span>{max}</span>
+            {[...new Set([min, q1, median, q3, max])].map((v) => (
+              <span key={v}>{v}</span>
+            ))}
           </div>
 
           {/* Boxplot visualization */}
