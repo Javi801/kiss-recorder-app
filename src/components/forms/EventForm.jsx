@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { PALETTE, SCORE_OPTIONS } from "@/lib/constants";
+import { PALETTE, SCORE_OPTIONS, TEXT } from "@/lib/constants";
 import { todayString, isValidDateString } from "@/lib/date";
 import { hasScore, renderKisses } from "@/lib/format";
 
@@ -59,8 +59,8 @@ export default function EventForm({ initialValues, onSave, onCancel, t }) {
 
   // Shared input styling.
   const inputStyle = {
-    borderColor: "#ecd6e0",
-    backgroundColor: "rgba(255,255,255,0.88)",
+    borderColor: PALETTE.inputBorder,
+    backgroundColor: PALETTE.inputBg,
   };
 
   return (
@@ -77,13 +77,13 @@ export default function EventForm({ initialValues, onSave, onCancel, t }) {
         />
 
         {/* Helper text */}
-        <p style={{ fontSize: "0.75rem", lineHeight: "1rem", color: PALETTE.textSoft }}>
+        <p style={{ ...TEXT.caption, color: PALETTE.textSoft }}>
           {t.dateFormatHelper}
         </p>
 
         {/* Error message */}
         {error && (
-          <p style={{ fontSize: "0.75rem", lineHeight: "1rem", color: "#ef4444" }}>{error}</p>
+          <p style={{ ...TEXT.caption, color: "#ef4444" }}>{error}</p>
         )}
       </div>
 
