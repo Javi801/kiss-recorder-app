@@ -100,3 +100,14 @@ describe("getMonthKey", () => {
   });
 });
 
+describe("getYearKey", () => {
+  it("extracts yyyy from a valid date", () => {
+    expect(getYearKey("2024.03.15")).toBe("2024");
+  });
+  it("returns null for an invalid date", () => {
+    expect(getYearKey("bad")).toBeNull();
+  });
+  it("returns null for an empty string", () => {
+    expect(getYearKey("")).toBeNull();
+  });
+});
