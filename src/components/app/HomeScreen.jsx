@@ -37,24 +37,82 @@ export default function MainScreen({
     0,
   );
 
+  const outlineActionStyle = {
+    height: "3.5rem",
+    justifyContent: "flex-start",
+    borderRadius: "1.5rem",
+    fontSize: "1rem",
+    lineHeight: "1.5rem",
+    boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+    borderColor: "#ecd6e0",
+    backgroundColor: "rgba(255,255,255,0.86)",
+  };
+
   return (
-    <div className="space-y-5">
+    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+      {/* App icon preview */}
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <SparkleIcon palette={iconColor} size={120} />
+      </div>
+
       {/* Hero summary card */}
       <Card
-        className="overflow-hidden rounded-[30px] border-0 text-white shadow-lg"
         style={{
+          overflow: "hidden",
+          borderRadius: "30px",
+          border: "none",
+          color: "white",
+          boxShadow:
+            "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
           background: `linear-gradient(135deg, ${PALETTE.rose}, ${PALETTE.roseSoft}, ${PALETTE.sky})`,
         }}
       >
-        <CardContent className="relative p-6">
+        <CardContent style={{ position: "relative", padding: "1.5rem" }}>
           {/* Decorative blurred circles */}
-          <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/10 blur-2xl" />
-          <div className="absolute -left-8 bottom-0 h-24 w-24 rounded-full bg-white/10 blur-2xl" />
+          <div
+            style={{
+              position: "absolute",
+              right: "-2rem",
+              top: "-2rem",
+              height: "7rem",
+              width: "7rem",
+              borderRadius: "9999px",
+              backgroundColor: "rgba(255,255,255,0.1)",
+              filter: "blur(40px)",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              left: "-2rem",
+              bottom: "0",
+              height: "6rem",
+              width: "6rem",
+              borderRadius: "9999px",
+              backgroundColor: "rgba(255,255,255,0.1)",
+              filter: "blur(40px)",
+            }}
+          />
 
-          <h1 className="text-2xl font-bold tracking-tight">{t.heroTitle}</h1>
+          <h1
+            style={{
+              fontSize: "1.5rem",
+              lineHeight: "2rem",
+              fontWeight: "bold",
+              letterSpacing: "-0.025em",
+            }}
+          >
+            {t.heroTitle}
+          </h1>
 
-          {/* Summary metrics */}
-          <div className="mt-5 grid grid-cols-2 gap-3">
+          <div
+            style={{
+              marginTop: "1.25rem",
+              display: "grid",
+              gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+              gap: "0.75rem",
+            }}
+          >
             <StatTile
               label={t.peopleSaved}
               value={people.length}
@@ -82,57 +140,52 @@ export default function MainScreen({
       </Card>
 
       {/* Main action buttons */}
-      <div className="grid gap-3">
+      <div style={{ display: "grid", gap: "0.75rem" }}>
         <Button
-          className="h-14 justify-start rounded-3xl text-base text-white shadow-sm"
           style={{
+            height: "3.5rem",
+            justifyContent: "flex-start",
+            borderRadius: "1.5rem",
+            fontSize: "1rem",
+            lineHeight: "1.5rem",
+            color: "white",
+            boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
             background: `linear-gradient(90deg, ${PALETTE.rose}, ${PALETTE.roseSoft})`,
           }}
           onClick={() => onNavigate("add")}
         >
-          <UserPlus className="mr-3 h-5 w-5" />
+          <UserPlus style={{ marginRight: "0.75rem", height: "1.25rem", width: "1.25rem" }} />
           {t.addNewPerson}
         </Button>
 
         <Button
           variant="outline"
-          className="h-14 justify-start rounded-3xl text-base shadow-sm"
-          style={{
-            borderColor: "#ecd6e0",
-            backgroundColor: "rgba(255,255,255,0.86)",
-          }}
+          style={outlineActionStyle}
           onClick={() => onNavigate("people")}
         >
-          <Users className="mr-3 h-5 w-5" style={{ color: PALETTE.rose }} />
+          <Users
+            style={{ marginRight: "0.75rem", height: "1.25rem", width: "1.25rem", color: PALETTE.rose }}
+          />
           {t.viewEditPeople}
         </Button>
 
         <Button
           variant="outline"
-          className="h-14 justify-start rounded-3xl text-base shadow-sm"
-          style={{
-            borderColor: "#ecd6e0",
-            backgroundColor: "rgba(255,255,255,0.86)",
-          }}
+          style={outlineActionStyle}
           onClick={() => onNavigate("stats")}
         >
           <BarChart3
-            className="mr-3 h-5 w-5"
-            style={{ color: PALETTE.sky2 }}
+            style={{ marginRight: "0.75rem", height: "1.25rem", width: "1.25rem", color: PALETTE.sky2 }}
           />
           {t.viewStatistics}
         </Button>
 
         <Button
           variant="outline"
-          className="h-14 justify-start rounded-3xl text-base text-red-600 shadow-sm"
-          style={{
-            borderColor: "#ecd6e0",
-            backgroundColor: "rgba(255,255,255,0.86)",
-          }}
+          style={{ ...outlineActionStyle, color: "#dc2626" }}
           onClick={() => setConfirmOpen(true)}
         >
-          <Trash2 className="mr-3 h-5 w-5" />
+          <Trash2 style={{ marginRight: "0.75rem", height: "1.25rem", width: "1.25rem" }} />
           {t.clearLocalData}
         </Button>
       </div>
@@ -140,9 +193,11 @@ export default function MainScreen({
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <DialogContent showCloseButton={false}>
           <DialogHeader>
-            <div className="flex items-center gap-2 text-red-600">
-              <TriangleAlert className="h-5 w-5 shrink-0" />
-              <DialogTitle className="text-red-600">
+            <div
+              style={{ display: "flex", alignItems: "center", gap: "0.5rem", color: "#dc2626" }}
+            >
+              <TriangleAlert style={{ height: "1.25rem", width: "1.25rem", flexShrink: 0 }} />
+              <DialogTitle style={{ color: "#dc2626" }}>
                 {t.clearDataConfirmTitle}
               </DialogTitle>
             </div>
@@ -153,7 +208,8 @@ export default function MainScreen({
               {t.cancel}
             </Button>
             <Button
-              className="bg-red-600 text-white hover:bg-red-700"
+              className="hover:bg-red-700"
+              style={{ backgroundColor: "#dc2626", color: "white" }}
               onClick={() => {
                 setConfirmOpen(false);
                 onClearData();
