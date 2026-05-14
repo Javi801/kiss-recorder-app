@@ -10,6 +10,6 @@ export async function setAppIconColor(color) {
   try {
     await AppIcon.setColor({ color })
   } catch {
-    // Plugin unavailable on web / iOS — safe to ignore
+    // Plugin is unavailable on web and iOS, so this can be ignored.
   }
 }
