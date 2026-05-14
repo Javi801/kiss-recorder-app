@@ -12,10 +12,10 @@ export default function TileCard({ accent = false, children, contentStyle }) {
 
   return (
     <Card
-      className="rounded-3xl shadow-sm"
-      style={{ borderColor, background, backdropFilter: "blur(8px)" }}
+      className="rounded-3xl"
+      style={{ boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)", borderColor, background, backdropFilter: "blur(8px)" }}
     >
-      <CardContent className="p-5" style={contentStyle}>{children}</CardContent>
+      <CardContent style={{ padding: "1.25rem", ...contentStyle }}>{children}</CardContent>
     </Card>
   );
 }
