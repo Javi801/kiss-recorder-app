@@ -88,3 +88,15 @@ describe("formatDisplayDate", () => {
   });
 });
 
+describe("getMonthKey", () => {
+  it("extracts yyyy-MM from a valid date", () => {
+    expect(getMonthKey("2024.03.15")).toBe("2024-03");
+  });
+  it("returns null for an invalid date", () => {
+    expect(getMonthKey("bad")).toBeNull();
+  });
+  it("returns null for an empty string", () => {
+    expect(getMonthKey("")).toBeNull();
+  });
+});
+
