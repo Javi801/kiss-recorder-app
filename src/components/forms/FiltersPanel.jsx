@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { PALETTE, ZODIAC_OPTIONS } from "@/lib/constants";
+import { PALETTE, ZODIAC_OPTIONS, TEXT } from "@/lib/constants";
 
 /**
  * Renders the filters and organization controls for the people list.
@@ -30,7 +30,7 @@ export default function FiltersPanel({
 }) {
   // Reuse the same style across all form controls in the panel.
   const inputStyle = {
-    borderColor: "#ecd6e0",
+    borderColor: PALETTE.inputBorder,
     backgroundColor: "rgba(255,255,255,0.9)",
   };
 
@@ -38,10 +38,10 @@ export default function FiltersPanel({
     <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
       {/* Panel heading */}
       <div>
-        <h3 style={{ fontSize: "1.125rem", lineHeight: "1.75rem", fontWeight: "600", color: PALETTE.text }}>
+        <h3 style={{ ...TEXT.subheading, fontWeight: "600", color: PALETTE.text }}>
           {t.filtersOrg}
         </h3>
-        <p style={{ fontSize: "0.875rem", lineHeight: "1.25rem", color: PALETTE.textSoft }}>
+        <p style={{ ...TEXT.body, color: PALETTE.textSoft }}>
           {t.refineResults}
         </p>
       </div>
@@ -174,7 +174,7 @@ export default function FiltersPanel({
       </Button>
 
       {/* Results count */}
-      <p style={{ fontSize: "0.75rem", lineHeight: "1rem", color: PALETTE.textSoft }}>
+      <p style={{ ...TEXT.caption, color: PALETTE.textSoft }}>
         {t.showingResults} {peopleCount}{" "}
         {peopleCount === 1 ? t.result : t.results}.
       </p>
