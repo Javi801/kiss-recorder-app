@@ -105,7 +105,7 @@ export default function EventForm({ initialValues, onSave, onCancel, t }) {
           onChange={(e) => setPlace(e.target.value)}
           placeholder={t.eventPlacePlaceholder}
           className="rounded-2xl"
-          style={{ ...inputStyle, fontSize: "0.8rem" }}
+          style={{ ...inputStyle, ...TEXT.input }}
         />
         {errors.place && (
           <p style={{ ...TEXT.caption, color: "#ef4444" }}>{errors.place}</p>
@@ -120,7 +120,7 @@ export default function EventForm({ initialValues, onSave, onCancel, t }) {
           onChange={(e) => setSituation(e.target.value)}
           placeholder={t.eventSituationPlaceholder}
           className="rounded-2xl"
-          style={{ ...inputStyle, fontSize: "0.8rem" }}
+          style={{ ...inputStyle, ...TEXT.input }}
         />
         {errors.situation && (
           <p style={{ ...TEXT.caption, color: "#ef4444" }}>{errors.situation}</p>
@@ -135,7 +135,7 @@ export default function EventForm({ initialValues, onSave, onCancel, t }) {
           onChange={(e) => setDetails(e.target.value)}
           placeholder={t.eventDetailsPlaceholder}
           className="rounded-2xl"
-          style={{ ...inputStyle, fontSize: "0.8rem" }}
+          style={{ ...inputStyle, ...TEXT.input }}
         />
       </div>
 
@@ -147,7 +147,7 @@ export default function EventForm({ initialValues, onSave, onCancel, t }) {
           onChange={(e) => setObservations(e.target.value)}
           placeholder={t.eventObservationsPlaceholder}
           className="rounded-2xl"
-          style={{ ...inputStyle, fontSize: "0.8rem" }}
+          style={{ ...inputStyle, ...TEXT.input }}
         />
       </div>
 
