@@ -69,7 +69,7 @@ export default function StatsScoresTab({ people, allEvents, t }) {
   }, [allEvents, t]);
 
   return (
-    <div className="space-y-4">
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       <PieChartCard
         title={t.scoreDistribution}
         subtitle={t.scoreDistributionDesc}
