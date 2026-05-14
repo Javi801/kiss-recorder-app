@@ -122,12 +122,14 @@ export async function saveSettings({ iconColor, language }) {
   if (language !== undefined) storage.setItem(LANGUAGE_KEY, language)
 }
 
-// Exports people data as a JSON file to external storage (native) or browser download (web)
+// Exports people data as a JSON file to external storage (native) or browser download (web).
+// Returns { fileName, isNative } so callers can show the saved location to the user.
 export async function exportPeopleJson(people) {
   const fileName = `kiss-recorder-data-${new Date().toISOString().slice(0, 10)}.json`;
   const content = JSON.stringify(people, null, 2);
+  const native = isNativePlatform();
 
-  if (isNativePlatform()) {
+  if (native) {
     await Filesystem.writeFile({
       path: fileName,
       directory: Directory.External,
@@ -135,7 +137,7 @@ export async function exportPeopleJson(people) {
       encoding: Encoding.UTF8,
       recursive: true,
     });
-    return;
+    return { fileName, isNative: true };
   }
 
   const blob = new Blob([content], { type: "application/json" });
@@ -145,6 +147,7 @@ export async function exportPeopleJson(people) {
   a.download = fileName;
   a.click();
   URL.revokeObjectURL(url);
+  return { fileName, isNative: false };
 }
 
 // Clears persisted people data from native file system or localStorage
