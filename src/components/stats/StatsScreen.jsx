@@ -99,6 +99,7 @@ export default function StatsScreen({ people, t }) {
           </p>
         </div>
 
+        {/* TODO: fix PDF export bug before re-enabling
         <Button
           variant="outline"
           className="rounded-2xl bg-white/85"
@@ -108,6 +109,7 @@ export default function StatsScreen({ people, t }) {
           <Download className="mr-2 h-4 w-4" />
           {t.exportPdf}
         </Button>
+        */}
       </div>
 
       <div className="grid grid-cols-2 gap-2">
