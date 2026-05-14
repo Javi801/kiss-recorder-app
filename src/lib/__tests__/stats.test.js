@@ -77,3 +77,194 @@ describe("getLastEventDate", () => {
   });
 });
 
+describe("getStatsData", () => {
+  it("returns zero-state for an empty people array", () => {
+    const stats = getStatsData([], t);
+    expect(stats.allEvents).toHaveLength(0);
+    expect(stats.averageEventsPerPerson).toBe("0.0");
+    expect(stats.mostActivePerson).toBe("—");
+    expect(stats.averageScore).toBe("0.0");
+    expect(stats.mostActiveCount).toBe(0);
+  });
+
+  it("counts all events across all people", () => {
+    const people = [
+      makePerson("Ana", [makeEvent("2024.01.01"), makeEvent("2024.02.01")]),
+      makePerson("Bob", [makeEvent("2024.03.01")]),
+    ];
+    expect(getStatsData(people, t).allEvents).toHaveLength(3);
+  });
+
+  it("calculates average events per person", () => {
+    const people = [
+      makePerson("Ana", [makeEvent("2024.01.01"), makeEvent("2024.02.01")]),
+      makePerson("Bob", [makeEvent("2024.03.01")]),
+    ];
+    // 3 events / 2 people = 1.5
+    expect(getStatsData(people, t).averageEventsPerPerson).toBe("1.5");
+  });
+
+  it("identifies the most active person by event count", () => {
+    const people = [
+      makePerson("Ana", [makeEvent("2024.01.01")]),
+      makePerson("Bob", [
+        makeEvent("2024.01.01"),
+        makeEvent("2024.02.01"),
+        makeEvent("2024.03.01"),
+      ]),
+    ];
+    const stats = getStatsData(people, t);
+    expect(stats.mostActivePerson).toBe("Bob");
+    expect(stats.mostActiveCount).toBe(3);
+  });
+
+  it("calculates average score ignoring unscored events", () => {
+    const people = [
+      makePerson("Ana", [
+        makeEvent("2024.01.01", 4),
+        makeEvent("2024.02.01", null),
+        makeEvent("2024.03.01", 2),
+      ]),
+    ];
+    // (4 + 2) / 2 scored events = 3.0
+    expect(getStatsData(people, t).averageScore).toBe("3.0");
+  });
+
+  it('reports "0.0" average score when no events are scored', () => {
+    const people = [
+      makePerson("Ana", [makeEvent("2024.01.01", null)]),
+    ];
+    expect(getStatsData(people, t).averageScore).toBe("0.0");
+  });
+
+  it("groups events by month in chronological order", () => {
+    const people = [
+      makePerson("Ana", [
+        makeEvent("2024.03.01"),
+        makeEvent("2024.01.15"),
+        makeEvent("2024.03.20"),
+      ]),
+    ];
+    expect(getStatsData(people, t).eventsPerMonth).toEqual([
+      { label: "2024-01", value: 1 },
+      { label: "2024-03", value: 2 },
+    ]);
+  });
+
+  it("groups events by year in chronological order", () => {
+    const people = [
+      makePerson("Ana", [
+        makeEvent("2024.01.01"),
+        makeEvent("2023.06.15"),
+        makeEvent("2024.03.01"),
+      ]),
+    ];
+    expect(getStatsData(people, t).eventsPerYear).toEqual([
+      { label: "2023", value: 1 },
+      { label: "2024", value: 2 },
+    ]);
+  });
+
+  it("identifies people whose events span two or more years", () => {
+    const people = [
+      makePerson("Ana", [makeEvent("2023.01.01"), makeEvent("2024.01.01")]),
+      makePerson("Bob", [makeEvent("2024.01.01")]),
+    ];
+    const multiYear = getStatsData(people, t).personsWithEventsInMultipleYears;
+    expect(multiYear).toHaveLength(1);
+    expect(multiYear[0].label).toBe("Ana");
+  });
+
+  it("counts scored vs unscored events correctly", () => {
+    const people = [
+      makePerson("Ana", [
+        makeEvent("2024.01.01", 3),
+        makeEvent("2024.02.01", null),
+        makeEvent("2024.03.01", 1),
+      ]),
+    ];
+    const { scoredVsUnscored } = getStatsData(people, t);
+    expect(scoredVsUnscored.find((d) => d.label === t.scores).value).toBe(2);
+    expect(scoredVsUnscored.find((d) => d.label === t.noScore).value).toBe(1);
+  });
+
+  it("groups people by gender count", () => {
+    const people = [
+      makePerson("Ana", [], { gender: "female" }),
+      makePerson("Bob", [], { gender: "male" }),
+      makePerson("Sam", [], { gender: "female" }),
+    ];
+    const { personsByGender } = getStatsData(people, t);
+    expect(personsByGender.find((d) => d.label === t.female).value).toBe(2);
+    expect(personsByGender.find((d) => d.label === t.male).value).toBe(1);
+  });
+
+  it("groups events by gender count", () => {
+    const people = [
+      makePerson("Ana", [makeEvent("2024.01.01"), makeEvent("2024.02.01")], {
+        gender: "female",
+      }),
+      makePerson("Bob", [makeEvent("2024.01.01")], { gender: "male" }),
+    ];
+    const { eventsByGender } = getStatsData(people, t);
+    expect(eventsByGender.find((d) => d.label === t.female).value).toBe(2);
+    expect(eventsByGender.find((d) => d.label === t.male).value).toBe(1);
+  });
+
+  it("limits peopleMostEvents to 8 entries", () => {
+    const people = Array.from({ length: 12 }, (_, i) =>
+      makePerson(`Person${i}`, [makeEvent("2024.01.01")])
+    );
+    expect(getStatsData(people, t).peopleMostEvents).toHaveLength(8);
+  });
+
+  it("groups people by first letter alphabetically", () => {
+    const people = [
+      makePerson("Alice"),
+      makePerson("Anna"),
+      makePerson("Bob"),
+    ];
+    const { personsByFirstLetter } = getStatsData(people, t);
+    expect(personsByFirstLetter.find((d) => d.label === "A").value).toBe(2);
+    expect(personsByFirstLetter.find((d) => d.label === "B").value).toBe(1);
+  });
+
+  it("groups people by age", () => {
+    const people = [
+      makePerson("Ana", [], { age: 25 }),
+      makePerson("Bob", [], { age: 30 }),
+      makePerson("Sam", [], { age: 25 }),
+    ];
+    const { personsByAge } = getStatsData(people, t);
+    expect(personsByAge.find((d) => d.label === "25").value).toBe(2);
+    expect(personsByAge.find((d) => d.label === "30").value).toBe(1);
+  });
+
+  it("sums events by zodiac sign", () => {
+    const people = [
+      makePerson("Ana", [makeEvent("2024.01.01"), makeEvent("2024.02.01")], {
+        zodiacSign: "♒ Aquarius (January 20 - February 19)",
+      }),
+      makePerson("Bob", [makeEvent("2024.01.01")], {
+        zodiacSign: "♒ Aquarius (January 20 - February 19)",
+      }),
+    ];
+    const { eventsByZodiac } = getStatsData(people, t);
+    expect(eventsByZodiac.find((d) => d.label === "Aquarius").value).toBe(3);
+  });
+
+  it("groups people by event count bucket", () => {
+    const people = [
+      makePerson("Ana", [makeEvent("2024.01.01"), makeEvent("2024.02.01")]),
+      makePerson("Bob", [makeEvent("2024.01.01"), makeEvent("2024.03.01")]),
+      makePerson("Sam", [makeEvent("2024.01.01")]),
+    ];
+    const { numberOfEventsByNumberOfPersons } = getStatsData(people, t);
+    expect(
+      numberOfEventsByNumberOfPersons.find((d) => d.label === "2").value
+    ).toBe(2);
+    expect(
+      numberOfEventsByNumberOfPersons.find((d) => d.label === "1").value
+    ).toBe(1);
+  });
+});
