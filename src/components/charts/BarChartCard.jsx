@@ -48,7 +48,7 @@ export default function BarChartCard({
         {data.length ? (
           <div style={{ height: "16rem", width: "100%" }}>
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data}>
+              <BarChart data={data} margin={{ top: 5, right: 5, left: -15, bottom: 5 }}>
                 {/* Background grid */}
                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
 
@@ -70,6 +70,7 @@ export default function BarChartCard({
                   tickLine={false}
                   axisLine={false}
                   fontSize={12}
+                  width={40}
                 />
 
                 <Tooltip />
