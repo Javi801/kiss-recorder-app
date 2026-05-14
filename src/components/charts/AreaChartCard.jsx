@@ -14,7 +14,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { PALETTE } from "@/lib/constants";
+import { PALETTE, TEXT } from "@/lib/constants";
 
 /**
  * Renders a reusable area chart card.
@@ -28,20 +28,20 @@ export default function AreaChartCard({
 }) {
   // Shared card style for consistency.
   const cardStyle = {
-    borderColor: "#f1dde7",
-    backgroundColor: "rgba(255,255,255,0.82)",
+    borderColor: PALETTE.cardBorder,
+    backgroundColor: PALETTE.cardBg,
   };
 
   // Empty state styling.
   const emptyStyle = {
-    borderColor: "#ecd6e0",
+    borderColor: PALETTE.inputBorder,
     color: PALETTE.textSoft,
   };
 
   return (
     <Card className="rounded-3xl" style={{ boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)", backdropFilter: "blur(8px)", ...cardStyle }}>
       <CardHeader style={{ paddingBottom: "0.5rem" }}>
-        <CardTitle style={{ fontSize: "1rem", lineHeight: "1.5rem", color: PALETTE.text }}>
+        <CardTitle style={{ ...TEXT.title, color: PALETTE.text }}>
           {title}
         </CardTitle>
         <CardDescription>{subtitle}</CardDescription>
@@ -86,7 +86,7 @@ export default function AreaChartCard({
         ) : (
           <div
             className="rounded-2xl"
-            style={{ border: "1px dashed", padding: "2rem", textAlign: "center", fontSize: "0.875rem", lineHeight: "1.25rem", ...emptyStyle }}
+            style={{ border: "1px dashed", padding: "2rem", textAlign: "center", ...TEXT.body, ...emptyStyle }}
           >
             {emptyText}
           </div>
