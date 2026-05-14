@@ -42,3 +42,31 @@ describe("loadPeopleFromDevice (web path)", () => {
     expect(await loadPeopleFromDevice()).toEqual([]);
   });
 });
+
+// ---------------------------------------------------------------------------
+// savePeopleToDevice
+// ---------------------------------------------------------------------------
+describe("savePeopleToDevice (web path)", () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  it("writes the people array as JSON to localStorage", async () => {
+    const people = [{ id: "p1", name: "Ana", events: [] }];
+    await savePeopleToDevice(people);
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY))).toEqual(people);
+  });
+
+  it("overwrites any existing entry", async () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([{ name: "Old" }]));
+    const people = [{ name: "New", events: [] }];
+    await savePeopleToDevice(people);
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY))).toEqual(people);
+  });
+
+  it("writes an empty array correctly", async () => {
+    await savePeopleToDevice([]);
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY))).toEqual([]);
+  });
+});
+
