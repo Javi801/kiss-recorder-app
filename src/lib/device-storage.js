@@ -9,7 +9,7 @@ export function getSafeStorage() {
       return window.localStorage;
     }
   } catch (error) {
-    console.error("Storage unavailable", error);
+    if (import.meta.env.DEV) console.error("Storage unavailable", error);
   }
 
   return null;
@@ -131,7 +131,7 @@ export async function clearPeopleFromDevice() {
         directory: Directory.Data,
       });
     } catch (error) {
-      console.warn("People file did not exist", error);
+      if (import.meta.env.DEV) console.warn("People file did not exist", error);
     }
     return;
   }
