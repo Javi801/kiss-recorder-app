@@ -110,6 +110,9 @@ export default function PersonForm({
             className="rounded-2xl"
             style={{ ...inputStyle }}
           />
+          <p style={{ ...TEXT.caption, color: PALETTE.textSoft, textAlign: "right" }}>
+            {form.name.length}/100
+          </p>
           {errors.name && (
             <p style={{ ...TEXT.caption, color: "#ef4444" }}>{errors.name}</p>
           )}
@@ -169,6 +172,9 @@ export default function PersonForm({
               className="rounded-2xl"
             style={{ ...inputStyle }}
             />
+            <p style={{ ...TEXT.caption, color: PALETTE.textSoft, textAlign: "right" }}>
+              {form.howWeMet.length}/200
+            </p>
             {errors.howWeMet && (
               <p style={{ ...TEXT.caption, color: "#ef4444" }}>{errors.howWeMet}</p>
             )}
@@ -246,6 +252,9 @@ export default function PersonForm({
               className="rounded-2xl"
               style={{ ...inputStyle, ...TEXT.input }}
             />
+            <p style={{ ...TEXT.caption, color: PALETTE.textSoft, textAlign: "right" }}>
+              {form.detail.length}/500
+            </p>
           </div>
         )}
       </div>
