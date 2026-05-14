@@ -40,7 +40,7 @@ export default function KissRecorderApp() {
   const [language, setLanguage] = useState("en");
 
   // Icon color palette selected by the user.
-  const [iconColor, setIconColor] = useState("gold");
+  const [iconColor, setIconColor] = useState("yellow");
 
   // Prevents saving before the initial load completes.
   const [isLoaded, setIsLoaded] = useState(false);
@@ -114,7 +114,7 @@ export default function KissRecorderApp() {
         }
 
         const savedColor = storage?.getItem(ICON_COLOR_KEY);
-        if (["gold", "blue", "pink", "purple"].includes(savedColor)) {
+        if (["yellow", "blue", "pink", "purple"].includes(savedColor)) {
           setIconColor(savedColor);
         }
       } catch (error) {

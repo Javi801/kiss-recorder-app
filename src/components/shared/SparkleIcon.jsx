@@ -4,7 +4,7 @@
 export { SPARKLE_PALETTES, PALETTE_SWATCHES } from './SparkleIcon.constants'
 
 const PALETTES = {
-  gold:   { O: '#FF8101', M: '#FFA102', I: '#FFDC00', H: '#FFFBE3' },
+  yellow:   { O: '#FF8101', M: '#FFA102', I: '#FFDC00', H: '#FFFBE3' },
   pink:   { O: '#C53483', M: '#FE56A1', I: '#FABAD5', H: '#FEF1FB' },
   blue:   { O: '#4675E1', M: '#74A1FC', I: '#97BDFC', H: '#F5F5F3' },
   purple: { O: '#8950FF', M: '#B58DFF', I: '#D3C0F8', H: '#F8F2F3' },
@@ -23,10 +23,8 @@ function starPath(cx, cy, rx, ry, inner) {
   ].join(' ')
 }
 
-export function SparkleIcon({ palette = 'gold', size = 200 }) {
-  const p = PALETTES[palette] ?? PALETTES.gold
-  const gMain  = `sg-main-${palette}`
-  const gSmall = `sg-small-${palette}`
+export function SparkleIcon({ palette = 'yellow', size = 200 }) {
+  const p = PALETTES[palette] ?? PALETTES.purple
 
   return (
     <svg
