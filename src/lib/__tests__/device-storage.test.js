@@ -14,6 +14,9 @@ vi.mock("@capacitor/filesystem", () => ({
 import { loadPeopleFromDevice } from "@/lib/device-storage";
 import { STORAGE_KEY } from "@/lib/constants";
 
+// ---------------------------------------------------------------------------
+// loadPeopleFromDevice
+// ---------------------------------------------------------------------------
 describe("loadPeopleFromDevice (web path)", () => {
   beforeEach(() => {
     localStorage.clear();
