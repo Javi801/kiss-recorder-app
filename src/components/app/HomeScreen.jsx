@@ -55,7 +55,6 @@ export default function MainScreen({
   const frostedButtonStyle = {
     height: "3.5rem",
     width: "3.5rem",
-    borderRadius: "9999px",
     padding: "0",
     backgroundColor: "rgba(255,255,255,0.22)",
     border: "1.5px solid rgba(255,255,255,0.45)",
@@ -75,7 +74,6 @@ export default function MainScreen({
   const outlineActionStyle = {
     height: "3.5rem",
     justifyContent: "flex-start",
-    borderRadius: "1.5rem",
     fontSize: "1rem",
     lineHeight: "1.5rem",
     boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
@@ -105,25 +103,25 @@ export default function MainScreen({
         <CardContent style={{ position: "relative", padding: "1.5rem" }}>
           {/* Decorative blurred circles */}
           <div
+            className="rounded-full"
             style={{
               position: "absolute",
               right: "-2rem",
               top: "-2rem",
               height: "7rem",
               width: "7rem",
-              borderRadius: "9999px",
               backgroundColor: "rgba(255,255,255,0.1)",
               filter: "blur(40px)",
             }}
           />
           <div
+            className="rounded-full"
             style={{
               position: "absolute",
               left: "-2rem",
               bottom: "0",
               height: "6rem",
               width: "6rem",
-              borderRadius: "9999px",
               backgroundColor: "rgba(255,255,255,0.1)",
               filter: "blur(40px)",
             }}
@@ -172,6 +170,7 @@ export default function MainScreen({
               <Button
                 type="button"
                 aria-label={t.language}
+                className="rounded-full"
                 style={frostedButtonStyle}
                 onClick={() => setLanguageOpen(true)}
               >
@@ -185,6 +184,7 @@ export default function MainScreen({
                 type="button"
                 aria-label={statsVisible ? t.hideStats : t.showStats}
                 aria-pressed={!statsVisible}
+                className="rounded-full"
                 style={{
                   ...frostedButtonStyle,
                   backgroundColor: statsVisible
@@ -209,6 +209,7 @@ export default function MainScreen({
               <Button
                 type="button"
                 aria-label={t.settings}
+                className="rounded-full"
                 style={frostedButtonStyle}
                 onClick={() => setSettingsOpen(true)}
               >
@@ -226,10 +227,10 @@ export default function MainScreen({
           <DialogHeader>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem" }}>
               <div
+                className="rounded-full"
                 style={{
                   width: "3.5rem",
                   height: "3.5rem",
-                  borderRadius: "9999px",
                   background: `linear-gradient(135deg, ${PALETTE.rose}, ${PALETTE.roseSoft})`,
                   display: "flex",
                   alignItems: "center",
@@ -253,10 +254,10 @@ export default function MainScreen({
                   key={option.value}
                   type="button"
                   variant="outline"
+                  className="rounded-xl"
                   style={{
                     height: "3.25rem",
                     justifyContent: "space-between",
-                    borderRadius: "0.875rem",
                     fontSize: "1rem",
                     fontWeight: selected ? "600" : "400",
                     borderColor: selected ? PALETTE.rose : PALETTE.line,
@@ -287,10 +288,10 @@ export default function MainScreen({
           <DialogHeader>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem" }}>
               <div
+                className="rounded-full"
                 style={{
                   width: "3.5rem",
                   height: "3.5rem",
-                  borderRadius: "9999px",
                   background: `linear-gradient(135deg, ${PALETTE.deep2}, ${PALETTE.lavender})`,
                   display: "flex",
                   alignItems: "center",
@@ -319,10 +320,10 @@ export default function MainScreen({
       {/* Main action buttons */}
       <div style={{ display: "grid", gap: "0.75rem" }}>
         <Button
+          className="rounded-3xl"
           style={{
             height: "3.5rem",
             justifyContent: "flex-start",
-            borderRadius: "1.5rem",
             fontSize: "1rem",
             lineHeight: "1.5rem",
             color: "white",
@@ -337,6 +338,7 @@ export default function MainScreen({
 
         <Button
           variant="outline"
+          className="rounded-3xl"
           style={outlineActionStyle}
           onClick={() => onNavigate("people")}
         >
@@ -348,6 +350,7 @@ export default function MainScreen({
 
         <Button
           variant="outline"
+          className="rounded-3xl"
           style={outlineActionStyle}
           onClick={() => onNavigate("stats")}
         >
@@ -359,6 +362,7 @@ export default function MainScreen({
 
         <Button
           variant="outline"
+          className="rounded-3xl"
           style={{ ...outlineActionStyle, color: "#dc2626" }}
           onClick={() => setConfirmOpen(true)}
         >
