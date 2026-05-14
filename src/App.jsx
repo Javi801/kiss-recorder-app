@@ -188,6 +188,11 @@ export default function KissRecorderApp() {
     setScreen("intro");
   }
 
+  // Appends imported people (already deduplicated by the caller) to the existing dataset.
+  function importAppData(rawPeople) {
+    setPeople((prev) => [...prev, ...normalizePeople(rawPeople)]);
+  }
+
   // Creates a new person and inserts an initial empty event.
   function addPerson(values) {
     const newPerson = {
@@ -331,6 +336,7 @@ export default function KissRecorderApp() {
             <HomeScreen
               onNavigate={navigateTo}
               onClearData={clearAllAppData}
+              onImportData={importAppData}
               people={people}
               t={t}
               language={language}

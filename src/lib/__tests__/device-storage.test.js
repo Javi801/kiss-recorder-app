@@ -11,9 +11,23 @@ vi.mock("@capacitor/filesystem", () => ({
   Encoding: {},
 }));
 
-import { loadPeopleFromDevice } from "@/lib/device-storage";
+// jsdom does not implement these URL methods
+global.URL.createObjectURL = vi.fn(() => "blob:mock");
+global.URL.revokeObjectURL = vi.fn();
+// Prevent jsdom errors when the anchor is programmatically clicked
+HTMLAnchorElement.prototype.click = vi.fn();
+
+import {
+  loadPeopleFromDevice,
+  savePeopleToDevice,
+  clearPeopleFromDevice,
+  exportPeopleJson,
+} from "@/lib/device-storage";
 import { STORAGE_KEY } from "@/lib/constants";
 
+// ---------------------------------------------------------------------------
+// loadPeopleFromDevice
+// ---------------------------------------------------------------------------
 describe("loadPeopleFromDevice (web path)", () => {
   beforeEach(() => {
     localStorage.clear();
@@ -37,5 +51,205 @@ describe("loadPeopleFromDevice (web path)", () => {
   it("returns empty array when JSON parses to a non-array", async () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ not: "array" }));
     expect(await loadPeopleFromDevice()).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// savePeopleToDevice
+// ---------------------------------------------------------------------------
+describe("savePeopleToDevice (web path)", () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  it("writes the people array as JSON to localStorage", async () => {
+    const people = [{ id: "p1", name: "Ana", events: [] }];
+    await savePeopleToDevice(people);
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY))).toEqual(people);
+  });
+
+  it("overwrites any existing entry", async () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([{ name: "Old" }]));
+    const people = [{ name: "New", events: [] }];
+    await savePeopleToDevice(people);
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY))).toEqual(people);
+  });
+
+  it("writes an empty array correctly", async () => {
+    await savePeopleToDevice([]);
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY))).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// clearPeopleFromDevice
+// ---------------------------------------------------------------------------
+describe("clearPeopleFromDevice (web path)", () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  it("removes the people entry from localStorage", async () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([{ name: "Ana" }]));
+    await clearPeopleFromDevice();
+    expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
+  });
+
+  it("does not throw when the entry does not exist", async () => {
+    await expect(clearPeopleFromDevice()).resolves.not.toThrow();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// exportPeopleJson (web path)
+// ---------------------------------------------------------------------------
+
+const COMPLETE_PERSON = {
+  id: "p1",
+  name: "Ana",
+  age: 25,
+  gender: "female",
+  howWeMet: "school",
+  zodiacSign: "♒ Aquarius",
+  activity: "studies",
+  events: [
+    { id: "e1", date: "2024.01.01", place: "café", situation: "first date" },
+  ],
+};
+
+describe("exportPeopleJson (web path) — return shape", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("returns isNative: false on web", async () => {
+    const { isNative } = await exportPeopleJson([]);
+    expect(isNative).toBe(false);
+  });
+
+  it("returns a fileName matching kiss-recorder-data-YYYY-MM-DD.json", async () => {
+    const { fileName } = await exportPeopleJson([]);
+    expect(fileName).toMatch(/^kiss-recorder-data-\d{4}-\d{2}-\d{2}\.json$/);
+  });
+
+  it("triggers a browser download via createObjectURL and revokeObjectURL", async () => {
+    await exportPeopleJson([COMPLETE_PERSON]);
+    expect(URL.createObjectURL).toHaveBeenCalledOnce();
+    expect(URL.revokeObjectURL).toHaveBeenCalledWith("blob:mock");
+  });
+});
+
+describe("exportPeopleJson — hadMissingFields", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("is false for an empty people array", async () => {
+    const { hadMissingFields } = await exportPeopleJson([]);
+    expect(hadMissingFields).toBe(false);
+  });
+
+  it("is false when all required fields are present", async () => {
+    const { hadMissingFields } = await exportPeopleJson([COMPLETE_PERSON]);
+    expect(hadMissingFields).toBe(false);
+  });
+
+  it("is false when optional event fields are absent", async () => {
+    const person = {
+      ...COMPLETE_PERSON,
+      events: [{ id: "e1", date: "2024.01.01", place: "bar", situation: "party", score: null }],
+    };
+    const { hadMissingFields } = await exportPeopleJson([person]);
+    expect(hadMissingFields).toBe(false);
+  });
+
+  it("is true when a required person string field is null", async () => {
+    for (const field of ["name", "gender", "howWeMet", "zodiacSign", "activity"]) {
+      const { hadMissingFields } = await exportPeopleJson([{ ...COMPLETE_PERSON, [field]: null }]);
+      expect(hadMissingFields, `expected true for missing person.${field}`).toBe(true);
+    }
+  });
+
+  it("is true when a required person string field is undefined", async () => {
+    const person = { ...COMPLETE_PERSON };
+    delete person.name;
+    const { hadMissingFields } = await exportPeopleJson([person]);
+    expect(hadMissingFields).toBe(true);
+  });
+
+  it("is true when age is null", async () => {
+    const { hadMissingFields } = await exportPeopleJson([{ ...COMPLETE_PERSON, age: null }]);
+    expect(hadMissingFields).toBe(true);
+  });
+
+  it("is true when a required event string field is null", async () => {
+    for (const field of ["date", "place", "situation"]) {
+      const person = {
+        ...COMPLETE_PERSON,
+        events: [{ ...COMPLETE_PERSON.events[0], [field]: null }],
+      };
+      const { hadMissingFields } = await exportPeopleJson([person]);
+      expect(hadMissingFields, `expected true for missing event.${field}`).toBe(true);
+    }
+  });
+});
+
+describe("exportPeopleJson — normalizeForExport output content", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  function captureExportedJson(fn) {
+    return new Promise((resolve) => {
+      const OrigBlob = global.Blob;
+      global.Blob = class extends OrigBlob {
+        constructor(parts, opts) {
+          super(parts, opts);
+          resolve(JSON.parse(parts[0]));
+          global.Blob = OrigBlob;
+        }
+      };
+      fn();
+    });
+  }
+
+  it("fills null required person string field with empty string", async () => {
+    const person = { ...COMPLETE_PERSON, name: null };
+    const [exported, _] = await Promise.all([
+      captureExportedJson(() => exportPeopleJson([person])),
+      Promise.resolve(),
+    ]);
+    expect(exported[0].name).toBe("");
+  });
+
+  it("fills null required event string field with empty string", async () => {
+    const person = {
+      ...COMPLETE_PERSON,
+      events: [{ ...COMPLETE_PERSON.events[0], place: null }],
+    };
+    const [exported] = await Promise.all([
+      captureExportedJson(() => exportPeopleJson([person])),
+      Promise.resolve(),
+    ]);
+    expect(exported[0].events[0].place).toBe("");
+  });
+
+  it("leaves age as null when missing", async () => {
+    const person = { ...COMPLETE_PERSON, age: null };
+    const [exported] = await Promise.all([
+      captureExportedJson(() => exportPeopleJson([person])),
+      Promise.resolve(),
+    ]);
+    expect(exported[0].age).toBeNull();
+  });
+
+  it("preserves present fields unchanged", async () => {
+    const [exported] = await Promise.all([
+      captureExportedJson(() => exportPeopleJson([COMPLETE_PERSON])),
+      Promise.resolve(),
+    ]);
+    expect(exported[0].name).toBe("Ana");
+    expect(exported[0].age).toBe(25);
+    expect(exported[0].events[0].place).toBe("café");
   });
 });
