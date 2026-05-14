@@ -23,10 +23,9 @@ export default function ColorSelector({
     t[`color${p.charAt(0).toUpperCase() + p.slice(1)}`] ?? p;
 
   return (
-    <div className="space-y-2">
+    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
       <p
-        className="text-sm font-semibold uppercase"
-        style={{ color: accent ? "rgba(255,255,255,0.88)" : "#5f4a55" }}
+        style={{ fontSize: "0.875rem", lineHeight: "1.25rem", fontWeight: "600", textTransform: "uppercase", color: accent ? "rgba(255,255,255,0.88)" : "#5f4a55" }}
       >
         {t.iconColor}
       </p>
@@ -34,10 +33,10 @@ export default function ColorSelector({
       <Select value={iconColor} onValueChange={setIconColor}>
         <SelectTrigger
           aria-label={t.iconColor}
-          className="h-14 rounded-3xl text-base shadow-sm"
-          style={triggerStyle}
+          className="rounded-3xl"
+          style={{ height: "3.5rem", fontSize: "1rem", lineHeight: "1.5rem", boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)", ...triggerStyle }}
         >
-          <div className="flex items-center gap-3">
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
             <SelectValue placeholder={t.iconColor} />
           </div>
         </SelectTrigger>
@@ -45,10 +44,10 @@ export default function ColorSelector({
         <SelectContent>
           {SPARKLE_PALETTES.map((p) => (
             <SelectItem key={p} value={p}>
-              <div className="flex items-center gap-2">
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 <span
-                  className="h-4 w-4 rounded-full"
-                  style={{ background: PALETTE_SWATCHES[p] }}
+                  className="rounded-full"
+                  style={{ height: "1rem", width: "1rem", background: PALETTE_SWATCHES[p] }}
                 />
                 {colorLabel(p)}
               </div>
