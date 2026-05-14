@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 
 import BarChartCard from "@/components/charts/BarChartCard";
-import { PALETTE } from "@/lib/constants";
+import { PALETTE, TEXT } from "@/lib/constants";
 import { getMonthKey, getYearKey } from "@/lib/date";
 
 // Renders the time-based statistics tab. It shows monthly, yearly, and multi-year event patterns.
@@ -96,12 +96,12 @@ export default function StatsTimeTab({ people, allEvents, t }) {
           style={{
             boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
             backdropFilter: "blur(8px)",
-            borderColor: "#f1dde7",
-            backgroundColor: "rgba(255,255,255,0.82)",
+            borderColor: PALETTE.cardBorder,
+            backgroundColor: PALETTE.cardBg,
           }}
         >
           <CardHeader style={{ paddingBottom: "0.5rem" }}>
-            <CardTitle style={{ fontSize: "1rem", lineHeight: "1.5rem" }}>{t.multiYearSubtitle}</CardTitle>
+            <CardTitle style={TEXT.title}>{t.multiYearSubtitle}</CardTitle>
             <CardDescription>{t.yearOverlap}</CardDescription>
           </CardHeader>
 
@@ -111,7 +111,7 @@ export default function StatsTimeTab({ people, allEvents, t }) {
                 <div
                   key={item.label}
                   className="rounded-2xl"
-                  style={{ padding: "0.75rem", backgroundColor: "#fff7fb" }}
+                  style={{ padding: "0.75rem", backgroundColor: PALETTE.cardSoft }}
                 >
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.75rem" }}>
                     <span
@@ -129,7 +129,7 @@ export default function StatsTimeTab({ people, allEvents, t }) {
                   </div>
 
                   <p
-                    style={{ marginTop: "0.25rem", fontSize: "0.875rem", lineHeight: "1.25rem", color: PALETTE.textSoft }}
+                    style={{ marginTop: "0.25rem", ...TEXT.body, color: PALETTE.textSoft }}
                   >
                     {item.years.join(", ")}
                   </p>
