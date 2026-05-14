@@ -4,10 +4,10 @@
 export { SPARKLE_PALETTES, PALETTE_SWATCHES } from './SparkleIcon.constants'
 
 const PALETTES = {
-  gold:   { outer: '#C85408', mid: '#E88C1E', inner: '#F8DC58', highlight: '#FFFAD0' },
-  blue:   { outer: '#2E4898', mid: '#5878C8', inner: '#98BAE8', highlight: '#DCE8F8' },
-  pink:   { outer: '#B00C70', mid: '#D83890', inner: '#F098C0', highlight: '#FDDEF0' },
-  purple: { outer: '#4A1898', mid: '#7848C8', inner: '#BA98E0', highlight: '#E8D8F8' },
+  gold:   { O: '#FF8101', M: '#FFA102', I: '#FFDC00', H: '#FFFBE3' },
+  pink:   { O: '#C53483', M: '#FE56A1', I: '#FABAD5', H: '#FEF1FB' },
+  blue:   { O: '#4675E1', M: '#74A1FC', I: '#97BDFC', H: '#F5F5F3' },
+  purple: { O: '#8950FF', M: '#B58DFF', I: '#D3C0F8', H: '#F8F2F3' },
 }
 
 // 4-pointed sparkle star path using quadratic beziers.
