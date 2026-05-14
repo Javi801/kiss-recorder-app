@@ -12,7 +12,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { PALETTE, CHART_COLORS } from "@/lib/constants";
+import { PALETTE, CHART_COLORS, TEXT } from "@/lib/constants";
 import { getColorForCategory } from "@/lib/format";
 
 /**
@@ -34,20 +34,20 @@ export default function PieChartCard({
 
   // Shared card styling.
   const cardStyle = {
-    borderColor: "#f1dde7",
-    backgroundColor: "rgba(255,255,255,0.82)",
+    borderColor: PALETTE.cardBorder,
+    backgroundColor: PALETTE.cardBg,
   };
 
   // Empty state styling.
   const emptyStyle = {
-    borderColor: "#ecd6e0",
+    borderColor: PALETTE.inputBorder,
     color: PALETTE.textSoft,
   };
 
   return (
     <Card className="rounded-3xl" style={{ boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)", backdropFilter: "blur(8px)", ...cardStyle }}>
       <CardHeader style={{ paddingBottom: "0.5rem" }}>
-        <CardTitle style={{ fontSize: "1rem", lineHeight: "1.5rem", color: PALETTE.text }}>
+        <CardTitle style={{ ...TEXT.title, color: PALETTE.text }}>
           {title}
         </CardTitle>
         <CardDescription>{subtitle}</CardDescription>
@@ -83,7 +83,7 @@ export default function PieChartCard({
                 <div
                   key={entry.label}
                   className="rounded-full"
-                  style={{ maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", paddingLeft: "0.75rem", paddingRight: "0.75rem", paddingTop: "0.25rem", paddingBottom: "0.25rem", fontSize: "0.75rem", lineHeight: "1rem", backgroundColor: "#f8f4f7", color: PALETTE.textSoft }}
+                  style={{ maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", paddingLeft: "0.75rem", paddingRight: "0.75rem", paddingTop: "0.25rem", paddingBottom: "0.25rem", ...TEXT.caption, backgroundColor: "#f8f4f7", color: PALETTE.textSoft }}
                 >
                   <span style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }}>
                     <span
@@ -101,7 +101,7 @@ export default function PieChartCard({
         ) : (
           <div
             className="rounded-2xl"
-            style={{ border: "1px dashed", padding: "2rem", textAlign: "center", fontSize: "0.875rem", lineHeight: "1.25rem", ...emptyStyle }}
+            style={{ border: "1px dashed", padding: "2rem", textAlign: "center", ...TEXT.body, ...emptyStyle }}
           >
             {emptyText}
           </div>
