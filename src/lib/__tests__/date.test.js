@@ -73,3 +73,18 @@ describe("todayString", () => {
   });
 });
 
+describe("formatDisplayDate", () => {
+  it("converts yyyy.MM.dd to dd/MM/yyyy", () => {
+    expect(formatDisplayDate("2024.03.15")).toBe("15/03/2024");
+  });
+  it("returns em dash for an empty string", () => {
+    expect(formatDisplayDate("")).toBe("—");
+  });
+  it("returns the raw value for an invalid string", () => {
+    expect(formatDisplayDate("bad")).toBe("bad");
+  });
+  it("returns em dash for undefined", () => {
+    expect(formatDisplayDate(undefined)).toBe("—");
+  });
+});
+
