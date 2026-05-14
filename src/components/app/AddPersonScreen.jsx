@@ -32,7 +32,7 @@ export default function AddPersonScreen({ onSave, onBack, t, language }) {
         style={{
           boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
           backdropFilter: "blur(8px)",
-          borderColor: "#f1dde7",
+          borderColor: PALETTE.cardBorder,
           backgroundColor: "rgba(255,255,255,0.84)",
         }}
       >
