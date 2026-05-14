@@ -13,7 +13,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 
-import { PALETTE } from "@/lib/constants";
+import { PALETTE, TEXT } from "@/lib/constants";
 import { formatDisplayDate } from "@/lib/date";
 import {
   translateActivity,
@@ -89,7 +89,7 @@ export default function PersonCard({
                 {/* Name + badges */}
                 <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.5rem" }}>
                   <h3
-                    style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: "1rem", lineHeight: "1.5rem", fontWeight: "600", color: PALETTE.text }}
+                    style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...TEXT.title, color: PALETTE.text }}
                   >
                     {person.name}
                   </h3>
@@ -110,7 +110,7 @@ export default function PersonCard({
 
                 {/* Basic info */}
                 <div
-                  style={{ marginTop: "0.5rem", display: "flex", flexWrap: "wrap", gap: "0.5rem", fontSize: "0.75rem", lineHeight: "1rem", color: PALETTE.textSoft }}
+                  style={{ marginTop: "0.5rem", display: "flex", flexWrap: "wrap", gap: "0.5rem", ...TEXT.caption, color: PALETTE.textSoft }}
                 >
                   <span>{person.age} {t.years}</span>
                   <span>•</span>
@@ -121,13 +121,13 @@ export default function PersonCard({
 
                 {/* Extra info */}
                 {person.howWeMet && (
-                  <p style={{ marginTop: "0.5rem", fontSize: "0.875rem", lineHeight: "1.25rem", color: PALETTE.text }}>
+                  <p style={{ marginTop: "0.5rem", ...TEXT.body, color: PALETTE.text }}>
                     {t.met}: {person.howWeMet}
                   </p>
                 )}
 
                 {person.detail && (
-                  <p style={{ marginTop: "0.25rem", fontSize: "0.875rem", lineHeight: "1.25rem", color: PALETTE.textSoft }}>
+                  <p style={{ marginTop: "0.25rem", ...TEXT.body, color: PALETTE.textSoft }}>
                     {person.detail}
                   </p>
                 )}
@@ -206,14 +206,14 @@ export default function PersonCard({
                               )}
                             </div>
 
-                            <p style={{ marginTop: "0.5rem", fontSize: "0.875rem", lineHeight: "1.25rem", color: "#64748b" }}>
+                            <p style={{ marginTop: "0.5rem", ...TEXT.body, color: "#64748b" }}>
                               {event.details || t.noDetailsAdded}
                             </p>
                           </button>
                         ))}
                       </div>
                     ) : (
-                      <p style={{ fontSize: "0.875rem", lineHeight: "1.25rem", textAlign: "center" }}>{t.noEventsYet}</p>
+                      <p style={{ ...TEXT.body, textAlign: "center" }}>{t.noEventsYet}</p>
                     )}
                   </div>
                 </motion.div>
