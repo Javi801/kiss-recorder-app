@@ -38,10 +38,6 @@ export default function ColorSelector({
           style={triggerStyle}
         >
           <div className="flex items-center gap-3">
-            <span
-              className="h-5 w-5 shrink-0 rounded-full"
-              style={{ background: PALETTE_SWATCHES[iconColor] }}
-            />
             <SelectValue placeholder={t.iconColor} />
           </div>
         </SelectTrigger>
