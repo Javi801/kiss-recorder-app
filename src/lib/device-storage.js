@@ -68,7 +68,9 @@ export async function savePeopleToDevice(people) {
 
 const SETTINGS_DEFAULTS = { iconColor: 'yellow', language: 'en' }
 
-// Loads app settings from native file system or localStorage
+// Loads app settings from native file system or localStorage.
+// On native, if the settings file doesn't exist yet, migrates values from
+// localStorage (where they were stored before this function was introduced).
 export async function loadSettings() {
   if (isNativePlatform()) {
     try {
@@ -79,14 +81,22 @@ export async function loadSettings() {
       })
       return { ...SETTINGS_DEFAULTS, ...JSON.parse(result.data || '{}') }
     } catch {
-      return { ...SETTINGS_DEFAULTS }
+      // File doesn't exist — migrate from localStorage if available
+      const storage = getSafeStorage()
+      const migrated = {
+        iconColor: storage?.getItem(ICON_COLOR_KEY) || SETTINGS_DEFAULTS.iconColor,
+        language:  storage?.getItem(LANGUAGE_KEY)  || SETTINGS_DEFAULTS.language,
+      }
+      // Persist migrated values so future reads use the file
+      await saveSettings(migrated).catch(() => {})
+      return migrated
     }
   }
   const storage = getSafeStorage()
   if (!storage) return { ...SETTINGS_DEFAULTS }
   return {
     iconColor: storage.getItem(ICON_COLOR_KEY) || SETTINGS_DEFAULTS.iconColor,
-    language: storage.getItem(LANGUAGE_KEY) || SETTINGS_DEFAULTS.language,
+    language:  storage.getItem(LANGUAGE_KEY)  || SETTINGS_DEFAULTS.language,
   }
 }
 
