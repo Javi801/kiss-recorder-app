@@ -27,7 +27,6 @@ export default function PersonForm({
   t,
   language,
   includeHowWeMet = true,
-  mode = "edit",
   saveLabel,
 }) {
   // Local form state initialization.
@@ -209,10 +208,10 @@ export default function PersonForm({
             </SelectTrigger>
 
             <SelectContent>
-              <SelectItem value="studies">{t.studies}</SelectItem>
-              <SelectItem value="works">{t.works}</SelectItem>
+              <SelectItem value="studies">{t.studiesForm}</SelectItem>
+              <SelectItem value="works">{t.worksForm}</SelectItem>
               <SelectItem value="studies and works">
-                {t.studiesWorks}
+                {t.studiesWorksForm}
               </SelectItem>
               <SelectItem value="other">{t.other}</SelectItem>
             </SelectContent>
@@ -223,17 +222,27 @@ export default function PersonForm({
           )}
         </div>
 
-        {/* Detail */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-          <Label>{t.detail}</Label>
-          <Textarea
-            value={form.detail}
-            onChange={(e) => update("detail", e.target.value)}
-            placeholder={mode === "add" ? "" : t.optionalActivityDetails}
-            className="rounded-2xl"
-            style={{ ...inputStyle }}
-          />
-        </div>
+        {/* Specific — only visible after an activity is chosen */}
+        {form.activity && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+            <Label>{t.detail}</Label>
+            <Textarea
+              value={form.detail}
+              onChange={(e) => update("detail", e.target.value)}
+              placeholder={
+                form.activity === "studies"
+                  ? t.specificStudies
+                  : form.activity === "works"
+                    ? t.specificWorks
+                    : form.activity === "studies and works"
+                      ? t.specificStudiesWorks
+                      : ""
+              }
+              className="rounded-2xl"
+              style={{ ...inputStyle, fontSize: "0.8rem" }}
+            />
+          </div>
+        )}
       </div>
 
       {/* Actions */}
