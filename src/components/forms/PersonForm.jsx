@@ -46,16 +46,12 @@ export default function PersonForm({
   // Validation errors.
   const [errors, setErrors] = useState({});
 
-  /**
-   * Update a specific field in the form state.
-   */
+  // Update a specific field in the form state.
   function update(key, value) {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  /**
-   * Validate required fields and data types.
-   */
+  // Validate required fields and data types.
   function validate() {
     const next = {};
 
@@ -79,9 +75,7 @@ export default function PersonForm({
     return Object.keys(next).length === 0;
   }
 
-  /**
-   * Submit handler that normalizes values before sending.
-   */
+  // Submit handler that normalizes values before sending.
   function submit(e) {
     e.preventDefault();
 
