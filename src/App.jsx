@@ -3,15 +3,17 @@ import { motion } from "framer-motion";
 import { Search, Users, BarChart3, UserPlus } from "lucide-react";
 import { App as CapacitorApp } from "@capacitor/app";
 
-import { LANGUAGE_KEY, ICON_COLOR_KEY, PALETTE, COPY } from "@/lib/constants";
+import { PALETTE, COPY } from "@/lib/constants";
+import { setAppIconColor } from "@/plugins/appicon";
 import { todayString } from "@/lib/date";
 import { uid, normalizePeople } from "@/lib/helpers";
 import { hasScore } from "@/lib/format";
 import {
-  getSafeStorage,
   loadPeopleFromDevice,
   savePeopleToDevice,
   clearPeopleFromDevice,
+  loadSettings,
+  saveSettings,
 } from "@/lib/device-storage";
 
 import PeopleManagerScreen from "@/components/people/PeopleManagerScreen";
@@ -106,16 +108,11 @@ export default function KissRecorderApp() {
         // Normalize loaded data before storing it in state.
         setPeople(normalizePeople(rawPeople));
 
-        // Restore the saved language when it is valid.
-        const storage = getSafeStorage();
-        const savedLanguage = storage?.getItem(LANGUAGE_KEY);
-        if (savedLanguage === "en" || savedLanguage === "es") {
-          setLanguage(savedLanguage);
-        }
-
-        const savedColor = storage?.getItem(ICON_COLOR_KEY);
-        if (["yellow", "blue", "pink", "purple"].includes(savedColor)) {
-          setIconColor(savedColor);
+        // Restore saved settings (language + icon color).
+        const settings = await loadSettings();
+        if (isMounted) {
+          if (settings.language === "en" || settings.language === "es") setLanguage(settings.language);
+          if (["yellow", "blue", "pink", "purple"].includes(settings.iconColor)) setIconColor(settings.iconColor);
         }
       } catch (error) {
         console.error("Failed to load app data", error);
@@ -148,17 +145,20 @@ export default function KissRecorderApp() {
     );
   }, [people, isLoaded]);
 
+  // Persists settings whenever language or iconColor change (after boot).
   useEffect(() => {
-    const storage = getSafeStorage();
-    if (!storage) return;
-    storage.setItem(LANGUAGE_KEY, language);
-  }, [language]);
+    if (!isLoaded) return;
+    saveSettings({ iconColor, language }).catch(console.error);
+  }, [iconColor, language, isLoaded]);
 
-  useEffect(() => {
-    const storage = getSafeStorage();
-    if (!storage) return;
-    storage.setItem(ICON_COLOR_KEY, iconColor);
-  }, [iconColor]);
+  // Switches the icon AND persists the color. Only call from user interaction,
+  // never during boot — disabling the active alias kills the running process.
+  // saveSettings is awaited so the file is written before Android kills the process.
+  async function changeIconColor(newColor) {
+    setIconColor(newColor);
+    await saveSettings({ iconColor: newColor, language });
+    setAppIconColor(newColor);
+  }
 
   // Active translation dictionary.
   const t = COPY[language];
@@ -171,9 +171,8 @@ export default function KissRecorderApp() {
       // Remove persisted people data.
       await clearPeopleFromDevice();
 
-      // Remove persisted language preference.
-      const storage = getSafeStorage();
-      storage?.removeItem(LANGUAGE_KEY);
+      // Reset settings to defaults.
+      await saveSettings({ iconColor: "yellow", language: "en" });
     } catch (error) {
       console.error("Failed to clear app data", error);
     }
@@ -348,7 +347,7 @@ export default function KissRecorderApp() {
               language={language}
               setLanguage={setLanguage}
               iconColor={iconColor}
-              setIconColor={setIconColor}
+              setIconColor={changeIconColor}
             />
           ) : null}
 
