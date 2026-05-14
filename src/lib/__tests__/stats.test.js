@@ -15,3 +15,11 @@ const makePerson = (name, events = [], extra = {}) => ({
   events,
   ...extra,
 });
+
+const makeEvent = (date, score = null, details = "test detail") => ({
+  id: `${date}-${score}`,
+  date,
+  score,
+  details,
+});
+
