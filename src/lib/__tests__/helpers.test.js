@@ -24,3 +24,49 @@ describe("hexToRgb", () => {
     expect(hexToRgb("ffffff")).toEqual({ r: 255, g: 255, b: 255 });
   });
 });
+
+describe("normalizePeople", () => {
+  it("returns an empty array for null", () => {
+    expect(normalizePeople(null)).toEqual([]);
+  });
+  it("returns an empty array for undefined", () => {
+    expect(normalizePeople(undefined)).toEqual([]);
+  });
+  it("returns an empty array for a non-array", () => {
+    expect(normalizePeople("string")).toEqual([]);
+  });
+  it("preserves valid scores", () => {
+    const people = [{ name: "Ana", events: [{ score: 3 }] }];
+    expect(normalizePeople(people)[0].events[0].score).toBe(3);
+  });
+  it("preserves score 0 as valid", () => {
+    const people = [{ name: "Ana", events: [{ score: 0 }] }];
+    expect(normalizePeople(people)[0].events[0].score).toBe(0);
+  });
+  it("nullifies scores above 5", () => {
+    const people = [{ name: "Ana", events: [{ score: 99 }] }];
+    expect(normalizePeople(people)[0].events[0].score).toBeNull();
+  });
+  it("nullifies negative scores", () => {
+    const people = [{ name: "Ana", events: [{ score: -1 }] }];
+    expect(normalizePeople(people)[0].events[0].score).toBeNull();
+  });
+  it("nullifies float scores", () => {
+    const people = [{ name: "Ana", events: [{ score: 2.5 }] }];
+    expect(normalizePeople(people)[0].events[0].score).toBeNull();
+  });
+  it("replaces a missing events field with an empty array", () => {
+    const people = [{ name: "Ana" }];
+    expect(normalizePeople(people)[0].events).toEqual([]);
+  });
+  it("replaces a non-array events field with an empty array", () => {
+    const people = [{ name: "Ana", events: null }];
+    expect(normalizePeople(people)[0].events).toEqual([]);
+  });
+  it("preserves all other person fields", () => {
+    const people = [{ name: "Ana", age: 30, gender: "female", events: [] }];
+    const result = normalizePeople(people)[0];
+    expect(result.age).toBe(30);
+    expect(result.gender).toBe("female");
+  });
+});
