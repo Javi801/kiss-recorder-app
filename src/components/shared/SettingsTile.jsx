@@ -1,5 +1,6 @@
 import TileCard from "./TileCard";
 import { tileColors } from "./tileColors";
+import { TEXT } from "@/lib/constants";
 
 export default function SettingsTile({ label, children, accent = false, contentStyle }) {
   const colors = tileColors(accent);
@@ -8,7 +9,7 @@ export default function SettingsTile({ label, children, accent = false, contentS
     <TileCard accent={accent} contentStyle={contentStyle}>
       {label ? (
         <p
-          style={{ marginBottom: "0.75rem", fontSize: "0.75rem", lineHeight: "1rem", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.12em", color: colors.label }}
+          style={{ marginBottom: "0.75rem", ...TEXT.label, textTransform: "uppercase", letterSpacing: "0.12em", color: colors.label }}
         >
           {label}
         </p>
