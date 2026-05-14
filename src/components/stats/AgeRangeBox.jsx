@@ -78,7 +78,7 @@ export default function AgeRangeBox({ title, subtitle, people, emptyText, bare =
   const tickValues = [];
   for (let v = axisMin; v <= axisMax; v += step) tickValues.push(v);
 
-  const toPos = (v) => ((v - axisMin) / axisRange) * 100;
+  const toPos = (v) => 3 + ((v - axisMin) / axisRange) * 94;
 
   const minPos = toPos(min);
   const maxPos = toPos(max);
@@ -91,7 +91,7 @@ export default function AgeRangeBox({ title, subtitle, people, emptyText, bare =
       {/* Boxplot */}
       <div style={{ position: "relative", height: "3.5rem", marginBottom: "0.75rem" }}>
         <div
-          style={{ position: "absolute", left: 0, right: 0, top: "50%", height: "0.125rem", transform: "translateY(-50%)", backgroundColor: "#e7d5de" }}
+          style={{ position: "absolute", left: "3%", right: "3%", top: "50%", height: "0.125rem", transform: "translateY(-50%)", backgroundColor: "#e7d5de" }}
         />
         <div
           style={{ position: "absolute", top: "50%", height: "2rem", width: "0.125rem", transform: "translateY(-50%)", left: `${minPos}%`, backgroundColor: PALETTE.rose }}
