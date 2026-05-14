@@ -12,6 +12,36 @@ import {
 
 const t = COPY.en;
 
+describe("hasScore", () => {
+  it("accepts 0", () => {
+    expect(hasScore(0)).toBe(true);
+  });
+  it("accepts 5", () => {
+    expect(hasScore(5)).toBe(true);
+  });
+  it("accepts all integers 1 through 4", () => {
+    for (let i = 1; i <= 4; i++) expect(hasScore(i)).toBe(true);
+  });
+  it("rejects -1", () => {
+    expect(hasScore(-1)).toBe(false);
+  });
+  it("rejects 6", () => {
+    expect(hasScore(6)).toBe(false);
+  });
+  it("rejects a float", () => {
+    expect(hasScore(2.5)).toBe(false);
+  });
+  it("rejects null", () => {
+    expect(hasScore(null)).toBe(false);
+  });
+  it("rejects undefined", () => {
+    expect(hasScore(undefined)).toBe(false);
+  });
+  it("rejects a numeric string", () => {
+    expect(hasScore("3")).toBe(false);
+  });
+});
+
 describe("renderKisses", () => {
   it("returns one 💋 for score 1", () => {
     expect(renderKisses(1, t)).toBe("💋");
