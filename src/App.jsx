@@ -393,7 +393,7 @@ export default function KissRecorderApp() {
             className="fixed bottom-0 left-0 right-0 backdrop-blur"
             style={{
               borderTop: "1px solid #ecd6e0",
-              backgroundColor: "rgba(255,255,255,0.9)",
+              backgroundColor: "rgba(255,255,255,0.6)",
             }}
           >
             <div className="mx-auto grid max-w-md grid-cols-4 gap-1 px-3 py-3">
