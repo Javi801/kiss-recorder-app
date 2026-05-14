@@ -2,19 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { PALETTE, TEXT } from "@/lib/constants";
-
-// Parses "yyyy.MM.dd" → { year, month, day } or null if invalid.
-function parseAppDate(str) {
-  if (!str || !/^\d{4}\.\d{2}\.\d{2}$/.test(str)) return null;
-  const [y, m, d] = str.split(".").map(Number);
-  const dt = new Date(y, m - 1, d);
-  if (dt.getFullYear() !== y || dt.getMonth() !== m - 1 || dt.getDate() !== d) return null;
-  return { year: y, month: m, day: d };
-}
-
-function toAppDate(year, month, day) {
-  return `${year}.${String(month).padStart(2, "0")}.${String(day).padStart(2, "0")}`;
-}
+import { parseCalendarDate, toCalendarDate, buildDayGrid, nextCalView } from "@/lib/calendar";
 
 function getMonthLabel(year, month) {
   return new Intl.DateTimeFormat(navigator.language, { month: "long", year: "numeric" })
@@ -57,7 +45,7 @@ export function DatePicker({ value, onChange, placeholder, className, style }) {
   const todayM = today.getMonth() + 1;
   const todayD = today.getDate();
 
-  const parsed = parseAppDate(value);
+  const parsed = parseCalendarDate(value);
 
   const [viewYear, setViewYear] = useState(parsed?.year ?? todayY);
   const [viewMonth, setViewMonth] = useState(parsed?.month ?? todayM);
@@ -82,7 +70,7 @@ export function DatePicker({ value, onChange, placeholder, className, style }) {
   function handleTextChange(e) {
     const newVal = e.target.value;
     onChange(newVal);
-    const p = parseAppDate(newVal);
+    const p = parseCalendarDate(newVal);
     if (p) {
       setViewYear(p.year);
       setViewMonth(p.month);
@@ -96,14 +84,8 @@ export function DatePicker({ value, onChange, placeholder, className, style }) {
 
   // Title click cycles: days → months → years → days.
   function handleTitleClick() {
-    if (calView === "days") {
-      setCalView("months");
-    } else if (calView === "months") {
-      setYearPageStart(viewYear - 5);
-      setCalView("years");
-    } else {
-      setCalView("days");
-    }
+    if (calView === "months") setYearPageStart(viewYear - 5);
+    setCalView(nextCalView(calView));
   }
 
   // ── Day view navigation ──────────────────────────────────────────────────
@@ -118,7 +100,7 @@ export function DatePicker({ value, onChange, placeholder, className, style }) {
   }
 
   function selectDay(day) {
-    onChange(toAppDate(viewYear, viewMonth, day));
+    onChange(toCalendarDate(viewYear, viewMonth, day));
     setOpen(false);
     setCalView("days");
   }
@@ -136,14 +118,7 @@ export function DatePicker({ value, onChange, placeholder, className, style }) {
   }
 
   // ── Day grid ─────────────────────────────────────────────────────────────
-  const totalDays = new Date(viewYear, viewMonth, 0).getDate();
-  const rawFirst = new Date(viewYear, viewMonth - 1, 1).getDay();
-  const startOffset = (rawFirst + 6) % 7;
-  const cells = [
-    ...Array(startOffset).fill(null),
-    ...Array.from({ length: totalDays }, (_, i) => i + 1),
-  ];
-  while (cells.length % 7 !== 0) cells.push(null);
+  const cells = buildDayGrid(viewYear, viewMonth);
 
   // ── Shared styles ─────────────────────────────────────────────────────────
   function gridItemStyle({ isSelected, isToday, isActive }) {
