@@ -5,6 +5,7 @@
  */
 export const STORAGE_KEY = "kiss-recorder-local-v3";
 export const LANGUAGE_KEY = "kiss-recorder-language-local-v3";
+export const ICON_COLOR_KEY = "kiss-recorder-icon-color-v1";
 export const PEOPLE_FILE_NAME = "kiss-recorder-people.json";
 
 // Main decorative asset displayed on the intro screen
@@ -209,8 +210,16 @@ export const COPY = {
     boxplotAgeRange: "Age range",
     noDataYet: "No data yet",
     language: "Language",
+    settings: "Settings",
+    hideStats: "Hide stats",
+    showStats: "Show stats",
     english: "English",
     spanish: "Español",
+    iconColor: "Icon color",
+    colorGold: "Gold",
+    colorBlue: "Blue",
+    colorPink: "Pink",
+    colorPurple: "Purple",
     noEvents: "No events",
     ungrouped: "Ungrouped",
     optionalActivityDetails:
@@ -375,8 +384,16 @@ export const COPY = {
     boxplotAgeRange: "Rango de edades",
     noDataYet: "Todavía no hay datos",
     language: "Idioma",
+    settings: "Configuración",
+    hideStats: "Ocultar estadísticas",
+    showStats: "Mostrar estadísticas",
     english: "English",
     spanish: "Español",
+    iconColor: "Color del ícono",
+    colorGold: "Dorado",
+    colorBlue: "Azul",
+    colorPink: "Rosa",
+    colorPurple: "Morado",
     noEvents: "Sin eventos",
     ungrouped: "Sin grupo",
     optionalActivityDetails:
