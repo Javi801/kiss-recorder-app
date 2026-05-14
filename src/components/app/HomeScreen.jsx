@@ -405,12 +405,32 @@ export default function MainScreen({
           style={{ background: PALETTE.bgSoft, borderColor: PALETTE.line }}
         >
           <DialogHeader>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", color: PALETTE.rose }}>
-              <CheckCircle2 style={{ height: "1.25rem", width: "1.25rem", flexShrink: 0 }} />
-              <DialogTitle style={{ color: PALETTE.rose }}>{t.exportJsonSuccessTitle}</DialogTitle>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                color: jsonExportStatus?.hadMissingFields ? "#b45309" : PALETTE.rose,
+              }}
+            >
+              {jsonExportStatus?.hadMissingFields ? (
+                <TriangleAlert style={{ height: "1.25rem", width: "1.25rem", flexShrink: 0 }} />
+              ) : (
+                <CheckCircle2 style={{ height: "1.25rem", width: "1.25rem", flexShrink: 0 }} />
+              )}
+              <DialogTitle
+                style={{ color: jsonExportStatus?.hadMissingFields ? "#b45309" : PALETTE.rose }}
+              >
+                {jsonExportStatus?.hadMissingFields
+                  ? t.exportJsonSuccessWithWarningsTitle
+                  : t.exportJsonSuccessTitle}
+              </DialogTitle>
             </div>
             <DialogDescription asChild>
               <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem", color: PALETTE.textSoft }}>
+                {jsonExportStatus?.hadMissingFields && (
+                  <span>{t.exportJsonSuccessWithWarningsDesc}</span>
+                )}
                 <span>
                   {t.exportJsonSavedAs}:{" "}
                   <strong style={{ color: PALETTE.text, fontFamily: "monospace" }}>
