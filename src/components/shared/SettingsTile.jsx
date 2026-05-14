@@ -8,14 +8,13 @@ export default function SettingsTile({ label, children, accent = false, contentS
     <TileCard accent={accent} contentStyle={contentStyle}>
       {label ? (
         <p
-          className="mb-3 text-xs font-semibold uppercase tracking-[0.12em]"
-          style={{ color: colors.label }}
+          style={{ marginBottom: "0.75rem", fontSize: "0.75rem", lineHeight: "1rem", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.12em", color: colors.label }}
         >
           {label}
         </p>
       ) : null}
 
-      <div className="space-y-4">{children}</div>
+      <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>{children}</div>
     </TileCard>
   );
 }
