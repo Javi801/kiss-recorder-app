@@ -55,9 +55,7 @@ export default function PersonCard({
   // Check if any event lacks details.
   const hasIncompleteEvent = personHasIncompleteEvent(person);
 
-  /**
-   * Sort events descending by date.
-   */
+  // Sort events descending by date.
   const sortedEvents = useMemo(
     () =>
       [...(person.events || [])].sort((a, b) =>
