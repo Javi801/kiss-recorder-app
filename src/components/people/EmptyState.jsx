@@ -23,21 +23,20 @@ export default function EmptyState({
   };
 
   return (
-    <Card className="shadow-sm backdrop-blur" style={cardStyle}>
-      <CardContent className="flex flex-col items-center justify-center gap-3 p-8 text-center">
-        <div className="rounded-2xl p-3" style={iconWrapperStyle}>
-          <Icon className="h-6 w-6" style={{ color: PALETTE.rose }} />
+    <Card style={{ boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)", backdropFilter: "blur(8px)", ...cardStyle }}>
+      <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "0.75rem", padding: "2rem", textAlign: "center" }}>
+        <div className="rounded-2xl" style={{ padding: "0.75rem", ...iconWrapperStyle }}>
+          <Icon style={{ height: "1.5rem", width: "1.5rem", color: PALETTE.rose }} />
         </div>
 
         <div>
           <h3
-            className="text-base font-semibold"
-            style={{ color: PALETTE.text }}
+            style={{ fontSize: "1rem", lineHeight: "1.5rem", fontWeight: "600", color: PALETTE.text }}
           >
             {title}
           </h3>
 
-          <p className="mt-1 text-sm" style={{ color: PALETTE.textSoft }}>
+          <p style={{ marginTop: "0.25rem", fontSize: "0.875rem", lineHeight: "1.25rem", color: PALETTE.textSoft }}>
             {description}
           </p>
         </div>
