@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Search, Users, BarChart3, UserPlus } from "lucide-react";
 import { App as CapacitorApp } from "@capacitor/app";
 
-import { LANGUAGE_KEY, PALETTE, COPY } from "@/lib/constants";
+import { LANGUAGE_KEY, ICON_COLOR_KEY, PALETTE, COPY } from "@/lib/constants";
 import { todayString } from "@/lib/date";
 import { uid, normalizePeople } from "@/lib/helpers";
 import { hasScore } from "@/lib/format";
@@ -38,6 +38,9 @@ export default function KissRecorderApp() {
 
   // Current UI language.
   const [language, setLanguage] = useState("en");
+
+  // Icon color palette selected by the user.
+  const [iconColor, setIconColor] = useState("gold");
 
   // Prevents saving before the initial load completes.
   const [isLoaded, setIsLoaded] = useState(false);
@@ -109,6 +112,11 @@ export default function KissRecorderApp() {
         if (savedLanguage === "en" || savedLanguage === "es") {
           setLanguage(savedLanguage);
         }
+
+        const savedColor = storage?.getItem(ICON_COLOR_KEY);
+        if (["gold", "blue", "pink", "purple"].includes(savedColor)) {
+          setIconColor(savedColor);
+        }
       } catch (error) {
         console.error("Failed to load app data", error);
 
@@ -140,15 +148,17 @@ export default function KissRecorderApp() {
     );
   }, [people, isLoaded]);
 
-  /**
-   * Persists the selected language in browser storage.
-   */
   useEffect(() => {
     const storage = getSafeStorage();
     if (!storage) return;
-
     storage.setItem(LANGUAGE_KEY, language);
   }, [language]);
+
+  useEffect(() => {
+    const storage = getSafeStorage();
+    if (!storage) return;
+    storage.setItem(ICON_COLOR_KEY, iconColor);
+  }, [iconColor]);
 
   // Active translation dictionary.
   const t = COPY[language];
@@ -337,6 +347,8 @@ export default function KissRecorderApp() {
               t={t}
               language={language}
               setLanguage={setLanguage}
+              iconColor={iconColor}
+              setIconColor={setIconColor}
             />
           ) : null}
 
