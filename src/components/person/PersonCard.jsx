@@ -36,8 +36,6 @@ export default function PersonCard({
   onDeletePerson,
   onAddEvent,
   onUpdateEvent,
-  onDeleteEvent,
-  onDeleteAllEvents,
   t,
   language,
 }) {
