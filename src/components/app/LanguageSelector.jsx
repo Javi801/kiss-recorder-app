@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { PALETTE } from "@/lib/constants";
+import { PALETTE, TEXT } from "@/lib/constants";
 
 /**
  * Renders an inline language selector designed to scale to more languages.
@@ -17,14 +17,14 @@ import { PALETTE } from "@/lib/constants";
 export default function LanguageSelector({ language, setLanguage, t }) {
   // Centralize selector styling for consistency with the dashboard actions.
   const triggerStyle = {
-    borderColor: "#ecd6e0",
-    backgroundColor: "rgba(255,255,255,0.86)",
+    borderColor: PALETTE.inputBorder,
+    backgroundColor: PALETTE.controlBg,
   };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
       <p
-        style={{ fontSize: "0.875rem", lineHeight: "1.25rem", fontWeight: "600", textTransform: "uppercase", color: "rgba(255,255,255,0.88)" }}
+        style={{ ...TEXT.bodyStrong, textTransform: "uppercase", color: "rgba(255,255,255,0.88)" }}
       >
         {t.language}
       </p>
@@ -33,7 +33,7 @@ export default function LanguageSelector({ language, setLanguage, t }) {
         <SelectTrigger
           aria-label={t.language}
           className="rounded-3xl"
-          style={{ height: "3.5rem", fontSize: "1rem", lineHeight: "1.5rem", boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)", ...triggerStyle }}
+          style={{ height: "3.5rem", ...TEXT.base, boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)", ...triggerStyle }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
             <Languages
