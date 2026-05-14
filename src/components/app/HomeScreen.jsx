@@ -24,7 +24,6 @@ import {
 } from "@/components/ui/dialog";
 
 import { PALETTE } from "@/lib/constants";
-import { SparkleIcon } from "@/components/shared/SparkleIcon";
 import StatTile from "@/components/shared/StatTile";
 import ColorSelector from "@/components/app/ColorSelector";
 
@@ -91,11 +90,6 @@ export default function MainScreen({
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-      {/* App icon preview */}
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <SparkleIcon palette={iconColor} size={120} />
-      </div>
-
       {/* Hero summary card */}
       <Card
         style={{
