@@ -122,6 +122,31 @@ export async function saveSettings({ iconColor, language }) {
   if (language !== undefined) storage.setItem(LANGUAGE_KEY, language)
 }
 
+// Exports people data as a JSON file to external storage (native) or browser download (web)
+export async function exportPeopleJson(people) {
+  const fileName = `kiss-recorder-data-${new Date().toISOString().slice(0, 10)}.json`;
+  const content = JSON.stringify(people, null, 2);
+
+  if (isNativePlatform()) {
+    await Filesystem.writeFile({
+      path: fileName,
+      directory: Directory.External,
+      data: content,
+      encoding: Encoding.UTF8,
+      recursive: true,
+    });
+    return;
+  }
+
+  const blob = new Blob([content], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 // Clears persisted people data from native file system or localStorage
 export async function clearPeopleFromDevice() {
   if (isNativePlatform()) {
