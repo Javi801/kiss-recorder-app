@@ -12,6 +12,17 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 import { PALETTE, TEXT } from "@/lib/constants";
 import { formatDisplayDate } from "@/lib/date";
@@ -170,24 +181,54 @@ export default function PersonCard({
                       </Button>
 
                       {sortedEvents.length > 0 && (
-                        <Button
-                          variant="outline"
-                          style={{ color: "#dc2626" }}
-                          onClick={() => onDeleteAllEvents(person.id)}
-                        >
-                          <Trash2 style={{ marginRight: "0.5rem", height: "1rem", width: "1rem" }} />
-                          {t.deleteAllEvents}
-                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="outline" style={{ color: "#dc2626" }}>
+                              <Trash2 style={{ marginRight: "0.5rem", height: "1rem", width: "1rem" }} />
+                              {t.deleteAllEvents}
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>{t.deleteAllEventsConfirmTitle}</AlertDialogTitle>
+                              <AlertDialogDescription>{t.deleteAllEventsConfirmDesc}</AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>{t.cancel}</AlertDialogCancel>
+                              <AlertDialogAction
+                                style={{ background: "#ef4444", color: "white" }}
+                                onClick={() => onDeleteAllEvents(person.id)}
+                              >
+                                {t.deleteAllEventsConfirmAction}
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       )}
 
-                      <Button
-                        variant="outline"
-                        style={{ color: "#dc2626" }}
-                        onClick={() => onDeletePerson(person.id)}
-                      >
-                        <Trash2 style={{ marginRight: "0.5rem", height: "1rem", width: "1rem" }} />
-                        {t.delete}
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="outline" style={{ color: "#dc2626" }}>
+                            <Trash2 style={{ marginRight: "0.5rem", height: "1rem", width: "1rem" }} />
+                            {t.delete}
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>{t.deletePersonConfirmTitle}</AlertDialogTitle>
+                            <AlertDialogDescription>{t.deletePersonConfirmDesc}</AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>{t.cancel}</AlertDialogCancel>
+                            <AlertDialogAction
+                              style={{ background: "#ef4444", color: "white" }}
+                              onClick={() => onDeletePerson(person.id)}
+                            >
+                              {t.deletePersonConfirmAction}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
 
                     {/* Event list */}
