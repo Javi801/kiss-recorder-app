@@ -148,3 +148,16 @@ export function getYearKey(dateStr) {
   if (!isValidDateString(dateStr)) return null;
   return dateStr.slice(0, 4);
 }
+
+// Age a person had at the moment of a specific event, using zodiac-based birthday logic.
+export function calculateAgeAtEvent(birthYear, zodiacSign, eventDateStr) {
+  if (!birthYear || !eventDateStr) return null;
+  const eventYear = parseInt(eventDateStr.slice(0, 4), 10);
+  if (!zodiacSign) return eventYear - birthYear;
+  const endDate = getZodiacEndDate(zodiacSign);
+  if (!endDate) return eventYear - birthYear;
+  const [y, m, d] = eventDateStr.split(".").map(Number);
+  const eventDate = new Date(y, m - 1, d);
+  const zodiacEnd = new Date(eventYear, endDate.month - 1, endDate.day);
+  return eventDate >= zodiacEnd ? eventYear - birthYear : eventYear - birthYear - 1;
+}
