@@ -29,39 +29,69 @@ A lightweight personal tracking web app to log interactions ("events") with peop
 
 ## Features
 
-- People management: add, edit, delete people and attributes (name, age, gender, activity, how you met)
-- Event tracking: add events with date, details and optional score; edit/delete events
-- Analytics dashboard: overview, time-based analysis, distributions by attributes, score analysis
-- Export stats as PDF
-- Localization: English and Spanish
-- Local persistence (browser/device storage)
+- **People management:** add, edit, delete people with attributes — name, birth year, zodiac sign, gender, activity, how you met
+- **Event tracking:** log events with date, free-text details and an optional 1–5 score; edit or delete at any time
+- **Analytics dashboard** with four tabs:
+  - *Overview* — summary tiles and top-person highlights
+  - *Time* — heatmap, area charts and monthly/yearly breakdowns
+  - *People* — distributions by zodiac, gender, activity and age; age range boxplot with optional year split
+  - *Scores* — score distribution, dumbbell chart and average trends
+- **Zodiac-based age calculation:** age is derived from birth year and zodiac sign end date, so it increments on the zodiac birthday rather than a fixed calendar date
+- **Age-at-event charts:** the "People by age" and "Age range" charts can switch between current age and the age each person had at the time of their events
+- **PDF export** of the full stats dashboard
+- **Localization:** English and Spanish
+- **Local persistence** via browser/device storage (no backend required)
 
 ## Tech Stack
 
-- React 19
-- Vite
-- Tailwind CSS
-- Recharts
-- jsPDF
-- Capacitor (for native mobile packaging)
+| Package | Version | Purpose |
+|---------|---------|---------|
+| React | 19 | UI framework |
+| Vite | 8 | Build tool and dev server |
+| Tailwind CSS | 4 | Utility-first styling |
+| shadcn/ui + Radix UI | latest | Accessible UI primitives |
+| Recharts | 3 | Charts (bar, pie, radar, area, heatmap) |
+| Framer Motion | 12 | Animations |
+| Lucide React | latest | Icons |
+| jsPDF | 4 | PDF export |
+| Capacitor | 8 | Native mobile packaging (Android) |
 
 ## Project Structure
 
-Key files and folders:
-
-- `src/` — application source
-  - `components/` — UI components grouped by feature
-  - `lib/` — utilities and helpers (constants, date, storage, pdf export)
-  - `App.jsx`, `main.jsx`
-- `capacitor.config.json` — Capacitor config (webDir: `dist`)
-- `package.json` — npm scripts and dependencies
+```
+src/
+├── components/
+│   ├── app/          # Top-level screens (Home, AddPerson, Intro, Language)
+│   ├── charts/       # Generic reusable chart cards (Bar, Pie, Radar, Area, Heatmap, Dumbbell)
+│   ├── forms/        # PersonForm, EventForm, FiltersPanel
+│   ├── people/       # People list and empty state
+│   ├── person/       # PersonCard
+│   ├── shared/       # StatTile, TileCard, TopPersonTile, SettingsTile
+│   ├── stats/        # Stats screen and its four tab components + AgeRangeCard
+│   ├── ui/           # shadcn/ui primitives (Button, Card, Dialog, Input…)
+│   └── visuals/      # Decorative background components
+├── lib/
+│   ├── calendar.js        # Calendar grid and date navigation helpers
+│   ├── constants.js       # PALETTE, TEXT, CHART_COLORS, translations (EN/ES)
+│   ├── date.js            # Date validation, formatting, zodiac age calculation
+│   ├── device-storage.js  # Capacitor/localStorage persistence layer
+│   ├── format.js          # Score rendering, label translations, zodiac helpers
+│   ├── helpers.js         # ID generation, people normalization
+│   ├── pdf-export.js      # jsPDF stats report generation
+│   └── stats.js           # Pure aggregation functions used by the stats screen
+├── App.jsx
+└── main.jsx
+scripts/
+└── generate-icon.mjs      # Generates app icon assets
+capacitor.config.json
+```
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js (LTS) and npm
-- For mobile builds: macOS + Xcode (iOS), or Android Studio + Android SDK (Android)
+- For Android builds: Android Studio and Android SDK (Linux/Windows/macOS)
 
 ### Install
 
@@ -71,8 +101,6 @@ npm install
 
 ### Development
 
-Run the dev server with hot reload:
-
 ```bash
 npm run dev
 ```
@@ -81,15 +109,23 @@ Open your browser at the address shown by Vite (usually `http://localhost:5173`)
 
 ### Build
 
-Create the production web build (output goes to `dist`):
-
 ```bash
 npm run build
 ```
 
+Production output goes to `dist/`.
+
+### Icon generation
+
+```bash
+npm run gen:icon
+```
+
+Regenerates app icon assets from the source image via `scripts/generate-icon.mjs`.
+
 ## Testing
 
-The project uses [Vitest](https://vitest.dev/) as the test runner, which integrates with Vite out of the box.
+The project uses [Vitest](https://vitest.dev/) with the V8 coverage provider.
 
 ### Running tests
 
@@ -100,13 +136,13 @@ npm test
 # watch mode (re-runs on file changes)
 npm run test:watch
 
-# run with coverage report
+# generate coverage report
 npm run test:coverage
 ```
 
 ### Coverage
 
-Coverage is collected with V8 and scoped to `src/lib/`. Minimum thresholds enforced by CI:
+Coverage is scoped to `src/lib/`. Minimum thresholds enforced by CI:
 
 | Metric     | Threshold |
 |------------|-----------|
@@ -117,96 +153,88 @@ Coverage is collected with V8 and scoped to `src/lib/`. Minimum thresholds enfor
 
 ### What is tested
 
-Unit tests live in `src/lib/__tests__/` and cover every pure function in the library layer:
+Unit tests live in `src/lib/__tests__/`:
 
-| File          | What's covered |
-|---------------|----------------|
-| `date.js`     | Date string validation, formatting, month/year key extraction |
-| `format.js`   | Score validation, kiss rendering, translations, zodiac labels, gender colors |
-| `helpers.js`  | ID generation, people normalization, hex-to-RGB conversion |
-| `stats.js`    | Event date helpers, all `getStatsData` aggregations |
+| File              | What's covered |
+|-------------------|----------------|
+| `date.js`         | Date string validation, formatting, month/year/key extraction, zodiac date parsing, `calculateAge`, `calculateAgeAtEvent`, `deriveBirthYear` |
+| `calendar.js`     | `parseCalendarDate`, `toCalendarDate`, `buildDayGrid`, `nextCalView` |
+| `format.js`       | Score validation, kiss rendering, label translations, zodiac short labels, gender colors |
+| `helpers.js`      | ID generation, people normalization, hex-to-RGB conversion |
+| `stats.js`        | Event date helpers, all `getStatsData` aggregations |
+| `constants.js`    | `abbreviateZodiacMonths` and related formatting helpers |
+| `device-storage.js` | Storage read/write with mocked Capacitor/localStorage |
 
-Files intentionally excluded from tests: `device-storage.js` (Capacitor/localStorage I/O) and `pdf-export.js` (DOM + file system side effects).
+`pdf-export.js` is intentionally excluded (DOM + file system side effects).
 
-## Capacitor / Mobile (iOS & Android)
+## Capacitor / Mobile (Android)
 
-This repository is a web app that can be packaged with Capacitor into native apps. The web build output directory is `dist` as defined in `capacitor.config.json`.
-
-Important: final native builds require platform-specific tooling:
-
-- iOS: macOS with Xcode
-- Android: Android Studio and Android SDK (can be built from Linux)
-
-Common workflow (on macOS for iOS):
+The app is packaged with Capacitor 8. The web build output directory is `dist` as defined in `capacitor.config.json`.
 
 ```bash
-# after building web assets
+# build web assets first
 npm run build
 
 # add the platform (only once)
-npx cap add ios
+npx cap add android
 
 # sync web assets into the native project after web changes
-npx cap sync ios
-
-# open Xcode project
-npx cap open ios
-```
-
-After opening in Xcode, set signing, verify capabilities, and run on a simulator or device.
-
-### iOS notes and permissions
-
-- This app records audio; you must add the microphone usage description to the app's `Info.plist`.
-
-Example `Info.plist` entry (XML):
-
-```xml
-<key>NSMicrophoneUsageDescription</key>
-<string>Kiss Recorder needs access to the microphone to record audio for events.</string>
-```
-
-- Ensure the app `Bundle Identifier` in Xcode matches a provisioning profile and a Team is selected under Signing.
-
-### Android notes
-
-- Android platform can be added on Linux/Windows:
-
-```bash
-npx cap add android
 npx cap sync android
+
+# open in Android Studio
 npx cap open android
 ```
 
-- For production builds, configure keystore signing in the Android project and set required permissions in `AndroidManifest.xml`.
+For production builds, configure keystore signing in the Android project and declare any required permissions in `AndroidManifest.xml`.
 
-## Data Model (Simplified)
+### iOS notes and permissions
+
+iOS builds require macOS and Xcode. If you add the iOS platform:
+
+```bash
+npx cap add ios
+npx cap sync ios
+npx cap open ios
+```
+
+If the app records audio, add a microphone usage description to `Info.plist`:
+
+```xml
+<key>NSMicrophoneUsageDescription</key>
+<string>Kiss Recorder needs microphone access to record audio for events.</string>
+```
+
+Ensure the Bundle Identifier in Xcode matches a provisioning profile and a signing team is selected.
+
+## Data Model
 
 ```js
 Person {
-  id: string
-  name: string
-  age: number
-  gender: string
-  zodiacSign: string
-  activity: string
-  howWeMet: string
-  events: Event[]
+  id:         string
+  name:       string
+  birthYear:  number          // used with zodiacSign to derive current age
+  zodiacSign: string          // e.g. "Aries (March 21 - April 19)"
+  gender:     string
+  activity:   string
+  howWeMet:   string
+  events:     Event[]
 }
 
 Event {
-  id: string
-  date: string
+  id:      string
+  date:    string        // format: "yyyy.MM.dd"
   details: string
-  score: number | null
+  score:   number | null // 1–5, or null if unrated
 }
 ```
+
+Age is never stored directly on the person. It is computed at runtime via `calculateAge(birthYear, zodiacSign)`, which increments when the zodiac sign's end date passes each year. `calculateAgeAtEvent(birthYear, zodiacSign, eventDate)` is used in charts that display age as of the moment of each event.
 
 ## Troubleshooting
 
 - If the native build can't find web assets, confirm you ran `npm run build` and then `npx cap sync <platform>`.
-- For iOS build issues on Xcode, check signing settings and valid provisioning profiles.
-- If audio recording fails on a device, verify microphone permission and that the runtime permission prompt was accepted.
+- For iOS build issues, check signing settings and valid provisioning profiles in Xcode.
+- If audio recording fails on a device, verify the microphone permission was granted at runtime.
 
 ## License
 
