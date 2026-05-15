@@ -23,15 +23,6 @@ const EMPTY_FILTERS = {
   eventDateTo: "",
 };
 
-function countActiveFilters(filters) {
-  let n = 0;
-  if (filters.minAge || filters.maxAge) n++;
-  if (filters.activity.length) n++;
-  if (filters.zodiacSign.length) n++;
-  if (filters.eventDateFrom || filters.eventDateTo) n++;
-  return n;
-}
-
 const divider = (
   <div style={{ height: "1px", background: `linear-gradient(90deg, ${PALETTE.line}, transparent)` }} />
 );
@@ -88,8 +79,6 @@ export default function FiltersPanel({
     backgroundColor: "rgba(255,255,255,0.75)",
   };
 
-  const activeCount = countActiveFilters(filters);
-
   function toggleActivity(value) {
     setFilters((prev) => ({
       ...prev,
@@ -110,37 +99,6 @@ export default function FiltersPanel({
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-
-      {/* Heading */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div>
-          <p style={{ ...TEXT.bodyStrong, color: PALETTE.text }}>{t.filtersOrg}</p>
-          <p style={{ ...TEXT.caption, color: PALETTE.textSoft, marginTop: "0.125rem" }}>
-            {t.refineResults}
-          </p>
-        </div>
-        {activeCount > 0 && (
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              minWidth: "1.5rem",
-              height: "1.5rem",
-              padding: "0 0.375rem",
-              borderRadius: "9999px",
-              background: `linear-gradient(90deg, ${PALETTE.rose}, ${PALETTE.roseSoft})`,
-              color: "white",
-              ...TEXT.label,
-              flexShrink: 0,
-            }}
-          >
-            {activeCount}
-          </span>
-        )}
-      </div>
-
-      {divider}
 
       {/* Age range */}
       <div>
@@ -272,7 +230,7 @@ export default function FiltersPanel({
           size="sm"
           className="rounded-2xl"
           style={{
-            color: activeCount > 0 ? PALETTE.rose : PALETTE.textSoft,
+            color: PALETTE.textSoft,
             gap: "0.375rem",
             fontSize: "0.8rem",
           }}
