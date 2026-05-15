@@ -24,7 +24,7 @@ export function eventIsMissingRequired(event) {
 export function personHasIncompleteEvent(person) {
   const personMissing =
     !person.name?.trim() ||
-    !person.age ||
+    !person.birthYear ||
     !person.gender ||
     !person.zodiacSign ||
     !person.activity;

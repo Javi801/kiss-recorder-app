@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { COPY } from "@/lib/constants";
 import { getFirstEventDate, getLastEventDate, getStatsData } from "@/lib/stats";
 
@@ -229,7 +229,23 @@ describe("getStatsData", () => {
     expect(personsByFirstLetter.find((d) => d.label === "B").value).toBe(1);
   });
 
-  it("groups people by age", () => {
+  it("groups people by age using birthYear + zodiac calculation", () => {
+    // Aquarius ends Feb 19; mocked date March 15 → end already passed → age = year - birthYear
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-03-15T12:00:00"));
+    const AQUARIUS = "♒ Aquarius (January 20 - February 19)";
+    const people = [
+      makePerson("Ana", [], { birthYear: 2001, zodiacSign: AQUARIUS }), // 2026-2001 = 25
+      makePerson("Bob", [], { birthYear: 1996, zodiacSign: AQUARIUS }), // 2026-1996 = 30
+      makePerson("Sam", [], { birthYear: 2001, zodiacSign: AQUARIUS }), // 25
+    ];
+    const { personsByAge } = getStatsData(people, t);
+    expect(personsByAge.find((d) => d.label === "25").value).toBe(2);
+    expect(personsByAge.find((d) => d.label === "30").value).toBe(1);
+    vi.useRealTimers();
+  });
+
+  it("groups people by age falling back to stored age for legacy records", () => {
     const people = [
       makePerson("Ana", [], { age: 25 }),
       makePerson("Bob", [], { age: 30 }),

@@ -3,7 +3,29 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { PALETTE, TEXT } from "@/lib/constants";
 import AgeRangeBox from "@/components/stats/AgeRangeBox";
-import { getYearKey } from "@/lib/date";
+import { getYearKey, calculateAgeAtEvent } from "@/lib/date";
+
+// Resolves the canonical age for a person within a year's events.
+// Uses the age with the most events; on a tie, picks the higher age.
+// Falls back to person.age when no age can be derived from events.
+function resolveAgeForYear(person, events) {
+  const ageCount = new Map();
+  for (const event of events) {
+    const age = calculateAgeAtEvent(person.birthYear, person.zodiacSign, event.date);
+    if (age === null || !Number.isFinite(age)) continue;
+    ageCount.set(age, (ageCount.get(age) || 0) + 1);
+  }
+  if (!ageCount.size) return person.age ?? null;
+  let bestAge = null;
+  let bestCount = 0;
+  for (const [age, count] of ageCount) {
+    if (count > bestCount || (count === bestCount && age > bestAge)) {
+      bestAge = age;
+      bestCount = count;
+    }
+  }
+  return bestAge;
+}
 
 // Linear interpolation quantile (R-7 / numpy default).
 function quantileFromSorted(sorted, p) {
@@ -43,28 +65,30 @@ export default function AgeRangeCard({ title, people, emptyText, t }) {
   const [splitByYear, setSplitByYear] = useState(false);
 
   const yearsData = useMemo(() => {
+    // yearsMap: year -> Map<personId, { person, events[] }>
     const yearsMap = new Map();
 
     for (const person of people) {
-      const years = [
-        ...new Set(
-          (person.events || [])
-            .map((event) => getYearKey(event.date))
-            .filter(Boolean),
-        ),
-      ];
-      for (const year of years) {
-        if (!yearsMap.has(year)) yearsMap.set(year, []);
-        yearsMap.get(year).push(person);
+      for (const event of (person.events || [])) {
+        const year = getYearKey(event.date);
+        if (!year) continue;
+        if (!yearsMap.has(year)) yearsMap.set(year, new Map());
+        const yearMap = yearsMap.get(year);
+        if (!yearMap.has(person.id)) yearMap.set(person.id, { person, events: [] });
+        yearMap.get(person.id).events.push(event);
       }
     }
 
     return [...yearsMap.entries()]
       .sort((a, b) => a[0].localeCompare(b[0]))
-      .map(([year, yearPeople]) => ({
-        year,
-        people: Array.from(new Map(yearPeople.map((p) => [p.id, p])).values()),
-      }));
+      .map(([year, personMap]) => {
+        const personData = [...personMap.values()];
+        return {
+          year,
+          people: personData.map(({ person }) => person),
+          personData,
+        };
+      });
   }, [people]);
 
   // Unique persons across all years.
@@ -80,8 +104,11 @@ export default function AgeRangeCard({ title, people, emptyText, t }) {
 
   // Shared axis and per-year boxplot rows for the multi-year view.
   const multiYear = useMemo(() => {
-    const allAges = combinedPeople
-      .map((p) => p.age)
+    // Axis range covers all per-year ages across every year.
+    const allAges = yearsData
+      .flatMap(({ personData }) =>
+        personData.map(({ person, events }) => resolveAgeForYear(person, events)),
+      )
       .filter(Number.isFinite)
       .sort((a, b) => a - b);
     if (!allAges.length) return null;
@@ -89,8 +116,11 @@ export default function AgeRangeCard({ title, people, emptyText, t }) {
     const { tickValues, toPos } = niceAxis(allAges[0], allAges[allAges.length - 1]);
 
     const rows = yearsData
-      .map(({ year, people: yp }) => {
-        const sorted = yp.map((p) => p.age).filter(Number.isFinite).sort((a, b) => a - b);
+      .map(({ year, personData }) => {
+        const sorted = personData
+          .map(({ person, events }) => resolveAgeForYear(person, events))
+          .filter(Number.isFinite)
+          .sort((a, b) => a - b);
         if (!sorted.length) return null;
         const q1 = quantileFromSorted(sorted, 0.25);
         const q3 = quantileFromSorted(sorted, 0.75);
@@ -107,7 +137,7 @@ export default function AgeRangeCard({ title, people, emptyText, t }) {
       .filter(Boolean);
 
     return { tickValues, toPos, rows };
-  }, [combinedPeople, yearsData]);
+  }, [yearsData]);
 
   return (
     <Card
@@ -124,7 +154,7 @@ export default function AgeRangeCard({ title, people, emptyText, t }) {
           <div>
             <CardTitle style={TEXT.title}>{title}</CardTitle>
             <CardDescription>
-              {splitByYear ? t.divideByYear : t.allYears}
+              {splitByYear ? t.agesAsOfYear : t.allYears}
             </CardDescription>
           </div>
 

@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 
 vi.mock("@capacitor/core", () => ({
   Capacitor: { isNativePlatform: () => false },
@@ -53,6 +53,28 @@ describe("loadPeopleFromDevice (web path)", () => {
   it("returns empty array when JSON parses to a non-array", async () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ not: "array" }));
     expect(await loadPeopleFromDevice()).toEqual([]);
+  });
+
+  it("migrates a legacy person with age but no birthYear", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-05-15T12:00:00"));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([{ id: "p1", name: "Ana", age: 25, events: [] }]));
+    const result = await loadPeopleFromDevice();
+    expect(result[0].birthYear).toBe(2001); // 2026 - 25
+    expect(result[0].age).toBeUndefined();
+    vi.useRealTimers();
+  });
+
+  it("does not overwrite birthYear when already present", async () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([{ id: "p1", name: "Ana", birthYear: 1990, events: [] }]));
+    const result = await loadPeopleFromDevice();
+    expect(result[0].birthYear).toBe(1990);
+  });
+
+  it("passes through a person with no age and no birthYear unchanged", async () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([{ id: "p1", name: "Ana", events: [] }]));
+    const result = await loadPeopleFromDevice();
+    expect(result[0].birthYear).toBeUndefined();
   });
 });
 
@@ -109,7 +131,7 @@ describe("clearPeopleFromDevice (web path)", () => {
 const COMPLETE_PERSON = {
   id: "p1",
   name: "Ana",
-  age: 25,
+  birthYear: 2000,
   gender: "female",
   howWeMet: "school",
   zodiacSign: "♒ Aquarius",
@@ -179,8 +201,8 @@ describe("exportPeopleJson — hadMissingFields", () => {
     expect(hadMissingFields).toBe(true);
   });
 
-  it("is true when age is null", async () => {
-    const { hadMissingFields } = await exportPeopleJson([{ ...COMPLETE_PERSON, age: null }]);
+  it("is true when birthYear is null", async () => {
+    const { hadMissingFields } = await exportPeopleJson([{ ...COMPLETE_PERSON, birthYear: null }]);
     expect(hadMissingFields).toBe(true);
   });
 
@@ -236,13 +258,13 @@ describe("exportPeopleJson — normalizeForExport output content", () => {
     expect(exported[0].events[0].place).toBe("");
   });
 
-  it("leaves age as null when missing", async () => {
-    const person = { ...COMPLETE_PERSON, age: null };
+  it("leaves birthYear as null when missing", async () => {
+    const person = { ...COMPLETE_PERSON, birthYear: null };
     const [exported] = await Promise.all([
       captureExportedJson(() => exportPeopleJson([person])),
       Promise.resolve(),
     ]);
-    expect(exported[0].age).toBeNull();
+    expect(exported[0].birthYear).toBeNull();
   });
 
   it("preserves present fields unchanged", async () => {
@@ -251,7 +273,7 @@ describe("exportPeopleJson — normalizeForExport output content", () => {
       Promise.resolve(),
     ]);
     expect(exported[0].name).toBe("Ana");
-    expect(exported[0].age).toBe(25);
+    expect(exported[0].birthYear).toBe(2000);
     expect(exported[0].events[0].place).toBe("café");
   });
 });
