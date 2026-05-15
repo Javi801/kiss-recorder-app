@@ -201,11 +201,36 @@ export default function PeopleManagerScreen({
               background: `linear-gradient(160deg, ${PALETTE.blush} 0%, ${PALETTE.bgSoft} 35%, #fff8fc 100%)`,
             }}
           >
-            <SheetHeader>
-              <SheetTitle>{t.refineList}</SheetTitle>
+            <SheetHeader style={{ borderBottom: `1px solid ${PALETTE.line}`, paddingBottom: "1.25rem" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
+                <div style={{
+                  width: "2rem",
+                  height: "2rem",
+                  borderRadius: "0.625rem",
+                  background: `linear-gradient(135deg, ${PALETTE.rose}, ${PALETTE.roseSoft})`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                  boxShadow: "0 2px 8px rgba(226,115,150,0.3)",
+                }}>
+                  <Filter size={14} style={{ color: "white" }} />
+                </div>
+                <SheetTitle style={{
+                  background: `linear-gradient(90deg, ${PALETTE.text}, ${PALETTE.rose})`,
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                  fontSize: "1.25rem",
+                  fontWeight: "700",
+                  letterSpacing: "-0.02em",
+                }}>
+                  {t.refineList}
+                </SheetTitle>
+              </div>
             </SheetHeader>
 
-            <div style={{ marginTop: "1.5rem" }}>
+            <div style={{ marginTop: "1.25rem" }}>
               <FiltersPanel
                 filters={filters}
                 setFilters={setFilters}
