@@ -230,7 +230,7 @@ export default function PeopleManagerScreen({
               </div>
             </SheetHeader>
 
-            <div style={{ marginTop: "0.75rem" }}>
+            <div style={{ marginTop: "0.75rem", padding: "0 1rem 1.5rem" }}>
               <FiltersPanel
                 filters={filters}
                 setFilters={setFilters}
