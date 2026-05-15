@@ -121,9 +121,9 @@ export default function PersonCard({
                   <span>•</span>
                   <span>{translateGender(person.gender, t)}</span>
                   <span>•</span>
-                  <span>{abbreviateZodiacMonths(person.zodiacSign)}</span>
-                  <span>•</span>
                   <span>{translateActivity(person.activity, t)}</span>
+                  <span>•</span>
+                  <span>{abbreviateZodiacMonths(person.zodiacSign)}</span>
                 </div>
 
 
