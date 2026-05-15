@@ -32,8 +32,6 @@ function parseZodiacDate(zodiacSign, pos = "end") {
   return null;
 }
 
-// Parses {month, day} from the end portion of a zodiac sign string.
-// Handles EN ("April 19") and ES ("19 abril") formats.
 export function getZodiacEndDate(zodiacSign) {
   return parseZodiacDate(zodiacSign, "end");
 }
@@ -42,13 +40,22 @@ export function getZodiacStartDate(zodiacSign) {
   return parseZodiacDate(zodiacSign, "start");
 }
 
+// Shared age formula: age at a reference date given the zodiac end month/day.
+function ageAtDate(birthYear, endDate, referenceDate) {
+  const year = referenceDate.getFullYear();
+  const zodiacEnd = new Date(year, endDate.month - 1, endDate.day);
+  return referenceDate >= zodiacEnd ? year - birthYear : year - birthYear - 1;
+}
+
 // Returns true if today falls within the zodiac sign's active period.
 // Handles Capricorn (Dec 22 – Jan 19) which spans two calendar years.
 export function isWithinZodiacPeriod(zodiacSign) {
   const startDate = getZodiacStartDate(zodiacSign);
   const endDate = getZodiacEndDate(zodiacSign);
   if (!startDate || !endDate) return false;
+  // Normalize to midnight so the end day is fully included.
   const today = new Date();
+  today.setHours(0, 0, 0, 0);
   const y = today.getFullYear();
   const startThisYear = new Date(y, startDate.month - 1, startDate.day);
   const endThisYear   = new Date(y, endDate.month   - 1, endDate.day);
@@ -64,10 +71,7 @@ export function calculateAge(birthYear, zodiacSign) {
   if (!birthYear || !zodiacSign) return null;
   const endDate = getZodiacEndDate(zodiacSign);
   if (!endDate) return null;
-  const today = new Date();
-  const currentYear = today.getFullYear();
-  const endThisYear = new Date(currentYear, endDate.month - 1, endDate.day);
-  return today >= endThisYear ? currentYear - birthYear : currentYear - birthYear - 1;
+  return ageAtDate(birthYear, endDate, new Date());
 }
 
 // Derives birth year from a known current age and zodiac sign.
@@ -149,7 +153,6 @@ export function getYearKey(dateStr) {
   return dateStr.slice(0, 4);
 }
 
-// Age a person had at the moment of a specific event, using zodiac-based birthday logic.
 export function calculateAgeAtEvent(birthYear, zodiacSign, eventDateStr) {
   if (!birthYear || !eventDateStr) return null;
   const eventYear = parseInt(eventDateStr.slice(0, 4), 10);
@@ -157,7 +160,5 @@ export function calculateAgeAtEvent(birthYear, zodiacSign, eventDateStr) {
   const endDate = getZodiacEndDate(zodiacSign);
   if (!endDate) return eventYear - birthYear;
   const [y, m, d] = eventDateStr.split(".").map(Number);
-  const eventDate = new Date(y, m - 1, d);
-  const zodiacEnd = new Date(eventYear, endDate.month - 1, endDate.day);
-  return eventDate >= zodiacEnd ? eventYear - birthYear : eventYear - birthYear - 1;
+  return ageAtDate(birthYear, endDate, new Date(y, m - 1, d));
 }
