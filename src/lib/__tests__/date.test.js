@@ -4,6 +4,7 @@ import {
   isValidDateString,
   todayString,
   formatDisplayDate,
+  formatShortDate,
   getMonthKey,
   getYearKey,
 } from "@/lib/date";
@@ -110,6 +111,24 @@ describe("getYearKey", () => {
   });
   it("returns null for an empty string", () => {
     expect(getYearKey("")).toBeNull();
+  });
+});
+
+describe("formatShortDate", () => {
+  it("formats a valid date in English", () => {
+    expect(formatShortDate("2024.01.15")).toMatch(/15\s+Jan\s+2024/i);
+  });
+  it("formats a valid date in Spanish", () => {
+    expect(formatShortDate("2024.01.15", "es")).toMatch(/15\s+ene\s+2024/i);
+  });
+  it("returns em dash for an empty string", () => {
+    expect(formatShortDate("")).toBe("—");
+  });
+  it("returns the raw value for an invalid date string", () => {
+    expect(formatShortDate("bad")).toBe("bad");
+  });
+  it("returns em dash for undefined", () => {
+    expect(formatShortDate(undefined)).toBe("—");
   });
 });
 
