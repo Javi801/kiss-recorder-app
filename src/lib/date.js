@@ -5,24 +5,24 @@ const ZODIAC_MONTH_NAMES = {
   julio: 7, agosto: 8, septiembre: 9, octubre: 10, noviembre: 11, diciembre: 12,
 };
 
-// Parses {month, day} from the end portion of a zodiac sign string.
-// Handles EN ("April 19") and ES ("19 abril") formats.
-export function getZodiacEndDate(zodiacSign) {
+// Parses {month, day} from either the start or end portion of a zodiac sign string.
+// pos="start" → before the "-", pos="end" → after the "-" (default).
+function parseZodiacDate(zodiacSign, pos = "end") {
   if (!zodiacSign) return null;
-  const match = zodiacSign.match(/\(.*?-\s*(.+?)\)/);
-  if (!match) return null;
-  const endPart = match[1].trim();
+  const inner = zodiacSign.match(/\((.+?)\)/)?.[1];
+  if (!inner) return null;
+  const parts = inner.split("-");
+  if (parts.length < 2) return null;
+  const raw = (pos === "start" ? parts[0] : parts[parts.length - 1]).trim();
 
-  // English: "April 19"
-  const enMatch = endPart.match(/^([A-Za-z]+)\s+(\d+)$/);
+  const enMatch = raw.match(/^([A-Za-z]+)\s+(\d+)$/);
   if (enMatch) {
     const month = ZODIAC_MONTH_NAMES[enMatch[1].toLowerCase()];
     const day = parseInt(enMatch[2]);
     if (month && day) return { month, day };
   }
 
-  // Spanish: "19 abril"
-  const esMatch = endPart.match(/^(\d+)\s+([A-Za-záéíóúüñ]+)$/i);
+  const esMatch = raw.match(/^(\d+)\s+([A-Za-záéíóúüñ]+)$/i);
   if (esMatch) {
     const month = ZODIAC_MONTH_NAMES[esMatch[2].toLowerCase()];
     const day = parseInt(esMatch[1]);
@@ -30,6 +30,33 @@ export function getZodiacEndDate(zodiacSign) {
   }
 
   return null;
+}
+
+// Parses {month, day} from the end portion of a zodiac sign string.
+// Handles EN ("April 19") and ES ("19 abril") formats.
+export function getZodiacEndDate(zodiacSign) {
+  return parseZodiacDate(zodiacSign, "end");
+}
+
+export function getZodiacStartDate(zodiacSign) {
+  return parseZodiacDate(zodiacSign, "start");
+}
+
+// Returns true if today falls within the zodiac sign's active period.
+// Handles Capricorn (Dec 22 – Jan 19) which spans two calendar years.
+export function isWithinZodiacPeriod(zodiacSign) {
+  const startDate = getZodiacStartDate(zodiacSign);
+  const endDate = getZodiacEndDate(zodiacSign);
+  if (!startDate || !endDate) return false;
+  const today = new Date();
+  const y = today.getFullYear();
+  const startThisYear = new Date(y, startDate.month - 1, startDate.day);
+  const endThisYear   = new Date(y, endDate.month   - 1, endDate.day);
+  // Year-spanning sign (e.g. Capricorn Dec 22 – Jan 19)
+  if (startDate.month > endDate.month) {
+    return today >= startThisYear || today <= endThisYear;
+  }
+  return today >= startThisYear && today <= endThisYear;
 }
 
 // Calculates dynamic age: increments when the zodiac sign period ends each year.
@@ -44,16 +71,20 @@ export function calculateAge(birthYear, zodiacSign) {
 }
 
 // Derives birth year from a known current age and zodiac sign.
-// If the zodiac period end has already passed this year, the person already
-// turned `age` this year → birthYear = currentYear - age.
-// Otherwise the birthday is still ahead → birthYear = currentYear - age - 1.
-export function deriveBirthYear(age, zodiacSign) {
+// `birthdayAlreadyHappened` resolves the edge case when today falls inside
+// the zodiac period: true means the user's calendar birthday has already
+// occurred this year (so the zodiac end is still ahead for them), which maps
+// their entered age to the upcoming zodiac turn → birthYear = currentYear - age.
+// When false (default) the entered age is their current zodiac age →
+// birthYear = currentYear - age - 1 (while before the zodiac end).
+export function deriveBirthYear(age, zodiacSign, birthdayAlreadyHappened = false) {
   const endDate = getZodiacEndDate(zodiacSign);
   const today = new Date();
   const currentYear = today.getFullYear();
   if (!endDate) return currentYear - age;
   const endThisYear = new Date(currentYear, endDate.month - 1, endDate.day);
-  return today >= endThisYear ? currentYear - age : currentYear - age - 1;
+  const birthdayPassed = today >= endThisYear || birthdayAlreadyHappened;
+  return birthdayPassed ? currentYear - age : currentYear - age - 1;
 }
 
 // Returns true if the date string (yyyy.MM.dd) is strictly after today
