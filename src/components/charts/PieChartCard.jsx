@@ -71,7 +71,7 @@ export default function PieChartCard({
         {data.length ? (
           <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", overflow: "hidden" }}>
             {/* Chart */}
-            <div style={{ height: "14rem", width: "100%" }}>
+            <div style={{ height: "14rem", width: "100%", outline: "none" }}>
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie

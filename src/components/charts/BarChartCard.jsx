@@ -60,7 +60,7 @@ export default function BarChartCard({
 
       <CardContent>
         {data.length ? (
-          <div style={{ height: "16rem", width: "100%" }}>
+          <div style={{ height: "16rem", width: "100%", outline: "none" }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data} margin={{ top: 5, right: 5, left: -15, bottom: 5 }}>
                 {/* Background grid */}

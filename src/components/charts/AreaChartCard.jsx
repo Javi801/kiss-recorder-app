@@ -62,7 +62,7 @@ export default function AreaChartCard({
 
       <CardContent>
         {data.length ? (
-          <div style={{ height: "16rem", width: "100%" }}>
+          <div style={{ height: "16rem", width: "100%", outline: "none" }}>
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={data}>
                 {/* Grid lines */}
