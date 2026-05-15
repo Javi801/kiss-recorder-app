@@ -20,6 +20,18 @@ export function isNativePlatform() {
   return Capacitor.isNativePlatform?.() ?? false;
 }
 
+// Migrates legacy records that store a static `age` number to `birthYear`.
+// Uses the current year as the reference; off by at most 1 year, which is
+// acceptable given the dynamic calculation that follows.
+function migrateLegacyAge(people) {
+  const currentYear = new Date().getFullYear();
+  return people.map((person) => {
+    if (person.birthYear != null || person.age == null) return person;
+    const { age, ...rest } = person;
+    return { ...rest, birthYear: currentYear - age };
+  });
+}
+
 // Loads people data from native file system or localStorage
 export async function loadPeopleFromDevice() {
   if (isNativePlatform()) {
@@ -31,7 +43,7 @@ export async function loadPeopleFromDevice() {
       });
 
       const parsed = JSON.parse(result.data || "[]");
-      return Array.isArray(parsed) ? parsed : [];
+      return migrateLegacyAge(Array.isArray(parsed) ? parsed : []);
     } catch {
       return [];
     }
@@ -45,7 +57,7 @@ export async function loadPeopleFromDevice() {
 
   try {
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    return migrateLegacyAge(Array.isArray(parsed) ? parsed : []);
   } catch {
     return [];
   }
@@ -136,7 +148,7 @@ function normalizeForExport(people) {
     for (const field of PERSON_REQUIRED_STRINGS) {
       if (p[field] == null) { p[field] = ""; hadMissingFields = true; }
     }
-    if (p.age == null) { p.age = null; hadMissingFields = true; }
+    if (p.birthYear == null) { p.birthYear = null; hadMissingFields = true; }
 
     p.events = (person.events || []).map((event) => {
       const e = { ...event };
