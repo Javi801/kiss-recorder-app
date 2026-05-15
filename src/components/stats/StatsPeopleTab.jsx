@@ -118,6 +118,7 @@ export default function StatsPeopleTab({ people, t }) {
         data={eventsByZodiac}
         emptyText={t.noDataYet}
         rotateXLabels={true}
+        tooltipUnit={{ one: t.chartEvent, many: t.chartEvents }}
       />
 
       <BarChartCard
@@ -126,6 +127,7 @@ export default function StatsPeopleTab({ people, t }) {
         data={eventsByActivity}
         emptyText={t.noDataYet}
         rotateXLabels={true}
+        tooltipUnit={{ one: t.chartEvent, many: t.chartEvents }}
       />
 
       <PieChartCard
@@ -133,6 +135,7 @@ export default function StatsPeopleTab({ people, t }) {
         subtitle={t.genderSplit}
         data={personsByGender}
         emptyText={t.noDataYet}
+        tooltipUnit={{ one: t.chartPerson, many: t.chartPersons }}
       />
 
       <BarChartCard
@@ -141,6 +144,7 @@ export default function StatsPeopleTab({ people, t }) {
         data={eventsByGender}
         emptyText={t.noDataYet}
         customColors={genderColorMap}
+        tooltipUnit={{ one: t.chartEvent, many: t.chartEvents }}
       />
 
       <BarChartCard
@@ -148,6 +152,7 @@ export default function StatsPeopleTab({ people, t }) {
         subtitle={t.ageDistribution}
         data={personsByAge}
         emptyText={t.noDataYet}
+        tooltipUnit={{ one: t.chartPerson, many: t.chartPersons }}
       />
 
       <BarChartCard
@@ -155,6 +160,7 @@ export default function StatsPeopleTab({ people, t }) {
         subtitle={t.firstLetterDist}
         data={personsByFirstLetter}
         emptyText={t.noDataYet}
+        tooltipUnit={{ one: t.chartPerson, many: t.chartPersons }}
       />
 
       <AgeRangeCard

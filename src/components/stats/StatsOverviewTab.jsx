@@ -87,6 +87,7 @@ export default function StatsOverviewTab({ people, allEvents, t }) {
         data={peopleMostEvents}
         emptyText={t.noDataYet}
         rotateXLabels={true}
+        tooltipUnit={{ one: t.chartEvent, many: t.chartEvents }}
       />
     </div>
   );

@@ -70,6 +70,7 @@ export default function StatsTimeTab({ people, allEvents, t }) {
         data={eventsPerMonth}
         emptyText={t.noDataYet}
         rotateXLabels={true}
+        tooltipUnit={{ one: t.chartEvent, many: t.chartEvents }}
       />
 
       <BarChartCard
@@ -77,6 +78,7 @@ export default function StatsTimeTab({ people, allEvents, t }) {
         subtitle={t.yearlyTotals}
         data={eventsPerYear}
         emptyText={t.noDataYet}
+        tooltipUnit={{ one: t.chartEvent, many: t.chartEvents }}
       />
 
       <BarChartCard
@@ -89,6 +91,7 @@ export default function StatsTimeTab({ people, allEvents, t }) {
         emptyText={t.noMultiYearPeopleYet}
         rotateXLabels={true}
         yAxisLabel={t.years}
+        tooltipUnit={{ one: t.chartYear, many: t.years }}
       />
 
       {personsWithEventsInMultipleYears.length ? (
