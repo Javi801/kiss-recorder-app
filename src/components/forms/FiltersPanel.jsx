@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DatePicker } from "@/components/ui/date-picker";
 
 
 import { PALETTE, ZODIAC_OPTIONS, TEXT } from "@/lib/constants";
@@ -149,6 +150,27 @@ export default function FiltersPanel({
         </div>
       </div>
 
+      {/* Event date range */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+        <Label>{t.eventDateRange}</Label>
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+          <DatePicker
+            value={filters.eventDateFrom}
+            onChange={(value) => setFilters((prev) => ({ ...prev, eventDateFrom: value }))}
+            placeholder={t.dateFrom}
+            className="rounded-2xl"
+            style={{ ...inputStyle }}
+          />
+          <DatePicker
+            value={filters.eventDateTo}
+            onChange={(value) => setFilters((prev) => ({ ...prev, eventDateTo: value }))}
+            placeholder={t.dateTo}
+            className="rounded-2xl"
+            style={{ ...inputStyle }}
+          />
+        </div>
+      </div>
+
       {/* Grouping mode */}
       <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
         <Label>{t.groupBy}</Label>
@@ -189,6 +211,8 @@ export default function FiltersPanel({
             maxAge: "",
             activity: [],
             zodiacSign: [],
+            eventDateFrom: "",
+            eventDateTo: "",
           });
           setGroupBy("name");
           setSortBy("name");
