@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { PALETTE, TEXT, abbreviateZodiacMonths } from "@/lib/constants";
-import { formatDisplayDate } from "@/lib/date";
+import { formatShortDate } from "@/lib/date";
 import {
   translateActivity,
   translateGender,
@@ -257,7 +257,7 @@ export default function PersonCard({
                             <div style={{ display: "flex", justifyContent: "space-between" }}>
                               <span>
                                 <Calendar style={{ display: "inline", marginRight: "0.5rem", height: "1rem", width: "1rem" }} />
-                                {formatDisplayDate(event.date)}
+                                {formatShortDate(event.date, language)}
                               </span>
 
                               {hasScore(event.score) && (
