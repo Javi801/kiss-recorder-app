@@ -1,3 +1,48 @@
+const ZODIAC_MONTH_NAMES = {
+  january: 1, february: 2, march: 3, april: 4, may: 5, june: 6,
+  july: 7, august: 8, september: 9, october: 10, november: 11, december: 12,
+  enero: 1, febrero: 2, marzo: 3, abril: 4, mayo: 5, junio: 6,
+  julio: 7, agosto: 8, septiembre: 9, octubre: 10, noviembre: 11, diciembre: 12,
+};
+
+// Parses {month, day} from the end portion of a zodiac sign string.
+// Handles EN ("April 19") and ES ("19 abril") formats.
+export function getZodiacEndDate(zodiacSign) {
+  if (!zodiacSign) return null;
+  const match = zodiacSign.match(/\(.*?-\s*(.+?)\)/);
+  if (!match) return null;
+  const endPart = match[1].trim();
+
+  // English: "April 19"
+  const enMatch = endPart.match(/^([A-Za-z]+)\s+(\d+)$/);
+  if (enMatch) {
+    const month = ZODIAC_MONTH_NAMES[enMatch[1].toLowerCase()];
+    const day = parseInt(enMatch[2]);
+    if (month && day) return { month, day };
+  }
+
+  // Spanish: "19 abril"
+  const esMatch = endPart.match(/^(\d+)\s+([A-Za-záéíóúüñ]+)$/i);
+  if (esMatch) {
+    const month = ZODIAC_MONTH_NAMES[esMatch[2].toLowerCase()];
+    const day = parseInt(esMatch[1]);
+    if (month && day) return { month, day };
+  }
+
+  return null;
+}
+
+// Calculates dynamic age: increments when the zodiac sign period ends each year.
+export function calculateAge(birthYear, zodiacSign) {
+  if (!birthYear || !zodiacSign) return null;
+  const endDate = getZodiacEndDate(zodiacSign);
+  if (!endDate) return null;
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const endThisYear = new Date(currentYear, endDate.month - 1, endDate.day);
+  return today >= endThisYear ? currentYear - birthYear : currentYear - birthYear - 1;
+}
+
 // Returns true if the date string (yyyy.MM.dd) is strictly after today
 export function isFutureDate(value) {
   if (!isValidDateString(value)) return false;
