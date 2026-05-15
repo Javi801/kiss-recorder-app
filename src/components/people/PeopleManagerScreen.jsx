@@ -33,6 +33,7 @@ export default function PeopleManagerScreen({
   onDeleteAllEvents,
   t,
   language,
+  modalBackRef,
 }) {
   // Search query entered by the user.
   const [query, setQuery] = useState("");
@@ -52,6 +53,14 @@ export default function PeopleManagerScreen({
 
   // Current sorting mode.
   const [sortBy, setSortBy] = useState("name");
+
+  // Controlled open state for the filters Sheet.
+  const [filterOpen, setFilterOpen] = useState(false);
+
+  function handleFilterOpenChange(open) {
+    setFilterOpen(open);
+    modalBackRef.current = open ? () => setFilterOpen(false) : null;
+  }
 
   /**
    * Filters and sorts the people list.
@@ -176,7 +185,7 @@ export default function PeopleManagerScreen({
         </div>
 
         {/* Filters drawer */}
-        <Sheet>
+        <Sheet open={filterOpen} onOpenChange={handleFilterOpenChange}>
           <SheetTrigger asChild>
             <Button
               variant="outline"
