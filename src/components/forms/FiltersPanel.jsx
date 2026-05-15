@@ -157,6 +157,37 @@ export default function FiltersPanel({
 
       {divider}
 
+      {/* Group & sort */}
+      <div>
+        <SectionLabel icon={SlidersHorizontal} label={`${t.groupBy} / ${t.sortBy}`} />
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+          <Label style={{ ...TEXT.caption, color: PALETTE.textSoft }}>{t.groupBy}</Label>
+          <Select value={groupBy} onValueChange={setGroupBy}>
+            <SelectTrigger className="rounded-2xl" style={inputStyle}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="name">{t.groupName}</SelectItem>
+              <SelectItem value="lastEventDate">{t.groupLastEvent}</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Label style={{ ...TEXT.caption, color: PALETTE.textSoft, marginTop: "0.25rem" }}>{t.sortBy}</Label>
+          <Select value={sortBy} onValueChange={setSortBy}>
+            <SelectTrigger className="rounded-2xl" style={inputStyle}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="name">{t.sortName}</SelectItem>
+              <SelectItem value="firstEventDate">{t.sortFirst}</SelectItem>
+              <SelectItem value="lastEventDate">{t.sortLast}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {divider}
+
       {/* Age range */}
       <div>
         <SectionLabel icon={SlidersHorizontal} label={t.ageRange} />
@@ -239,37 +270,6 @@ export default function FiltersPanel({
             className="rounded-2xl"
             style={inputStyle}
           />
-        </div>
-      </div>
-
-      {divider}
-
-      {/* Group & sort */}
-      <div>
-        <SectionLabel icon={SlidersHorizontal} label={`${t.groupBy} / ${t.sortBy}`} />
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-          <Label style={{ ...TEXT.caption, color: PALETTE.textSoft }}>{t.groupBy}</Label>
-          <Select value={groupBy} onValueChange={setGroupBy}>
-            <SelectTrigger className="rounded-2xl" style={inputStyle}>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="name">{t.groupName}</SelectItem>
-              <SelectItem value="lastEventDate">{t.groupLastEvent}</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Label style={{ ...TEXT.caption, color: PALETTE.textSoft, marginTop: "0.25rem" }}>{t.sortBy}</Label>
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="rounded-2xl" style={inputStyle}>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="name">{t.sortName}</SelectItem>
-              <SelectItem value="firstEventDate">{t.sortFirst}</SelectItem>
-              <SelectItem value="lastEventDate">{t.sortLast}</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
       </div>
 
