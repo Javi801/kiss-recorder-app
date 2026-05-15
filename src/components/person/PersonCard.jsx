@@ -32,6 +32,7 @@ import {
   hasScore,
   renderKisses,
   personHasIncompleteEvent,
+  eventIsMissingRequired,
 } from "@/lib/format";
 
 import PersonForm from "@/components/forms/PersonForm";
@@ -238,7 +239,13 @@ export default function PersonCard({
                           <button
                             key={event.id}
                             className="rounded-2xl"
-                            style={{ width: "100%", border: "1px solid #e2e8f0", backgroundColor: "white", padding: "0.75rem", textAlign: "left" }}
+                            style={{
+                              width: "100%",
+                              border: eventIsMissingRequired(event) ? "1px solid #f9d58a" : "1px solid #e2e8f0",
+                              backgroundColor: eventIsMissingRequired(event) ? "rgba(249,213,138,0.08)" : "white",
+                              padding: "0.75rem",
+                              textAlign: "left",
+                            }}
                             onClick={() =>
                               setEventModal({
                                 open: true,
