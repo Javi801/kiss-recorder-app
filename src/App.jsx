@@ -387,6 +387,7 @@ export default function KissRecorderApp() {
               bottom: 0,
               left: 0,
               right: 0,
+              zIndex: 50,
               backdropFilter: "blur(8px)",
               borderTop: `1px solid ${PALETTE.inputBorder}`,
               backgroundColor: "rgba(255,255,255,0.8)",
