@@ -12,6 +12,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 import { PALETTE, SCORE_OPTIONS, TEXT } from "@/lib/constants";
 import { todayString, isValidDateString, isFutureDate } from "@/lib/date";
@@ -194,15 +205,33 @@ export default function EventForm({ initialValues, onSave, onCancel, onDelete, t
           </Button>
         </div>
         {onDelete && (
-          <Button
-            type="button"
-            variant="outline"
-            className="rounded-2xl w-full"
-            style={{ borderColor: "#ef4444", color: "#ef4444" }}
-            onClick={onDelete}
-          >
-            {t.deleteEvent}
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                type="button"
+                variant="outline"
+                className="rounded-2xl w-full"
+                style={{ borderColor: "#ef4444", color: "#ef4444" }}
+              >
+                {t.deleteEvent}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>{t.deleteEventConfirmTitle}</AlertDialogTitle>
+                <AlertDialogDescription>{t.deleteEventConfirmDesc}</AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>{t.cancel}</AlertDialogCancel>
+                <AlertDialogAction
+                  style={{ background: "#ef4444", color: "white" }}
+                  onClick={onDelete}
+                >
+                  {t.deleteEventConfirmAction}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         )}
       </div>
     </form>
