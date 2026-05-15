@@ -198,7 +198,7 @@ export default function PeopleManagerScreen({
               maxWidth: "24rem",
               overflowY: "auto",
               borderLeftColor: PALETTE.cardBorder,
-              backgroundColor: "rgba(255,255,255,0.97)",
+              background: `linear-gradient(160deg, ${PALETTE.blush} 0%, ${PALETTE.bgSoft} 35%, #fff8fc 100%)`,
             }}
           >
             <SheetHeader>
