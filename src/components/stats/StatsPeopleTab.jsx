@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import {
   getShortZodiacLabel,
@@ -6,8 +6,8 @@ import {
   translateGender,
   getColorForCategory,
 } from "@/lib/format";
-import { ZODIAC_OPTIONS } from "@/lib/constants";
-import { calculateAge } from "@/lib/date";
+import { ZODIAC_OPTIONS, PALETTE, TEXT } from "@/lib/constants";
+import { calculateAge, calculateAgeAtEvent } from "@/lib/date";
 
 import BarChartCard from "@/components/charts/BarChartCard";
 import PieChartCard from "@/components/charts/PieChartCard";
@@ -19,6 +19,8 @@ import AgeRangeCard from "@/components/stats/AgeRangeCard";
  * It groups event and person data by zodiac, activity, gender, age, and name initials.
  */
 export default function StatsPeopleTab({ people, t }) {
+  const [ageAtEvent, setAgeAtEvent] = useState(false);
+
   // Counts people per zodiac sign, filling in zeros for all 12 signs.
   const personsByZodiac = useMemo(() => {
     const lang = t.studies === "estudia" ? "es" : "en";
@@ -95,13 +97,34 @@ export default function StatsPeopleTab({ people, t }) {
     return [...map.entries()].map(([label, value]) => ({ label, value }));
   }, [people, t]);
 
-  // Counts how many people exist for each age.
+  // Counts how many people exist for each age (current age).
   const personsByAge = useMemo(() => {
     const map = new Map();
 
     for (const person of people) {
       const age = calculateAge(person.birthYear, person.zodiacSign) ?? person.age;
-      map.set(String(age), (map.get(String(age)) || 0) + 1);
+      const key = String(age);
+      if (key !== "undefined" && key !== "null") map.set(key, (map.get(key) || 0) + 1);
+    }
+
+    return [...map.entries()]
+      .sort((a, b) => Number(a[0]) - Number(b[0]))
+      .map(([label, value]) => ({ label, value }));
+  }, [people]);
+
+  // Counts how many people were at each age at the time of their events.
+  // A person contributes 1 to each distinct age they appeared at across all events.
+  const personsByAgeAtEvent = useMemo(() => {
+    const map = new Map();
+
+    for (const person of people) {
+      const seenAges = new Set();
+      for (const event of (person.events || [])) {
+        const age = calculateAgeAtEvent(person.birthYear, person.zodiacSign, event.date) ?? person.age;
+        const key = String(age);
+        if (key !== "undefined" && key !== "null") seenAges.add(key);
+      }
+      for (const key of seenAges) map.set(key, (map.get(key) || 0) + 1);
     }
 
     return [...map.entries()]
@@ -193,10 +216,50 @@ export default function StatsPeopleTab({ people, t }) {
 
       <BarChartCard
         title={t.personsByAge}
-        subtitle={t.ageDistribution}
-        data={personsByAge}
+        subtitle={ageAtEvent ? t.ageAtEventDesc : t.ageDistribution}
+        data={ageAtEvent ? personsByAgeAtEvent : personsByAge}
         emptyText={t.noDataYet}
         tooltipUnit={{ one: t.chartPerson, many: t.chartPersons }}
+        headerAction={
+          <div style={{ display: "flex", alignItems: "center", gap: "0.375rem", flexShrink: 0 }}>
+            <span style={{ ...TEXT.caption, color: ageAtEvent ? PALETTE.rose : PALETTE.textSoft }}>
+              {t.ageAtEvent}
+            </span>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={ageAtEvent}
+              onClick={() => setAgeAtEvent((prev) => !prev)}
+              style={{
+                width: "2.25rem",
+                height: "1.25rem",
+                borderRadius: "9999px",
+                backgroundColor: ageAtEvent ? PALETTE.rose : "#d1d5db",
+                border: "none",
+                cursor: "pointer",
+                position: "relative",
+                transition: "background-color 0.2s",
+                flexShrink: 0,
+                padding: 0,
+                outline: "none",
+              }}
+            >
+              <span
+                style={{
+                  position: "absolute",
+                  top: "0.125rem",
+                  left: ageAtEvent ? "calc(100% - 1.125rem)" : "0.125rem",
+                  width: "1rem",
+                  height: "1rem",
+                  borderRadius: "9999px",
+                  backgroundColor: "white",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+                  transition: "left 0.2s",
+                }}
+              />
+            </button>
+          </div>
+        }
       />
 
       <BarChartCard

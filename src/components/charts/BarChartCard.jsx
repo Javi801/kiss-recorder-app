@@ -36,6 +36,7 @@ export default function BarChartCard({
   customColors = null,
   yAxisLabel = null,
   tooltipUnit = null,
+  headerAction = null,
 }) {
   // Shared container style for consistency across charts.
   const cardStyle = {
@@ -52,10 +53,20 @@ export default function BarChartCard({
   return (
     <Card className="rounded-3xl" style={{ boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)", backdropFilter: "blur(8px)", ...cardStyle }}>
       <CardHeader style={{ paddingBottom: "0.5rem" }}>
-        <CardTitle style={{ ...TEXT.title, color: PALETTE.text }}>
-          {title}
-        </CardTitle>
-        <CardDescription>{subtitle}</CardDescription>
+        {headerAction ? (
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "0.75rem" }}>
+            <div>
+              <CardTitle style={{ ...TEXT.title, color: PALETTE.text }}>{title}</CardTitle>
+              <CardDescription>{subtitle}</CardDescription>
+            </div>
+            {headerAction}
+          </div>
+        ) : (
+          <>
+            <CardTitle style={{ ...TEXT.title, color: PALETTE.text }}>{title}</CardTitle>
+            <CardDescription>{subtitle}</CardDescription>
+          </>
+        )}
       </CardHeader>
 
       <CardContent>

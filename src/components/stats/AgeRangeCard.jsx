@@ -3,20 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { PALETTE, TEXT } from "@/lib/constants";
 import AgeRangeBox from "@/components/stats/AgeRangeBox";
-import { getYearKey, getZodiacEndDate } from "@/lib/date";
-
-// Age a person had at the moment of a specific event, using zodiac-based birthday logic.
-function calculateAgeAtEvent(birthYear, zodiacSign, eventDateStr) {
-  if (!birthYear || !eventDateStr) return null;
-  const eventYear = parseInt(eventDateStr.slice(0, 4), 10);
-  if (!zodiacSign) return eventYear - birthYear;
-  const endDate = getZodiacEndDate(zodiacSign);
-  if (!endDate) return eventYear - birthYear;
-  const [y, m, d] = eventDateStr.split(".").map(Number);
-  const eventDate = new Date(y, m - 1, d);
-  const zodiacEnd = new Date(eventYear, endDate.month - 1, endDate.day);
-  return eventDate >= zodiacEnd ? eventYear - birthYear : eventYear - birthYear - 1;
-}
+import { getYearKey, calculateAgeAtEvent } from "@/lib/date";
 
 // Resolves the canonical age for a person within a year's events.
 // Uses the age with the most events; on a tie, picks the higher age.
