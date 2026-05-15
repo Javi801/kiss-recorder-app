@@ -7,6 +7,11 @@ import {
   formatShortDate,
   getMonthKey,
   getYearKey,
+  getZodiacEndDate,
+  getZodiacStartDate,
+  isWithinZodiacPeriod,
+  calculateAge,
+  deriveBirthYear,
 } from "@/lib/date";
 
 describe("isValidDateString", () => {
