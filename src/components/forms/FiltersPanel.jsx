@@ -14,6 +14,33 @@ import { DatePicker } from "@/components/ui/date-picker";
 
 import { PALETTE, ZODIAC_OPTIONS, TEXT } from "@/lib/constants";
 
+const MONTH_NUM = {
+  january:"01", february:"02", march:"03", april:"04", may:"05", june:"06",
+  july:"07", august:"08", september:"09", october:"10", november:"11", december:"12",
+  enero:"01", febrero:"02", marzo:"03", abril:"04", mayo:"05", junio:"06",
+  julio:"07", agosto:"08", septiembre:"09", octubre:"10", noviembre:"11", diciembre:"12",
+};
+
+function formatZodiacDates(item) {
+  const open = item.indexOf("(");
+  if (open === -1) return item;
+  const prefix = item.slice(0, open).trimEnd();
+  const inner = item.slice(open + 1, item.lastIndexOf(")"));
+  // English: "Month DD - Month DD"
+  const en = inner.match(/^(\w+)\s+(\d+)\s*-\s*(\w+)\s+(\d+)$/);
+  if (en) {
+    const [, m1, d1, m2, d2] = en;
+    return `${prefix} (${d1.padStart(2,"0")}/${MONTH_NUM[m1.toLowerCase()]} - ${d2.padStart(2,"0")}/${MONTH_NUM[m2.toLowerCase()]})`;
+  }
+  // Spanish: "DD Month - DD Month"
+  const es = inner.match(/^(\d+)\s+(\w+)\s*-\s*(\d+)\s+(\w+)$/);
+  if (es) {
+    const [, d1, m1, d2, m2] = es;
+    return `${prefix} (${d1.padStart(2,"0")}/${MONTH_NUM[m1.toLowerCase()]} - ${d2.padStart(2,"0")}/${MONTH_NUM[m2.toLowerCase()]})`;
+  }
+  return item;
+}
+
 const EMPTY_FILTERS = {
   minAge: "",
   maxAge: "",
@@ -184,7 +211,7 @@ export default function FiltersPanel({
           {ZODIAC_OPTIONS[language].map((item) => (
             <Chip
               key={item}
-              label={item}
+              label={formatZodiacDates(item)}
               selected={filters.zodiacSign.includes(item)}
               onClick={() => toggleZodiac(item)}
             />
