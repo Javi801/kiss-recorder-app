@@ -154,6 +154,22 @@ export default function PersonCard({
                   style={{ overflow: "hidden" }}
                 >
                   <div style={{ display: "flex", flexDirection: "column", gap: "1rem", padding: "1.25rem" }}>
+                    {/* Extra info */}
+                    {(person.howWeMet || person.detail) && (
+                      <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+                        {person.howWeMet && (
+                          <p style={{ ...TEXT.body, color: PALETTE.text }}>
+                            {t.met}: {person.howWeMet}
+                          </p>
+                        )}
+                        {person.detail && (
+                          <p style={{ ...TEXT.body, color: PALETTE.textSoft }}>
+                            {person.detail}
+                          </p>
+                        )}
+                      </div>
+                    )}
+
                     {/* Actions */}
                     <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
                       <Button onClick={() => setEditingPerson(true)}>
