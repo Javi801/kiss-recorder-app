@@ -100,6 +100,35 @@ export default function FiltersPanel({
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
 
+      {/* Reset + results count */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "-0.875rem 0" }}>
+        <p style={{ ...TEXT.caption, color: PALETTE.textSoft }}>
+          {t.showingResults}{" "}
+          <span style={{ ...TEXT.label, color: PALETTE.rose }}>{peopleCount}</span>{" "}
+          {peopleCount === 1 ? t.result : t.results}
+        </p>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="rounded-2xl"
+          style={{
+            color: PALETTE.textSoft,
+            gap: "0.375rem",
+            fontSize: "0.8rem",
+          }}
+          onClick={() => {
+            setFilters(EMPTY_FILTERS);
+            setGroupBy("name");
+            setSortBy("name");
+          }}
+        >
+          <RotateCcw size={13} />
+          {t.resetFilters}
+        </Button>
+      </div>
+
+      {divider}
+
       {/* Age range */}
       <div>
         <SectionLabel icon={SlidersHorizontal} label={t.ageRange} />
@@ -216,34 +245,6 @@ export default function FiltersPanel({
         </div>
       </div>
 
-      {divider}
-
-      {/* Results count + reset */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <p style={{ ...TEXT.caption, color: PALETTE.textSoft }}>
-          {t.showingResults}{" "}
-          <span style={{ ...TEXT.label, color: PALETTE.rose }}>{peopleCount}</span>{" "}
-          {peopleCount === 1 ? t.result : t.results}
-        </p>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="rounded-2xl"
-          style={{
-            color: PALETTE.textSoft,
-            gap: "0.375rem",
-            fontSize: "0.8rem",
-          }}
-          onClick={() => {
-            setFilters(EMPTY_FILTERS);
-            setGroupBy("name");
-            setSortBy("name");
-          }}
-        >
-          <RotateCcw size={13} />
-          {t.resetFilters}
-        </Button>
-      </div>
     </div>
   );
 }

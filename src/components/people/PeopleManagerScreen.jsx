@@ -201,7 +201,7 @@ export default function PeopleManagerScreen({
               background: `linear-gradient(160deg, ${PALETTE.blush} 0%, ${PALETTE.bgSoft} 35%, #fff8fc 100%)`,
             }}
           >
-            <SheetHeader style={{ borderBottom: `1px solid ${PALETTE.line}`, paddingBottom: "1.25rem" }}>
+            <SheetHeader style={{ padding: "1.25rem 1rem 0.75rem" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
                 <div style={{
                   width: "2rem",
@@ -230,7 +230,7 @@ export default function PeopleManagerScreen({
               </div>
             </SheetHeader>
 
-            <div style={{ marginTop: "1.25rem" }}>
+            <div style={{ marginTop: "0.75rem" }}>
               <FiltersPanel
                 filters={filters}
                 setFilters={setFilters}
