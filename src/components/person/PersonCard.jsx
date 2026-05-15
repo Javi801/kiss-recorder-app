@@ -106,13 +106,6 @@ export default function PersonCard({
                     {person.name}
                   </h3>
 
-                  <Badge
-                    className="rounded-full"
-                    style={{ border: "none", paddingLeft: "0.75rem", paddingRight: "0.75rem", paddingTop: "0.25rem", paddingBottom: "0.25rem", fontSize: "11px", fontWeight: "600", backgroundColor: "#ffe2ec", color: PALETTE.deep }}
-                  >
-                    {translateActivity(person.activity, t)}
-                  </Badge>
-
                   {hasIncompleteEvent && (
                     <Badge className="rounded-full" style={{ border: "none", backgroundColor: "#fef3c7", color: "#b45309" }}>
                       {t.missingEventDetailsBadge}
@@ -129,6 +122,8 @@ export default function PersonCard({
                   <span>{translateGender(person.gender, t)}</span>
                   <span>•</span>
                   <span>{person.zodiacSign}</span>
+                  <span>•</span>
+                  <span>{translateActivity(person.activity, t)}</span>
                 </div>
 
 
