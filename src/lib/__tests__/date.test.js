@@ -171,3 +171,144 @@ describe("isFutureDate", () => {
     expect(isFutureDate(undefined)).toBe(false);
   });
 });
+
+const ARIES_EN = "♈ Aries (March 21 - April 19)";
+const ARIES_ES = "♈ Aries (21 marzo - 19 abril)";
+const CAPRICORN_EN = "♑ Capricorn (December 22 - January 19)";
+
+describe("getZodiacEndDate", () => {
+  it("parses the end date from an English zodiac string", () => {
+    expect(getZodiacEndDate(ARIES_EN)).toEqual({ month: 4, day: 19 });
+  });
+  it("parses the end date from a Spanish zodiac string", () => {
+    expect(getZodiacEndDate(ARIES_ES)).toEqual({ month: 4, day: 19 });
+  });
+  it("handles Capricorn whose period ends in January", () => {
+    expect(getZodiacEndDate(CAPRICORN_EN)).toEqual({ month: 1, day: 19 });
+  });
+  it("returns null for null", () => {
+    expect(getZodiacEndDate(null)).toBeNull();
+  });
+  it("returns null for an empty string", () => {
+    expect(getZodiacEndDate("")).toBeNull();
+  });
+});
+
+describe("getZodiacStartDate", () => {
+  it("parses the start date from an English zodiac string", () => {
+    expect(getZodiacStartDate(ARIES_EN)).toEqual({ month: 3, day: 21 });
+  });
+  it("parses the start date from a Spanish zodiac string", () => {
+    expect(getZodiacStartDate(ARIES_ES)).toEqual({ month: 3, day: 21 });
+  });
+  it("handles Capricorn whose period starts in December", () => {
+    expect(getZodiacStartDate(CAPRICORN_EN)).toEqual({ month: 12, day: 22 });
+  });
+  it("returns null for null", () => {
+    expect(getZodiacStartDate(null)).toBeNull();
+  });
+  it("returns null for an empty string", () => {
+    expect(getZodiacStartDate("")).toBeNull();
+  });
+});
+
+describe("isWithinZodiacPeriod", () => {
+  beforeEach(() => { vi.useFakeTimers(); });
+  afterEach(() => { vi.useRealTimers(); });
+
+  it("returns true when today is within the period", () => {
+    vi.setSystemTime(new Date("2026-04-05T12:00:00"));
+    expect(isWithinZodiacPeriod(ARIES_EN)).toBe(true);
+  });
+  it("returns true on the start day", () => {
+    vi.setSystemTime(new Date("2026-03-21T12:00:00"));
+    expect(isWithinZodiacPeriod(ARIES_EN)).toBe(true);
+  });
+  it("returns true on the end day", () => {
+    vi.setSystemTime(new Date("2026-04-19T12:00:00"));
+    expect(isWithinZodiacPeriod(ARIES_EN)).toBe(true);
+  });
+  it("returns false the day after the period ends", () => {
+    vi.setSystemTime(new Date("2026-04-20T12:00:00"));
+    expect(isWithinZodiacPeriod(ARIES_EN)).toBe(false);
+  });
+  it("returns false before the period starts", () => {
+    vi.setSystemTime(new Date("2026-03-10T12:00:00"));
+    expect(isWithinZodiacPeriod(ARIES_EN)).toBe(false);
+  });
+  it("returns true for Capricorn in January (year-spanning)", () => {
+    vi.setSystemTime(new Date("2026-01-10T12:00:00"));
+    expect(isWithinZodiacPeriod(CAPRICORN_EN)).toBe(true);
+  });
+  it("returns true for Capricorn in December (year-spanning)", () => {
+    vi.setSystemTime(new Date("2026-12-25T12:00:00"));
+    expect(isWithinZodiacPeriod(CAPRICORN_EN)).toBe(true);
+  });
+  it("returns false for Capricorn in February (outside year-spanning period)", () => {
+    vi.setSystemTime(new Date("2026-02-01T12:00:00"));
+    expect(isWithinZodiacPeriod(CAPRICORN_EN)).toBe(false);
+  });
+  it("returns false for null", () => {
+    expect(isWithinZodiacPeriod(null)).toBe(false);
+  });
+});
+
+describe("calculateAge", () => {
+  beforeEach(() => { vi.useFakeTimers(); });
+  afterEach(() => { vi.useRealTimers(); });
+
+  it("returns currentYear - birthYear after the zodiac end", () => {
+    vi.setSystemTime(new Date("2026-04-20T12:00:00")); // day after Aries ends
+    expect(calculateAge(2000, ARIES_EN)).toBe(26);
+  });
+  it("returns currentYear - birthYear - 1 before the zodiac end", () => {
+    vi.setSystemTime(new Date("2026-03-15T12:00:00")); // before Aries start
+    expect(calculateAge(2000, ARIES_EN)).toBe(25);
+  });
+  it("returns currentYear - birthYear - 1 within the period before the end", () => {
+    vi.setSystemTime(new Date("2026-04-05T12:00:00")); // within Aries, before April 19
+    expect(calculateAge(2000, ARIES_EN)).toBe(25);
+  });
+  it("returns null for null birthYear", () => {
+    expect(calculateAge(null, ARIES_EN)).toBeNull();
+  });
+  it("returns null for null zodiacSign", () => {
+    expect(calculateAge(2000, null)).toBeNull();
+  });
+});
+
+describe("deriveBirthYear", () => {
+  beforeEach(() => { vi.useFakeTimers(); });
+  afterEach(() => { vi.useRealTimers(); });
+
+  it("returns currentYear - age after the zodiac end", () => {
+    vi.setSystemTime(new Date("2026-04-20T12:00:00")); // after Aries ends April 19
+    expect(deriveBirthYear(26, ARIES_EN)).toBe(2000);
+  });
+  it("returns currentYear - age - 1 before the zodiac end", () => {
+    vi.setSystemTime(new Date("2026-03-15T12:00:00")); // before Aries
+    expect(deriveBirthYear(25, ARIES_EN)).toBe(2000);
+  });
+  it("with birthdayAlreadyHappened=true inside the period uses currentYear - age", () => {
+    vi.setSystemTime(new Date("2026-04-05T12:00:00")); // within Aries
+    expect(deriveBirthYear(25, ARIES_EN, true)).toBe(2001);
+  });
+  it("with birthdayAlreadyHappened=false inside the period uses currentYear - age - 1", () => {
+    vi.setSystemTime(new Date("2026-04-05T12:00:00")); // within Aries
+    expect(deriveBirthYear(25, ARIES_EN, false)).toBe(2000);
+  });
+  it("deriveBirthYear and calculateAge are inverses (after zodiac end)", () => {
+    vi.setSystemTime(new Date("2026-04-20T12:00:00"));
+    const birthYear = deriveBirthYear(26, ARIES_EN);
+    expect(calculateAge(birthYear, ARIES_EN)).toBe(26);
+  });
+  it("deriveBirthYear and calculateAge are inverses (before zodiac end)", () => {
+    vi.setSystemTime(new Date("2026-03-15T12:00:00"));
+    const birthYear = deriveBirthYear(25, ARIES_EN);
+    expect(calculateAge(birthYear, ARIES_EN)).toBe(25);
+  });
+  it("falls back to currentYear - age for an unrecognized zodiac sign", () => {
+    vi.setSystemTime(new Date("2026-06-15T12:00:00"));
+    expect(deriveBirthYear(25, "Unknown Sign")).toBe(2001);
+  });
+});

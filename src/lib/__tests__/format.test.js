@@ -93,7 +93,7 @@ describe("translateGender", () => {
 
 const COMPLETE_PERSON = {
   name: "Ana",
-  age: 25,
+  birthYear: 2000,
   gender: "female",
   zodiacSign: "♒ Aquarius",
   activity: "studies",
@@ -141,8 +141,8 @@ describe("personHasIncompleteEvent", () => {
   it("returns true when name is missing", () => {
     expect(personHasIncompleteEvent({ ...COMPLETE_PERSON, name: "" })).toBe(true);
   });
-  it("returns true when age is missing", () => {
-    expect(personHasIncompleteEvent({ ...COMPLETE_PERSON, age: null })).toBe(true);
+  it("returns true when birthYear is missing", () => {
+    expect(personHasIncompleteEvent({ ...COMPLETE_PERSON, birthYear: null })).toBe(true);
   });
   it("returns true when gender is missing", () => {
     expect(personHasIncompleteEvent({ ...COMPLETE_PERSON, gender: "" })).toBe(true);
