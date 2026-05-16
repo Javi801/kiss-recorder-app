@@ -236,7 +236,7 @@ export default function StatsPeopleTab({ people, t }) {
                 width: "2.25rem",
                 height: "1.25rem",
                 borderRadius: "9999px",
-                backgroundColor: ageAtEvent ? PALETTE.rose : "#d1d5db",
+                backgroundColor: ageAtEvent ? PALETTE.rose : PALETTE.line,
                 border: "none",
                 cursor: "pointer",
                 position: "relative",

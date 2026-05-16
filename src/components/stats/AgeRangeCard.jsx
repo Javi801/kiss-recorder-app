@@ -164,7 +164,7 @@ export default function AgeRangeCard({ title, people, emptyText, t }) {
             type="button"
             variant="outline"
             className="rounded-2xl"
-            style={{ backgroundColor: "rgba(255,255,255,0.7)", borderColor: PALETTE.inputBorder }}
+            style={{ backgroundColor: PALETTE.controlBg, borderColor: PALETTE.inputBorder }}
             onClick={() => setSplitByYear((prev) => !prev)}
           >
             {splitByYear ? t.showAllTogether : t.divideByYear}
@@ -206,7 +206,7 @@ export default function AgeRangeCard({ title, people, emptyText, t }) {
                 {/* Boxplot row */}
                 <div style={{ position: "relative", flex: 1, height: "2rem" }}>
                   <div
-                    style={{ position: "absolute", left: "3%", right: "3%", top: "50%", height: "1px", transform: "translateY(-50%)", backgroundColor: "#e7d5de" }}
+                    style={{ position: "absolute", left: "3%", right: "3%", top: "50%", height: "1px", transform: "translateY(-50%)", backgroundColor: PALETTE.line }}
                   />
                   <div
                     style={{ position: "absolute", top: "50%", height: "1.25rem", width: "2px", transform: "translateY(-50%)", left: `${minPos}%`, backgroundColor: PALETTE.rose }}

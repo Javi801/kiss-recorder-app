@@ -140,7 +140,7 @@ export default function StatsScreen({ people, t }) {
                   : PALETTE.controlBg,
                 color: active ? "white" : PALETTE.text,
                 boxShadow: active
-                  ? "0 6px 16px rgba(226,115,150,0.18)"
+                  ? `0 6px 16px ${PALETTE.roseShadow}`
                   : "none",
               }}
             >
