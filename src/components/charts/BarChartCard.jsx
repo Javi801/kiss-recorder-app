@@ -17,11 +17,12 @@ import { usePalette } from "@/lib/theme";
  * Supports optional label rotation and custom color mapping.
  */
 function ChartTooltip({ active, payload, label, tooltipUnit }) {
+  const PALETTE = usePalette();
   if (!active || !payload?.length) return null;
   const value = payload[0].value;
   const unit = value === 1 ? tooltipUnit.one : tooltipUnit.many;
   return (
-    <div style={{ background: "white", border: "1px solid #e5e7eb", borderRadius: "0.5rem", padding: "0.5rem 0.75rem", fontSize: 13 }}>
+    <div style={{ background: PALETTE.card, border: `1px solid ${PALETTE.line}`, color: PALETTE.text, borderRadius: "0.5rem", padding: "0.5rem 0.75rem", fontSize: 13 }}>
       <p style={{ marginBottom: "0.2rem", fontWeight: 500 }}>{label}</p>
       <p>{`${value} ${unit}`}</p>
     </div>
