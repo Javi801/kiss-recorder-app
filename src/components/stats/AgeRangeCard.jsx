@@ -1,7 +1,8 @@
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { PALETTE, TEXT } from "@/lib/constants";
+import { TEXT } from "@/lib/constants";
+import { usePalette } from "@/lib/theme";
 import AgeRangeBox from "@/components/stats/AgeRangeBox";
 import { getYearKey, calculateAgeAtEvent } from "@/lib/date";
 
@@ -62,6 +63,7 @@ function niceAxis(dataMin, dataMax) {
 }
 
 export default function AgeRangeCard({ title, people, emptyText, t }) {
+  const PALETTE = usePalette();
   const [splitByYear, setSplitByYear] = useState(false);
 
   const yearsData = useMemo(() => {

@@ -6,7 +6,8 @@ import {
   translateGender,
   getColorForCategory,
 } from "@/lib/format";
-import { ZODIAC_OPTIONS, PALETTE, TEXT } from "@/lib/constants";
+import { ZODIAC_OPTIONS, TEXT } from "@/lib/constants";
+import { usePalette } from "@/lib/theme";
 import { calculateAge, calculateAgeAtEvent } from "@/lib/date";
 
 import BarChartCard from "@/components/charts/BarChartCard";
@@ -19,6 +20,7 @@ import AgeRangeCard from "@/components/stats/AgeRangeCard";
  * It groups event and person data by zodiac, activity, gender, age, and name initials.
  */
 export default function StatsPeopleTab({ people, t }) {
+  const PALETTE = usePalette();
   const [ageAtEvent, setAgeAtEvent] = useState(false);
 
   // Counts people per zodiac sign, filling in zeros for all 12 signs.

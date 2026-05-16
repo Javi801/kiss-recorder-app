@@ -6,11 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import BarChartCard from "@/components/charts/BarChartCard";
 import DumbbellChartCard from "@/components/charts/DumbbellChartCard";
 import HeatmapChartCard from "@/components/charts/HeatmapChartCard";
-import { PALETTE, TEXT } from "@/lib/constants";
+import { TEXT } from "@/lib/constants";
+import { usePalette } from "@/lib/theme";
 import { getMonthKey, getYearKey } from "@/lib/date";
 
 // Renders the time-based statistics tab. It shows monthly, yearly, and multi-year event patterns.
 export default function StatsTimeTab({ people, allEvents, t }) {
+  const PALETTE = usePalette();
   // Groups all events by month. Keys are generated in yyyy-MM format.
   const eventsPerMonth = useMemo(() => {
     const map = new Map();

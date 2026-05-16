@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { PALETTE } from "@/lib/constants";
+import { usePalette } from "@/lib/theme";
 import mainBackground from "@/assets/main-background.png";
 
 /**
@@ -8,6 +8,7 @@ import mainBackground from "@/assets/main-background.png";
  * Falls back gracefully if the image fails to load.
  */
 export default function HeroVisualPlaceholder() {
+  const PALETTE = usePalette();
   // Track if the image loads correctly.
   const [hasImage, setHasImage] = useState(true);
 

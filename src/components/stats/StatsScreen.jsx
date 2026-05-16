@@ -10,7 +10,8 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { PALETTE, TEXT } from "@/lib/constants";
+import { TEXT } from "@/lib/constants";
+import { usePalette } from "@/lib/theme";
 import { exportStatsPdf, saveErrorLog } from "@/lib/pdf-export";
 
 import StatsOverviewTab from "@/components/stats/StatsOverviewTab";
@@ -23,6 +24,7 @@ import StatsScoresTab from "@/components/stats/StatsScoresTab";
  * It prepares shared data and delegates each section to a dedicated tab component.
  */
 export default function StatsScreen({ people, t }) {
+  const PALETTE = usePalette();
   const [tab, setTab] = useState("overview");
   // null = idle, "success" = exported OK, Error instance = export failed
   const [pdfStatus, setPdfStatus] = useState(null);

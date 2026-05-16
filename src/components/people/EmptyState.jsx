@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { PALETTE, TEXT } from "@/lib/constants";
+import { TEXT } from "@/lib/constants";
+import { usePalette } from "@/lib/theme";
 
 /**
  * Renders a reusable empty state block with icon, text, and optional action.
@@ -11,6 +12,7 @@ export default function EmptyState({
   description,
   action,
 }) {
+  const PALETTE = usePalette();
   // Keep card styles grouped so the component stays easy to scan.
   const cardStyle = {
     borderColor: PALETTE.cardBorder,

@@ -1,4 +1,4 @@
-import { PALETTE } from "@/lib/constants";
+import { usePalette } from "@/lib/theme";
 import BubbleStarsBackground from "@/components/visuals/BubbleStarsBackground";
 import HeroVisualPlaceholder from "@/components/visuals/HeroVisualPlaceholder";
 import InteractiveBubbles from "@/components/visuals/InteractiveBubbles";
@@ -8,6 +8,7 @@ import InteractiveBubbles from "@/components/visuals/InteractiveBubbles";
  * Acts as a playful gate before entering the main app.
  */
 export default function IntroScreen({ onOpenMain, t }) {
+  const PALETTE = usePalette();
   return (
     <div
       style={{

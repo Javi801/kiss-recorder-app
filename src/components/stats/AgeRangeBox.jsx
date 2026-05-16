@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { PALETTE, TEXT } from "@/lib/constants";
+import { TEXT } from "@/lib/constants";
+import { usePalette } from "@/lib/theme";
 import { calculateAge } from "@/lib/date";
 
 /**
@@ -9,6 +10,7 @@ import { calculateAge } from "@/lib/date";
  * When bare=true, renders only the chart content without the Card wrapper.
  */
 export default function AgeRangeBox({ title, subtitle, people, emptyText, bare = false }) {
+  const PALETTE = usePalette();
   const ages = useMemo(
     () => people
       .map((p) => calculateAge(p.birthYear, p.zodiacSign) ?? p.age)
