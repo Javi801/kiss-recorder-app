@@ -26,7 +26,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 
-import { PALETTE, TEXT } from "@/lib/constants";
+import { TEXT } from "@/lib/constants";
+import { usePalette } from "@/lib/theme";
 import { exportPeopleJson } from "@/lib/device-storage";
 import { saveErrorLog } from "@/lib/pdf-export";
 import StatTile from "@/components/shared/StatTile";
@@ -46,7 +47,10 @@ export default function MainScreen({
   setLanguage,
   iconColor,
   setIconColor,
+  theme,
+  setTheme,
 }) {
+  const PALETTE = usePalette();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -384,10 +388,12 @@ export default function MainScreen({
               </DialogTitle>
             </div>
           </DialogHeader>
-          <section style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+          <section style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
             <ColorSelector
               iconColor={iconColor}
               setIconColor={setIconColor}
+              theme={theme}
+              setTheme={setTheme}
               t={t}
               accent={false}
             />
