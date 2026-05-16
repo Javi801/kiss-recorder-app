@@ -11,7 +11,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-import { PALETTE, TEXT } from "@/lib/constants";
+import { TEXT } from "@/lib/constants";
+import { usePalette } from "@/lib/theme";
 import { formatDisplayDate, calculateAge } from "@/lib/date";
 import { getFirstEventDate, getLastEventDate } from "@/lib/stats";
 
@@ -33,6 +34,7 @@ export default function PeopleManagerScreen({
   language,
   modalBackRef,
 }) {
+  const PALETTE = usePalette();
   const [query, setQuery] = useState("");
 
   const [filters, setFilters] = useState({
@@ -220,7 +222,7 @@ export default function PeopleManagerScreen({
               maxWidth: "20rem",
               overflowY: "auto",
               borderLeftColor: PALETTE.cardBorder,
-              background: `linear-gradient(180deg, #f4edfb 0%, #eae5f7 50%, #d6ecfe 100%)`,
+              background: `linear-gradient(180deg, ${PALETTE.blush} 0%, ${PALETTE.card} 55%)`,
             }}
           >
             <SheetHeader style={{ padding: "1.25rem 1rem 0.75rem" }}>
@@ -419,7 +421,7 @@ export default function PeopleManagerScreen({
             <Button
               variant="outline"
               className="rounded-2xl"
-              style={{ borderColor: PALETTE.inputBorder, backgroundColor: "white" }}
+              style={{ borderColor: PALETTE.inputBorder, backgroundColor: PALETTE.card }}
               onClick={() => {
                 setQuery("");
                 setFilters({

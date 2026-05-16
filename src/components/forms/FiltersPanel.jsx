@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/select";
 import { DatePicker } from "@/components/ui/date-picker";
 
-import { PALETTE, ZODIAC_OPTIONS, TEXT } from "@/lib/constants";
+import { ZODIAC_OPTIONS, TEXT } from "@/lib/constants";
+import { usePalette } from "@/lib/theme";
 
 const MONTH_NUM = {
   january:"01", february:"02", march:"03", april:"04", may:"05", june:"06",
@@ -50,11 +51,13 @@ const EMPTY_FILTERS = {
   eventDateTo: "",
 };
 
-const divider = (
-  <div style={{ height: "1px", background: `linear-gradient(90deg, ${PALETTE.line}, transparent)` }} />
-);
+function Divider() {
+  const PALETTE = usePalette();
+  return <div style={{ height: "1px", background: `linear-gradient(90deg, ${PALETTE.line}, transparent)` }} />;
+}
 
 function SectionLabel({ icon: Icon, label }) {
+  const PALETTE = usePalette();
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "0.375rem", marginBottom: "0.625rem" }}>
       <Icon size={12} style={{ color: PALETTE.rose, flexShrink: 0 }} />
@@ -66,6 +69,7 @@ function SectionLabel({ icon: Icon, label }) {
 }
 
 function Chip({ label, selected, onClick }) {
+  const PALETTE = usePalette();
   return (
     <button
       type="button"
@@ -76,7 +80,7 @@ function Chip({ label, selected, onClick }) {
         border: selected ? "none" : `1px solid ${PALETTE.inputBorder}`,
         background: selected
           ? `linear-gradient(90deg, ${PALETTE.rose}, ${PALETTE.roseSoft})`
-          : "rgba(255,255,255,0.75)",
+          : PALETTE.controlBg,
         color: selected ? "white" : PALETTE.textSoft,
         ...TEXT.body,
         fontWeight: selected ? "600" : "400",
@@ -101,9 +105,10 @@ export default function FiltersPanel({
   t,
   language,
 }) {
+  const PALETTE = usePalette();
   const inputStyle = {
     borderColor: PALETTE.inputBorder,
-    backgroundColor: "rgba(255,255,255,0.75)",
+    backgroundColor: PALETTE.inputBg,
     ...TEXT.input,
   };
 
@@ -155,7 +160,7 @@ export default function FiltersPanel({
         </Button>
       </div>
 
-      {divider}
+      <Divider />
 
       {/* Group & sort */}
       <div>
@@ -186,7 +191,7 @@ export default function FiltersPanel({
         </div>
       </div>
 
-      {divider}
+      <Divider />
 
       {/* Age range */}
       <div>
@@ -211,7 +216,7 @@ export default function FiltersPanel({
         </div>
       </div>
 
-      {divider}
+      <Divider />
 
       {/* Activity */}
       <div>
@@ -233,7 +238,7 @@ export default function FiltersPanel({
         </div>
       </div>
 
-      {divider}
+      <Divider />
 
       {/* Zodiac */}
       <div>
@@ -250,7 +255,7 @@ export default function FiltersPanel({
         </div>
       </div>
 
-      {divider}
+      <Divider />
 
       {/* Event date range */}
       <div>
