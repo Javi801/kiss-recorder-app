@@ -50,6 +50,8 @@ export const PALETTES = {
     cardBg: "rgba(255,255,255,0.82)",
     surfaceBg: "rgba(255,255,255,0.78)",
     navBarBg: "rgba(255,255,255,0.8)",
+    roseShadow: "rgba(226,115,150,0.2)",
+    roseGlow: "rgba(226,115,150,0.35)",
   },
   green: {
     bg: "#f6fbf8",
@@ -82,6 +84,8 @@ export const PALETTES = {
     cardBg: "rgba(255,255,255,0.82)",
     surfaceBg: "rgba(255,255,255,0.78)",
     navBarBg: "rgba(255,255,255,0.8)",
+    roseShadow: "rgba(90,158,114,0.2)",
+    roseGlow: "rgba(90,158,114,0.35)",
   },
   dark: {
     bg: "#0f0d1a",
@@ -114,6 +118,8 @@ export const PALETTES = {
     cardBg: "rgba(20,17,42,0.82)",
     surfaceBg: "rgba(20,17,42,0.78)",
     navBarBg: "rgba(15,13,26,0.85)",
+    roseShadow: "rgba(139,124,248,0.2)",
+    roseGlow: "rgba(139,124,248,0.35)",
   },
 };
 
