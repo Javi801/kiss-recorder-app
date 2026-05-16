@@ -107,7 +107,9 @@ export const PALETTES = {
       "#f2a65a",
       "#6fb3c8",
     ],
-    chartHeatmapRgb: "90, 158, 114",
+    chartHeatmapRgb: "46, 125, 80",
+    chartHeatmapAlphaBase: 0.12,
+    chartHeatmapExponent: 1.45,
   },
   dark: {
     bg: "#0f0d1a",
@@ -152,7 +154,9 @@ export const PALETTES = {
       "#7dd3fc",
       "#a3e635",
     ],
-    chartHeatmapRgb: "139, 124, 248",
+    chartHeatmapRgb: "167, 139, 250",
+    chartHeatmapAlphaBase: 0.14,
+    chartHeatmapExponent: 1.5,
   },
 };
 
