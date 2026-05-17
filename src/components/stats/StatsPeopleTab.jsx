@@ -135,15 +135,18 @@ export default function StatsPeopleTab({ people, t }) {
 
   // Counts people grouped by the first letter of their name.
   const personsByFirstLetter = useMemo(() => {
+    const spanishAlphabet = new Set("ABCDEFGHIJKLMNÑOPQRSTUVWXYZ");
     const map = new Map();
 
     for (const person of people) {
-      const key = person.name?.[0]?.toUpperCase() || "#";
+      const first = person.name?.[0]?.toUpperCase();
+      const key = first && spanishAlphabet.has(first) ? first : "#";
       map.set(key, (map.get(key) || 0) + 1);
     }
 
+    const spanishOrder = [...spanishAlphabet, "#"];
     return [...map.entries()]
-      .sort((a, b) => a[0].localeCompare(b[0]))
+      .sort((a, b) => spanishOrder.indexOf(a[0]) - spanishOrder.indexOf(b[0]))
       .map(([label, value]) => ({ label, value }));
   }, [people]);
 
