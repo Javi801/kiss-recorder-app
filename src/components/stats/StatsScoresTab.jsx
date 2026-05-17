@@ -5,13 +5,12 @@ import { hasScore, renderKisses } from "@/lib/format";
 
 import PieChartCard from "@/components/charts/PieChartCard";
 import BarChartCard from "@/components/charts/BarChartCard";
-import AreaChartCard from "@/components/charts/AreaChartCard";
 
 /**
  * Renders the score-focused statistics tab.
- * It shows score distribution and event-count distribution.
+ * It shows rating coverage and score distribution.
  */
-export default function StatsScoresTab({ people, allEvents, t }) {
+export default function StatsScoresTab({ allEvents, t }) {
   // Keep only events with a valid score.
   const scoredEvents = useMemo(
     () => allEvents.filter((event) => hasScore(event.score)),
@@ -36,23 +35,6 @@ export default function StatsScoresTab({ people, allEvents, t }) {
 
     return [...map.entries()].map(([label, value]) => ({ label, value }));
   }, [scoredEvents, t]);
-
-  // Groups people by how many events they have, filling all integers from 0 to max.
-  const numberOfEventsByNumberOfPersons = useMemo(() => {
-    const map = new Map();
-
-    for (const person of people) {
-      const eventCount = person.events?.length || 0;
-      map.set(eventCount, (map.get(eventCount) || 0) + 1);
-    }
-
-    if (map.size === 0) return [];
-    const maxCount = Math.max(...map.keys());
-    return Array.from({ length: maxCount + 1 }, (_, i) => ({
-      label: String(i),
-      value: map.get(i) || 0,
-    }));
-  }, [people]);
 
   // Compares scored events against unscored events.
   const scoredVsUnscored = useMemo(() => {
@@ -82,14 +64,6 @@ export default function StatsScoresTab({ people, allEvents, t }) {
         emptyText={t.noDataYet}
         rotateXLabels={true}
         tooltipUnit={{ one: t.chartEvent, many: t.chartEvents }}
-      />
-
-      <AreaChartCard
-        title={t.eventsByPersonCount}
-        subtitle={t.eventCountBuckets}
-        data={numberOfEventsByNumberOfPersons}
-        emptyText={t.noDataYet}
-        tooltipUnit={{ one: t.chartPerson, many: t.chartPersons }}
       />
     </div>
   );

@@ -97,6 +97,8 @@ export default function StatsTimeTab({ people, allEvents, t }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      <MultiYearTopCard top3={top3MultiYear} t={t} />
+
       <EventsTimelineChartCard allEvents={allEvents} t={t} />
       <PersonsTimelineChartCard people={people} t={t} />
 
@@ -109,8 +111,6 @@ export default function StatsTimeTab({ people, allEvents, t }) {
         xAxisLabel={t.years}
         tooltipUnit={{ one: t.chartPerson, many: t.chartPersons }}
       />
-
-      <MultiYearTopCard top3={top3MultiYear} t={t} />
 
       {showDeferred && (
         <>

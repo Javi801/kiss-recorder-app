@@ -73,9 +73,9 @@ export default function StatsScreen({ people, t }) {
     },
     {
       key: "people",
-      label: t.peopleStats,
+      label: t.profilesStats,
       icon: UserRound,
-      helper: t.statsGroupPeople,
+      helper: t.statsGroupProfiles,
     },
     {
       key: "scores",
@@ -163,7 +163,7 @@ export default function StatsScreen({ people, t }) {
       {tab === "people" ? <StatsPeopleTab people={people} t={t} /> : null}
 
       {tab === "scores" ? (
-        <StatsScoresTab people={people} allEvents={allEvents} t={t} />
+        <StatsScoresTab allEvents={allEvents} t={t} />
       ) : null}
 
       {/* Empty data dialog */}

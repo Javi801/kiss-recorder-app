@@ -11,6 +11,7 @@ import { usePalette } from "@/lib/theme";
 import { calculateAge, calculateAgeAtEvent } from "@/lib/date";
 
 import BarChartCard from "@/components/charts/BarChartCard";
+import AreaChartCard from "@/components/charts/AreaChartCard";
 import AgeRangeCard from "@/components/stats/AgeRangeCard";
 import ActivityDonutCard from "@/components/stats/ActivityDonutCard";
 import GenderDonutCard from "@/components/stats/GenderDonutCard";
@@ -152,8 +153,32 @@ export default function StatsPeopleTab({ people, t }) {
       .map(([label, value]) => ({ label, value }));
   }, [people]);
 
+  // Groups people by how many events they have, filling all integers from 0 to max.
+  const numberOfEventsByNumberOfPersons = useMemo(() => {
+    const map = new Map();
+
+    for (const person of people) {
+      const eventCount = person.events?.length || 0;
+      map.set(eventCount, (map.get(eventCount) || 0) + 1);
+    }
+
+    if (map.size === 0) return [];
+    const maxCount = Math.max(...map.keys());
+    return Array.from({ length: maxCount + 1 }, (_, i) => ({
+      label: String(i),
+      value: map.get(i) || 0,
+    }));
+  }, [people]);
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      <BarChartCard
+        title={t.personsByFirstLetter}
+        subtitle={t.firstLetterDist}
+        data={personsByFirstLetter}
+        emptyText={t.noDataYet}
+        tooltipUnit={{ one: t.chartPerson, many: t.chartPersons }}
+      />
 
       <ZodiacRadarCard
         personsByZodiac={personsByZodiac}
@@ -209,19 +234,19 @@ export default function StatsPeopleTab({ people, t }) {
         }
       />
 
-      <BarChartCard
-        title={t.personsByFirstLetter}
-        subtitle={t.firstLetterDist}
-        data={personsByFirstLetter}
-        emptyText={t.noDataYet}
-        tooltipUnit={{ one: t.chartPerson, many: t.chartPersons }}
-      />
-
       <AgeRangeCard
         title={t.boxplotAgeRange}
         people={people}
         emptyText={t.noDataYet}
         t={t}
+      />
+
+      <AreaChartCard
+        title={t.eventsByPersonCount}
+        subtitle={t.eventCountBuckets}
+        data={numberOfEventsByNumberOfPersons}
+        emptyText={t.noDataYet}
+        tooltipUnit={{ one: t.chartPerson, many: t.chartPersons }}
       />
     </div>
   );
