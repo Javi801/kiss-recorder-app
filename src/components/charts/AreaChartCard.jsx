@@ -97,10 +97,12 @@ export default function AreaChartCard({
 
                 {/* Area */}
                 <Area
-                  type="monotone"
+                  type="natural"
                   dataKey="value"
                   stroke={PALETTE.accent2}
                   fill={PALETTE.gradientEnd}
+                  dot={{ r: 4, fill: PALETTE.accent2, stroke: PALETTE.cardBg, strokeWidth: 2 }}
+                  activeDot={{ r: 6, fill: PALETTE.accent2, stroke: PALETTE.cardBg, strokeWidth: 2 }}
                 />
               </AreaChart>
             </ResponsiveContainer>
