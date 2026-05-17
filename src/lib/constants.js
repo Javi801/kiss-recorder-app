@@ -100,9 +100,9 @@ export const PALETTES = {
     chartColors: [
       "#5a9e72",
       "#e06878",
-      "#8bb7e8",
-      "#d7b36a",
-      "#38b8b0",
+      "#88c5db",
+      "#d7c16a",
+      "#6f79d0",
       "#b08bd8",
       "#f2a65a",
       "#d860c0",
