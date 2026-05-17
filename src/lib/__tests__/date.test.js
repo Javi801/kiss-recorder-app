@@ -11,6 +11,7 @@ import {
   getZodiacStartDate,
   isWithinZodiacPeriod,
   calculateAge,
+  calculateAgeAtEvent,
   deriveBirthYear,
 } from "@/lib/date";
 
@@ -310,5 +311,28 @@ describe("deriveBirthYear", () => {
   it("falls back to currentYear - age for an unrecognized zodiac sign", () => {
     vi.setSystemTime(new Date("2026-06-15T12:00:00"));
     expect(deriveBirthYear(25, "Unknown Sign")).toBe(2001);
+  });
+});
+
+describe("calculateAgeAtEvent", () => {
+  it("returns null when birthYear is missing", () => {
+    expect(calculateAgeAtEvent(null, ARIES_EN, "2026.04.20")).toBeNull();
+  });
+
+  it("returns null when event date is missing", () => {
+    expect(calculateAgeAtEvent(2000, ARIES_EN, "")).toBeNull();
+  });
+
+  it("falls back to calendar-year age when zodiac sign is missing", () => {
+    expect(calculateAgeAtEvent(2000, null, "2026.04.20")).toBe(26);
+  });
+
+  it("falls back to calendar-year age when zodiac sign cannot be parsed", () => {
+    expect(calculateAgeAtEvent(2000, "Unknown Sign", "2026.04.20")).toBe(26);
+  });
+
+  it("uses the zodiac end date to calculate age at an event", () => {
+    expect(calculateAgeAtEvent(2000, ARIES_EN, "2026.04.18")).toBe(25);
+    expect(calculateAgeAtEvent(2000, ARIES_EN, "2026.04.19")).toBe(26);
   });
 });

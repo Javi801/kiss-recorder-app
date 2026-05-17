@@ -95,6 +95,12 @@ describe("getStatsData", () => {
     expect(getStatsData(people, t).allEvents).toHaveLength(3);
   });
 
+  it("handles people without an events array", () => {
+    const stats = getStatsData([{ name: "Ana", gender: "female", activity: "works" }], t);
+    expect(stats.allEvents).toHaveLength(0);
+    expect(stats.peopleMostEvents).toEqual([{ label: "Ana", value: 0 }]);
+  });
+
   it("calculates average events per person", () => {
     const people = [
       makePerson("Ana", [makeEvent("2024.01.01"), makeEvent("2024.02.01")]),
@@ -151,6 +157,18 @@ describe("getStatsData", () => {
     ]);
   });
 
+  it("skips invalid dates when grouping events by month", () => {
+    const people = [
+      makePerson("Ana", [
+        makeEvent("bad-date"),
+        makeEvent("2024.03.20"),
+      ]),
+    ];
+    expect(getStatsData(people, t).eventsPerMonth).toEqual([
+      { label: "2024-03", value: 1 },
+    ]);
+  });
+
   it("groups events by year in chronological order", () => {
     const people = [
       makePerson("Ana", [
@@ -162,6 +180,18 @@ describe("getStatsData", () => {
     expect(getStatsData(people, t).eventsPerYear).toEqual([
       { label: "2023", value: 1 },
       { label: "2024", value: 2 },
+    ]);
+  });
+
+  it("skips invalid dates when grouping events by year", () => {
+    const people = [
+      makePerson("Ana", [
+        makeEvent("2024.01.01"),
+        makeEvent("not-a-date"),
+      ]),
+    ];
+    expect(getStatsData(people, t).eventsPerYear).toEqual([
+      { label: "2024", value: 1 },
     ]);
   });
 
@@ -227,6 +257,11 @@ describe("getStatsData", () => {
     const { personsByFirstLetter } = getStatsData(people, t);
     expect(personsByFirstLetter.find((d) => d.label === "A").value).toBe(2);
     expect(personsByFirstLetter.find((d) => d.label === "B").value).toBe(1);
+  });
+
+  it("groups people without a name under #", () => {
+    const { personsByFirstLetter } = getStatsData([makePerson("")], t);
+    expect(personsByFirstLetter).toEqual([{ label: "#", value: 1 }]);
   });
 
   it("groups people by age using birthYear + zodiac calculation", () => {
