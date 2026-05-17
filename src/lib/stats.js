@@ -1,5 +1,5 @@
 import { SCORE_OPTIONS } from "@/lib/constants";
-import { hasScore, renderKisses, getShortZodiacLabel, translateActivity, translateGender } from "@/lib/format";
+import { hasScore, renderKisses, getShortZodiacLabel, getZodiacForLanguage, translateActivity, translateGender } from "@/lib/format";
 import { getMonthKey, getYearKey, calculateAge } from "@/lib/date";
 
 /**
@@ -110,9 +110,10 @@ export function getStatsData(people, t) {
   
   // Sum total events by zodiac sign.
   const eventsByZodiac = (() => {
+    const lang = t.studies === "estudia" ? "es" : "en";
     const map = new Map();
     for (const person of people) {
-      const key = getShortZodiacLabel(person.zodiacSign);
+      const key = getShortZodiacLabel(getZodiacForLanguage(person.zodiacSign, lang));
       map.set(key, (map.get(key) || 0) + (person.events?.length || 0));
     }
     return [...map.entries()]

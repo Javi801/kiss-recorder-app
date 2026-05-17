@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 
 import {
   getShortZodiacLabel,
+  getZodiacForLanguage,
   translateActivity,
   translateGender,
 } from "@/lib/format";
@@ -29,7 +30,7 @@ export default function StatsPeopleTab({ people, t }) {
     const allSigns = ZODIAC_OPTIONS[lang].map(getShortZodiacLabel);
     const map = new Map(allSigns.map((s) => [s, 0]));
     for (const person of people) {
-      const key = getShortZodiacLabel(person.zodiacSign);
+      const key = getShortZodiacLabel(getZodiacForLanguage(person.zodiacSign, lang));
       if (map.has(key)) map.set(key, map.get(key) + 1);
     }
     return allSigns.map((label) => ({ label, value: map.get(label) }));
@@ -53,7 +54,7 @@ export default function StatsPeopleTab({ people, t }) {
     const allSigns = ZODIAC_OPTIONS[lang].map(getShortZodiacLabel);
     const map = new Map(allSigns.map((s) => [s, 0]));
     for (const person of people) {
-      const key = getShortZodiacLabel(person.zodiacSign);
+      const key = getShortZodiacLabel(getZodiacForLanguage(person.zodiacSign, lang));
       if (map.has(key)) map.set(key, map.get(key) + (person.events?.length || 0));
     }
     return allSigns.map((label) => ({ label, value: map.get(label) }));
