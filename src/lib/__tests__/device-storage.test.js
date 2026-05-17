@@ -287,7 +287,7 @@ describe("loadSettings (web path)", () => {
   });
 
   it("returns defaults when no settings are saved", async () => {
-    expect(await loadSettings()).toEqual({ iconColor: "yellow", language: "en", theme: "pink" });
+    expect(await loadSettings()).toEqual({ iconColor: "yellow", language: "en", theme: "pink", statsVisible: true });
   });
 
   it("returns the saved iconColor", async () => {
@@ -364,7 +364,7 @@ describe("saveSettings (web path)", () => {
   });
 
   it("round-trips correctly through save and load", async () => {
-    await saveSettings({ iconColor: "blue", language: "es", theme: "dark" });
-    expect(await loadSettings()).toEqual({ iconColor: "blue", language: "es", theme: "dark" });
+    await saveSettings({ iconColor: "blue", language: "es", theme: "dark", statsVisible: true });
+    expect(await loadSettings()).toEqual({ iconColor: "blue", language: "es", theme: "dark", statsVisible: true });
   });
 });
