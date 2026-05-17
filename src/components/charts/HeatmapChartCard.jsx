@@ -12,6 +12,7 @@ const MAX_NAME_CHARS = Math.floor((NAMES_W - 14) / APPROX_CHAR_PX);
 const MIN_COL_W = 36;
 const ROW_H = 36;
 const GAP = 3;
+const MAX_VISIBLE_ROWS = 10;
 
 function cellColor(count, maxCount, cardSoft, heatmapRgb, alphaBase = 0.15, exponent = 1) {
   if (!count || !maxCount) return cardSoft;
@@ -24,7 +25,6 @@ export default function HeatmapChartCard({ title, subtitle, data, allYears, empt
   const PALETTE = usePalette();
   const containerRef = useRef(null);
   const scrollRef = useRef(null);
-  const yearLabelsSvgRef = useRef(null);
   const scrolledRef = useRef(false);
   const [containerWidth, setContainerWidth] = useState(300);
 
@@ -37,25 +37,13 @@ export default function HeatmapChartCard({ title, subtitle, data, allYears, empt
   }, []);
 
   // Scroll to the rightmost (most recent) data once the container is sized.
-  // Also syncs the sticky year labels header to the initial scroll position.
   useEffect(() => {
     if (scrolledRef.current) return;
     const el = scrollRef.current;
     if (!el || el.scrollWidth <= el.clientWidth) return;
     el.scrollLeft = el.scrollWidth;
-    if (yearLabelsSvgRef.current) {
-      yearLabelsSvgRef.current.style.transform = `translateX(-${el.scrollLeft}px)`;
-    }
     scrolledRef.current = true;
   }, [containerWidth]);
-
-  // Sync sticky year labels with the horizontal scroll position.
-  // Direct DOM manipulation avoids re-renders on every scroll event.
-  function handleScroll(e) {
-    if (yearLabelsSvgRef.current) {
-      yearLabelsSvgRef.current.style.transform = `translateX(-${e.target.scrollLeft}px)`;
-    }
-  }
 
   const marginLeft = NAMES_W;
 
@@ -65,6 +53,8 @@ export default function HeatmapChartCard({ title, subtitle, data, allYears, empt
   const colW = numYears > 0 ? dataW / numYears : 0;
 
   const chartH = data.length * ROW_H;
+  // Cap visible rows so vertical scroll activates inside the card instead of the page.
+  const maxHeight = MARGIN_TOP + Math.min(data.length, MAX_VISIBLE_ROWS) * ROW_H + MARGIN_BOTTOM;
 
   const maxCount = useMemo(() => {
     let max = 0;
@@ -79,10 +69,13 @@ export default function HeatmapChartCard({ title, subtitle, data, allYears, empt
   const cardStyle = { borderColor: PALETTE.cardBorder, backgroundColor: PALETTE.cardBg };
   const emptyStyle = { borderColor: PALETTE.inputBorder, color: PALETTE.textSoft };
 
+  const totalW = marginLeft + dataW + MARGIN_RIGHT;
+  const totalH = MARGIN_TOP + chartH + MARGIN_BOTTOM;
+
   return (
     <Card
       className="rounded-3xl"
-      style={{ overflow: "visible", boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)", backdropFilter: "blur(8px)", ...cardStyle }}
+      style={{ overflow: "hidden", boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)", backdropFilter: "blur(8px)", ...cardStyle }}
     >
       <CardHeader style={{ paddingBottom: "0.5rem" }}>
         <CardTitle style={{ ...TEXT.title, color: PALETTE.text }}>{title}</CardTitle>
@@ -93,91 +86,115 @@ export default function HeatmapChartCard({ title, subtitle, data, allYears, empt
         {data.length && allYears.length ? (
           <div ref={containerRef}>
             {/*
-              Sticky year labels header.
-              position:sticky works here because this element's parent (containerRef div)
-              has no overflow set. The overflow:auto is only on the inner scrollRef div,
-              which is a sibling, not an ancestor, of this header.
+              Single scroll container for both axes.
+              Year labels (sticky top) and name labels (sticky left) are CSS-sticky
+              within this container, so they stay visible while scrolling the chart
+              without floating over the rest of the page.
             */}
             <div
+              ref={scrollRef}
               style={{
-                position: "sticky",
-                top: 0,
-                zIndex: 2,
-                display: "flex",
-                backgroundColor: PALETTE.cardBg,
-                backdropFilter: "blur(8px)",
+                overflow: "auto",
+                maxHeight,
+                WebkitOverflowScrolling: "touch",
               }}
             >
-              {/* Empty corner that aligns with the names column */}
-              <div style={{ width: marginLeft, flexShrink: 0 }} />
-              {/* Year labels viewport: clips the SVG so it doesn't overflow the card */}
-              <div style={{ flex: 1, overflow: "hidden" }}>
-                <svg
-                  ref={yearLabelsSvgRef}
-                  width={dataW + MARGIN_RIGHT}
-                  height={MARGIN_TOP}
-                  aria-hidden="true"
-                  style={{ display: "block" }}
-                >
-                  {allYears.map((year, j) => {
-                    const cx = j * colW + colW / 2;
-                    const cy = MARGIN_TOP - 6;
-                    return (
-                      <text
-                        key={year}
-                        x={cx}
-                        y={cy}
-                        textAnchor="end"
-                        fontSize={11}
-                        fill={PALETTE.textSoft}
-                        transform={`rotate(45, ${cx}, ${cy})`}
-                      >
-                        {year}
-                      </text>
-                    );
-                  })}
-                </svg>
-              </div>
-            </div>
-
-            {/* Chart body: fixed names column + horizontally scrollable data cells */}
-            <div style={{ display: "flex" }}>
-              {/* Fixed left column: person name labels */}
-              <svg
-                width={marginLeft}
-                height={chartH + MARGIN_BOTTOM}
-                style={{ flexShrink: 0 }}
-                aria-hidden="true"
-              >
-                {data.map((person, i) => {
-                  const label = person.label.length > MAX_NAME_CHARS
-                    ? person.label.slice(0, MAX_NAME_CHARS - 1) + "…"
-                    : person.label;
-                  return (
-                    <text
-                      key={person.label}
-                      x={marginLeft - 8}
-                      y={i * ROW_H + ROW_H / 2 + 4}
-                      textAnchor="end"
-                      fontSize={12}
-                      fill={PALETTE.text}
-                    >
-                      {label}
-                    </text>
-                  );
-                })}
-              </svg>
-
-              {/* Scrollable data cells */}
               <div
-                ref={scrollRef}
-                style={{ overflowX: "auto", flex: 1 }}
-                onScroll={handleScroll}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: `${marginLeft}px ${dataW + MARGIN_RIGHT}px`,
+                  gridTemplateRows: `${MARGIN_TOP}px ${chartH + MARGIN_BOTTOM}px`,
+                  width: totalW,
+                  height: totalH,
+                }}
               >
+                {/* Top-left corner: sticky in both directions */}
+                <div
+                  style={{
+                    position: "sticky",
+                    top: 0,
+                    left: 0,
+                    zIndex: 3,
+                    backgroundColor: PALETTE.cardSoft,
+                  }}
+                />
+
+                {/* Year labels row: sticky to top, scrolls horizontally with data */}
+                <div
+                  style={{
+                    position: "sticky",
+                    top: 0,
+                    zIndex: 2,
+                    backgroundColor: PALETTE.cardSoft,
+                  }}
+                >
+                  <svg
+                    width={dataW + MARGIN_RIGHT}
+                    height={MARGIN_TOP}
+                    aria-hidden="true"
+                    style={{ display: "block" }}
+                  >
+                    {allYears.map((year, j) => {
+                      const cx = j * colW + colW / 2;
+                      const cy = MARGIN_TOP - 6;
+                      return (
+                        <text
+                          key={year}
+                          x={cx}
+                          y={cy}
+                          textAnchor="end"
+                          fontSize={11}
+                          fill={PALETTE.textSoft}
+                          transform={`rotate(45, ${cx}, ${cy})`}
+                        >
+                          {year}
+                        </text>
+                      );
+                    })}
+                  </svg>
+                </div>
+
+                {/* Person name labels: sticky to left, scrolls vertically with rows */}
+                <div
+                  style={{
+                    position: "sticky",
+                    left: 0,
+                    zIndex: 1,
+                    backgroundColor: PALETTE.cardSoft,
+                  }}
+                >
+                  <svg
+                    width={marginLeft}
+                    height={chartH + MARGIN_BOTTOM}
+                    aria-hidden="true"
+                    style={{ display: "block" }}
+                  >
+                    {data.map((person, i) => {
+                      const label = person.label.length > MAX_NAME_CHARS
+                        ? person.label.slice(0, MAX_NAME_CHARS - 1) + "…"
+                        : person.label;
+                      return (
+                        <text
+                          key={person.label}
+                          x={marginLeft - 8}
+                          y={i * ROW_H + ROW_H / 2 + 4}
+                          textAnchor="end"
+                          fontSize={12}
+                          fill={PALETTE.text}
+                        >
+                          {label}
+                        </text>
+                      );
+                    })}
+                  </svg>
+                </div>
+
+                {/* Data cells */}
                 <svg
                   width={dataW + MARGIN_RIGHT}
                   height={chartH + MARGIN_BOTTOM}
                   aria-hidden="true"
+                  style={{ display: "block" }}
                 >
                   {data.map((person, i) => {
                     const rowY = i * ROW_H;
