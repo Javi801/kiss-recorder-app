@@ -351,7 +351,20 @@ export default function EventsTimelineChartCard({ allEvents, t }) {
       </CardHeader>
 
       <CardContent>
-        <div style={{ height: "15rem", width: "100%" }}>
+        <div style={{ height: "15rem", width: "100%", position: "relative" }}>
+          <span
+            style={{
+              position: "absolute",
+              top: 7,
+              left: 14,
+              fontSize: 10,
+              color: P.textSoft,
+              pointerEvents: "none",
+              lineHeight: 1,
+            }}
+          >
+            {maxValue}
+          </span>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
               <CartesianGrid
