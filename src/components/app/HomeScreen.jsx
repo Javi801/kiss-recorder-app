@@ -458,7 +458,7 @@ export default function MainScreen({
             style={dataButtonStyle}
             onClick={handleExportJson}
           >
-            <Download style={{ height: "1.25rem", width: "1.25rem", color: PALETTE.accent2 }} />
+            <Upload style={{ height: "1.25rem", width: "1.25rem", color: PALETTE.accent2 }} />
             <span style={dataButtonLabelStyle}>{t.exportJsonLabel}</span>
           </Button>
 
@@ -468,7 +468,7 @@ export default function MainScreen({
             style={dataButtonStyle}
             onClick={() => fileInputRef.current?.click()}
           >
-            <Upload style={{ height: "1.25rem", width: "1.25rem", color: PALETTE.accent2 }} />
+            <Download style={{ height: "1.25rem", width: "1.25rem", color: PALETTE.accent2 }} />
             <span style={dataButtonLabelStyle}>{t.importJsonLabel}</span>
           </Button>
 
