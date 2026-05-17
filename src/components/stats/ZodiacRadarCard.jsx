@@ -124,7 +124,7 @@ export default function ZodiacRadarCard({
         {hasData ? (
           <div style={{ height: "18rem", width: "100%" }}>
             <ResponsiveContainer width="100%" height="100%">
-              <RadarChart data={data} margin={{ top: 10, right: 30, bottom: 10, left: 30 }} startAngle={210}>
+              <RadarChart data={data} margin={{ top: 10, right: 30, bottom: 10, left: 30 }} startAngle={210} endAngle={-150}>
                 <PolarGrid stroke={P.cardBorder} />
                 <PolarAngleAxis
                   dataKey="label"
