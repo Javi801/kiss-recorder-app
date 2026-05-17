@@ -365,6 +365,21 @@ export default function EventsTimelineChartCard({ allEvents, t }) {
           >
             {maxValue}
           </span>
+          {data.every((d) => d.value === 0) && (
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                paddingBottom: "2.5rem",
+                pointerEvents: "none",
+              }}
+            >
+              <span style={{ fontSize: 13, color: P.textSoft }}>{t.noDataYet}</span>
+            </div>
+          )}
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
               <CartesianGrid
