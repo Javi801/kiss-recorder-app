@@ -87,7 +87,8 @@ export default function PeopleManagerScreen({
       const matchesActivity =
         filters.activity.length === 0 || filters.activity.includes(person.activity);
       const matchesZodiac =
-        filters.zodiacSign.length === 0 || filters.zodiacSign.includes(person.zodiacSign);
+        filters.zodiacSign.length === 0 ||
+        filters.zodiacSign.some((z) => z[0] === person.zodiacSign?.[0]);
       const matchesEventDate = (() => {
         if (!filters.eventDateFrom && !filters.eventDateTo) return true;
         return (person.events || []).some((event) => {

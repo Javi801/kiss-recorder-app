@@ -1,4 +1,4 @@
-import { GENDER_COLORS } from "@/lib/constants";
+import { GENDER_COLORS, ZODIAC_OPTIONS } from "@/lib/constants";
 
 // Translate activity key into localized label.
 export function translateActivity(value, t) {
@@ -41,6 +41,13 @@ export function hasScore(score) {
 export function renderKisses(score, t) {
   if (!hasScore(score)) return t.noScore;
   return "💋".repeat(score) || t.noScore;
+}
+
+// Translate a stored zodiac string to the target language using the emoji as key.
+export function getZodiacForLanguage(zodiacSign, language) {
+  if (!zodiacSign) return zodiacSign;
+  const emoji = zodiacSign.charAt(0);
+  return ZODIAC_OPTIONS[language]?.find((opt) => opt.charAt(0) === emoji) ?? zodiacSign;
 }
 
 // Extract short zodiac label from full string.

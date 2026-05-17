@@ -72,12 +72,11 @@ export default function StatsOverviewTab({ people, allEvents, t }) {
         <StatTile
           label={t.averageScore}
           value={averageScore}
-          helper={t.scores}
+          helper={t.scoreOutOf}
         />
         <StatTile
           label={t.totalEvents}
           value={allEvents.length}
-          helper={t.statsGroupOverview}
         />
       </div>
 
@@ -86,7 +85,7 @@ export default function StatsOverviewTab({ people, allEvents, t }) {
         subtitle={t.topTracked}
         data={peopleMostEvents}
         emptyText={t.noDataYet}
-        rotateXLabels={true}
+        horizontal={true}
         tooltipUnit={{ one: t.chartEvent, many: t.chartEvents }}
       />
     </div>

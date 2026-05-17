@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { BarChart3, Clock3, UserRound, BadgePercent, Download, CheckCircle2, TriangleAlert } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,7 @@ import StatsScoresTab from "@/components/stats/StatsScoresTab";
 export default function StatsScreen({ people, t }) {
   const PALETTE = usePalette();
   const [tab, setTab] = useState("overview");
+  const [, startTransition] = useTransition();
   // null = idle, "success" = exported OK, Error instance = export failed
   const [pdfStatus, setPdfStatus] = useState(null);
 
@@ -72,9 +73,9 @@ export default function StatsScreen({ people, t }) {
     },
     {
       key: "people",
-      label: t.peopleStats,
+      label: t.profilesStats,
       icon: UserRound,
-      helper: t.statsGroupPeople,
+      helper: t.statsGroupProfiles,
     },
     {
       key: "scores",
@@ -122,7 +123,7 @@ export default function StatsScreen({ people, t }) {
           return (
             <button
               key={item.key}
-              onClick={() => setTab(item.key)}
+              onClick={() => startTransition(() => setTab(item.key))}
               className="rounded-2xl"
               style={{
                 display: "flex",
@@ -133,7 +134,7 @@ export default function StatsScreen({ people, t }) {
                 paddingTop: "0.75rem",
                 paddingBottom: "0.75rem",
                 textAlign: "left",
-                transition: "all 150ms cubic-bezier(0.4, 0, 0.2, 1)",
+                transition: "all 30ms cubic-bezier(0.4, 0, 0.2, 1)",
                 border: active ? "none" : `1px solid ${PALETTE.inputBorder}`,
                 background: active
                   ? `linear-gradient(90deg, ${PALETTE.accent}, ${PALETTE.accentSoft})`
@@ -162,7 +163,7 @@ export default function StatsScreen({ people, t }) {
       {tab === "people" ? <StatsPeopleTab people={people} t={t} /> : null}
 
       {tab === "scores" ? (
-        <StatsScoresTab people={people} allEvents={allEvents} t={t} />
+        <StatsScoresTab allEvents={allEvents} t={t} />
       ) : null}
 
       {/* Empty data dialog */}

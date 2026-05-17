@@ -56,6 +56,10 @@ describe("abbreviateZodiacMonths", () => {
     expect(abbreviateZodiacMonths("No dates here")).toBe("No dates here");
   });
 
+  it("leaves already abbreviated month names unchanged", () => {
+    expect(abbreviateZodiacMonths("Jan 20 - Feb 19")).toBe("Jan 20 - Feb 19");
+  });
+
   it("leaves an empty string unchanged", () => {
     expect(abbreviateZodiacMonths("")).toBe("");
   });
