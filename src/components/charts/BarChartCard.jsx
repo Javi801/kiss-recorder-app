@@ -35,6 +35,7 @@ export default function BarChartCard({
   data,
   emptyText,
   rotateXLabels = false,
+  horizontal = false,
   customColors = null,
   yAxisLabel = null,
   tooltipUnit = null,
@@ -53,6 +54,14 @@ export default function BarChartCard({
     borderColor: PALETTE.inputBorder,
     color: PALETTE.textSoft,
   };
+
+  // Width for the category axis in horizontal mode, based on longest label.
+  const labelAxisWidth = horizontal
+    ? Math.min(Math.max(...data.map((d) => (d.label?.length ?? 0))) * 6 + 4, 80)
+    : undefined;
+
+  // Height scales with item count in horizontal mode so bars don't get too cramped.
+  const chartHeight = horizontal ? Math.max(data.length * 36, 200) : 256;
 
   return (
     <Card className="rounded-3xl" style={{ boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)", backdropFilter: "blur(8px)", ...cardStyle }}>
@@ -75,8 +84,43 @@ export default function BarChartCard({
 
       <CardContent>
         {data.length ? (
-          <div style={{ height: "16rem", width: "100%", outline: "none" }}>
+          <div style={{ height: `${chartHeight}px`, width: "100%", outline: "none" }}>
             <ResponsiveContainer width="100%" height="100%">
+              {horizontal ? (
+                <BarChart data={data} layout="vertical" margin={{ top: 5, right: 16, left: 0, bottom: 5 }}>
+                  <CartesianGrid horizontal={false} strokeDasharray="3 3" stroke={PALETTE.cardBorder} />
+                  <YAxis
+                    dataKey="label"
+                    type="category"
+                    tickLine={false}
+                    axisLine={false}
+                    fontSize={12}
+                    tick={{ fill: PALETTE.textSoft }}
+                    width={labelAxisWidth}
+                  />
+                  <XAxis
+                    type="number"
+                    allowDecimals={false}
+                    tickLine={false}
+                    axisLine={false}
+                    fontSize={11}
+                    tick={{ fill: PALETTE.textSoft }}
+                  />
+                  {tooltipUnit ? (
+                    <Tooltip cursor={{ fill: PALETTE.accentShadow }} content={<ChartTooltip tooltipUnit={tooltipUnit} />} />
+                  ) : (
+                    <Tooltip cursor={{ fill: PALETTE.accentShadow }} />
+                  )}
+                  <Bar dataKey="value" radius={[0, 8, 8, 0]}>
+                    {data.map((entry, index) => {
+                      const fill =
+                        (customColors && customColors[entry.label]) ||
+                        chartColors[index % chartColors.length];
+                      return <Cell key={`${entry.label}-${index}`} fill={fill} />;
+                    })}
+                  </Bar>
+                </BarChart>
+              ) : (
               <BarChart data={data} margin={{ top: 5, right: 5, left: -15, bottom: 5 }}>
                 {/* Background grid */}
                 <CartesianGrid vertical={false} strokeDasharray="3 3" stroke={PALETTE.cardBorder} />
@@ -131,6 +175,7 @@ export default function BarChartCard({
                   })}
                 </Bar>
               </BarChart>
+              )}
             </ResponsiveContainer>
           </div>
         ) : (
