@@ -38,6 +38,7 @@ export default function BarChartCard({
   horizontal = false,
   customColors = null,
   yAxisLabel = null,
+  xAxisLabel = null,
   tooltipUnit = null,
   headerAction = null,
   tabs = null,
@@ -143,10 +144,16 @@ export default function BarChartCard({
                   fontSize={11}
                   angle={rotateXLabels ? -24 : 0}
                   textAnchor={rotateXLabels ? "end" : "middle"}
-                  height={rotateXLabels ? 62 : 30}
+                  height={rotateXLabels ? 62 : xAxisLabel ? 44 : 30}
                   interval={0}
                   ticks={xTicks ?? undefined}
                   tick={{ fill: PALETTE.textSoft }}
+                  label={xAxisLabel ? {
+                    value: xAxisLabel,
+                    position: "insideBottom",
+                    offset: 0,
+                    style: { fontSize: 11, fill: PALETTE.textSoft },
+                  } : undefined}
                 />
 
                 {/* Y axis */}

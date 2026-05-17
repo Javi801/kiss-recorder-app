@@ -58,6 +58,21 @@ export default function StatsTimeTab({ people, allEvents, t }) {
     [people],
   );
 
+  // Histogram: how many people appear in exactly N distinct years (N = 2, 3, 4, ...).
+  const yearCountDistribution = useMemo(() => {
+    const counts = {};
+    for (const item of personsWithEventsInMultipleYears) {
+      counts[item.value] = (counts[item.value] || 0) + 1;
+    }
+    const keys = Object.keys(counts).map(Number);
+    if (!keys.length) return [];
+    const max = Math.max(...keys);
+    return Array.from({ length: max - 1 }, (_, i) => ({
+      label: String(i + 2),
+      value: counts[i + 2] || 0,
+    }));
+  }, [personsWithEventsInMultipleYears]);
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       <EventsTimelineChartCard allEvents={allEvents} t={t} />
@@ -66,14 +81,11 @@ export default function StatsTimeTab({ people, allEvents, t }) {
       <BarChartCard
         title={t.multiYearPeople}
         subtitle={t.multiYearDesc}
-        data={personsWithEventsInMultipleYears.map((item) => ({
-          label: item.label,
-          value: item.value,
-        }))}
+        data={yearCountDistribution}
         emptyText={t.noMultiYearPeopleYet}
-        rotateXLabels={true}
-        yAxisLabel={t.years}
-        tooltipUnit={{ one: t.chartYear, many: t.years }}
+        yAxisLabel={t.chartPersons}
+        xAxisLabel={t.years}
+        tooltipUnit={{ one: t.chartPerson, many: t.chartPersons }}
       />
 
       {showDeferred && (
