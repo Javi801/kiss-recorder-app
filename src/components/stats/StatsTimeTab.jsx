@@ -4,7 +4,7 @@ import BarChartCard from "@/components/charts/BarChartCard";
 import DumbbellChartCard from "@/components/charts/DumbbellChartCard";
 import EventsTimelineChartCard from "@/components/charts/EventsTimelineChartCard";
 import HeatmapChartCard from "@/components/charts/HeatmapChartCard";
-import { getMonthKey, getYearKey } from "@/lib/date";
+import { getYearKey } from "@/lib/date";
 
 // Renders the time-based statistics tab. It shows monthly, yearly, and multi-year event patterns.
 export default function StatsTimeTab({ people, allEvents, t }) {
@@ -15,35 +15,6 @@ export default function StatsTimeTab({ people, allEvents, t }) {
     const id = setTimeout(() => setShowDeferred(true), 60);
     return () => clearTimeout(id);
   }, []);
-  // Groups all events by month. Keys are generated in yyyy-MM format.
-  const eventsPerMonth = useMemo(() => {
-    const map = new Map();
-
-    for (const event of allEvents) {
-      const key = getMonthKey(event.date);
-      if (!key) continue;
-      map.set(key, (map.get(key) || 0) + 1);
-    }
-
-    return [...map.entries()]
-      .sort((a, b) => a[0].localeCompare(b[0]))
-      .map(([label, value]) => ({ label, value }));
-  }, [allEvents]);
-
-  // Groups all events by year. Keys are generated in yyyy format.
-  const eventsPerYear = useMemo(() => {
-    const map = new Map();
-
-    for (const event of allEvents) {
-      const key = getYearKey(event.date);
-      if (!key) continue;
-      map.set(key, (map.get(key) || 0) + 1);
-    }
-
-    return [...map.entries()]
-      .sort((a, b) => a[0].localeCompare(b[0]))
-      .map(([label, value]) => ({ label, value }));
-  }, [allEvents]);
 
   // Full year range with no gaps, derived from all events across all people.
   const allYears = useMemo(() => {
@@ -89,23 +60,6 @@ export default function StatsTimeTab({ people, allEvents, t }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       <EventsTimelineChartCard allEvents={allEvents} t={t} />
-
-      <BarChartCard
-        title={t.eventsPerMonth}
-        subtitle={t.monthlyActivity}
-        data={eventsPerMonth}
-        emptyText={t.noDataYet}
-        rotateXLabels={true}
-        tooltipUnit={{ one: t.chartEvent, many: t.chartEvents }}
-      />
-
-      <BarChartCard
-        title={t.eventsPerYear}
-        subtitle={t.yearlyTotals}
-        data={eventsPerYear}
-        emptyText={t.noDataYet}
-        tooltipUnit={{ one: t.chartEvent, many: t.chartEvents }}
-      />
 
       <BarChartCard
         title={t.multiYearPeople}
