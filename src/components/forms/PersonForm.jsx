@@ -15,7 +15,7 @@ import {
 
 import { GENDERS, ZODIAC_OPTIONS, TEXT } from "@/lib/constants";
 import { usePalette } from "@/lib/theme";
-import { translateGender } from "@/lib/format";
+import { translateGender, getZodiacForLanguage } from "@/lib/format";
 import { calculateAge, deriveBirthYear, isWithinZodiacPeriod } from "@/lib/date";
 
 /**
@@ -38,10 +38,11 @@ export default function PersonForm({
     if (!initialValues) {
       return { name: "", age: "", gender: "", howWeMet: "", zodiacSign: "", activity: "", detail: "" };
     }
+    const zodiacSign = getZodiacForLanguage(initialValues.zodiacSign, language);
     const displayAge = initialValues.birthYear
-      ? String(calculateAge(initialValues.birthYear, initialValues.zodiacSign) ?? "")
+      ? String(calculateAge(initialValues.birthYear, zodiacSign) ?? "")
       : String(initialValues.age ?? "");
-    return { ...initialValues, age: displayAge };
+    return { ...initialValues, zodiacSign, age: displayAge };
   });
 
   const [errors, setErrors] = useState({});
