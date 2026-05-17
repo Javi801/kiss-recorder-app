@@ -39,7 +39,7 @@ export default function LanguageSelector({ language, setLanguage, t }) {
         >
           <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
             <Languages
-              style={{ height: "1.25rem", width: "1.25rem", flexShrink: 0, color: PALETTE.rose }}
+              style={{ height: "1.25rem", width: "1.25rem", flexShrink: 0, color: PALETTE.accent }}
             />
             <SelectValue placeholder={t.language} />
           </div>

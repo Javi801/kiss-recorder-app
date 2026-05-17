@@ -19,8 +19,8 @@ export default function AddPersonScreen({ onSave, onBack, t, language }) {
         <Button
           variant="ghost"
           className="rounded-2xl"
-          style={{ color: PALETTE.deep }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = PALETTE.blush)}
+          style={{ color: PALETTE.accentEmphasis }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = PALETTE.accentMuted)}
           onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
           onClick={onBack}
         >

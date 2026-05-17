@@ -55,9 +55,9 @@ export default function ColorSelector({
                     gap: "0.375rem",
                     padding: "0.5rem",
                     border: selected
-                      ? `2px solid ${PALETTE.rose}`
+                      ? `2px solid ${PALETTE.accent}`
                       : `1.5px solid ${PALETTE.inputBorder}`,
-                    backgroundColor: selected ? PALETTE.blush : PALETTE.controlBg,
+                    backgroundColor: selected ? PALETTE.accentMuted : PALETTE.controlBg,
                     cursor: "pointer",
                     transition: "all 150ms ease",
                   }}
@@ -72,7 +72,7 @@ export default function ColorSelector({
                       boxShadow: selected ? "0 2px 8px rgba(0,0,0,0.18)" : "0 1px 3px rgba(0,0,0,0.1)",
                     }}
                   />
-                  <span style={{ ...TEXT.caption, fontWeight: selected ? "700" : "500", color: selected ? PALETTE.rose : PALETTE.textSoft }}>
+                  <span style={{ ...TEXT.caption, fontWeight: selected ? "700" : "500", color: selected ? PALETTE.accent : PALETTE.textSoft }}>
                     {t[`theme${key.charAt(0).toUpperCase() + key.slice(1)}`]}
                   </span>
                 </button>

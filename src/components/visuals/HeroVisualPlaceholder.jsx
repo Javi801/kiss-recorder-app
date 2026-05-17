@@ -37,7 +37,7 @@ export default function HeroVisualPlaceholder() {
           bottom: "1.5rem",
           left: "1.5rem",
           borderRadius: "9999px",
-          background: `linear-gradient(135deg, ${PALETTE.blush}, ${PALETTE.cardSoft}, ${PALETTE.sky})`,
+          background: `linear-gradient(135deg, ${PALETTE.accentMuted}, ${PALETTE.cardSoft}, ${PALETTE.gradientEnd})`,
         }}
       />
 

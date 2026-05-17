@@ -209,10 +209,10 @@ export default function AgeRangeCard({ title, people, emptyText, t }) {
                     style={{ position: "absolute", left: "3%", right: "3%", top: "50%", height: "1px", transform: "translateY(-50%)", backgroundColor: PALETTE.line }}
                   />
                   <div
-                    style={{ position: "absolute", top: "50%", height: "1.25rem", width: "2px", transform: "translateY(-50%)", left: `${minPos}%`, backgroundColor: PALETTE.rose }}
+                    style={{ position: "absolute", top: "50%", height: "1.25rem", width: "2px", transform: "translateY(-50%)", left: `${minPos}%`, backgroundColor: PALETTE.accent }}
                   />
                   <div
-                    style={{ position: "absolute", top: "50%", height: "1.25rem", width: "2px", transform: "translateY(-50%)", left: `${maxPos}%`, backgroundColor: PALETTE.rose }}
+                    style={{ position: "absolute", top: "50%", height: "1.25rem", width: "2px", transform: "translateY(-50%)", left: `${maxPos}%`, backgroundColor: PALETTE.accent }}
                   />
                   <div
                     className="rounded-sm"
@@ -221,14 +221,14 @@ export default function AgeRangeCard({ title, people, emptyText, t }) {
                       top: "50%",
                       height: "1.25rem",
                       transform: "translateY(-50%)",
-                      border: `2px solid ${PALETTE.rose}`,
+                      border: `2px solid ${PALETTE.accent}`,
                       left: `${boxLeft}%`,
                       width: `${boxWidth}%`,
-                      backgroundColor: PALETTE.roseSoft,
+                      backgroundColor: PALETTE.accentSoft,
                     }}
                   />
                   <div
-                    style={{ position: "absolute", top: "50%", height: "1.5rem", width: "2px", transform: "translateY(-50%)", left: `${medianPos}%`, backgroundColor: PALETTE.deep }}
+                    style={{ position: "absolute", top: "50%", height: "1.5rem", width: "2px", transform: "translateY(-50%)", left: `${medianPos}%`, backgroundColor: PALETTE.accentEmphasis }}
                   />
                 </div>
               </div>
@@ -251,7 +251,7 @@ export default function AgeRangeCard({ title, people, emptyText, t }) {
                         transform: isFirst ? "none" : isLast ? "translateX(-100%)" : "translateX(-50%)",
                         ...TEXT.body,
                         fontWeight: "500",
-                        color: PALETTE.deep,
+                        color: PALETTE.accentEmphasis,
                         whiteSpace: "nowrap",
                       }}
                     >

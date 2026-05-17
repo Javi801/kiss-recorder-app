@@ -89,7 +89,7 @@ export default function PersonCard({
               ? "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 0 0 2px #f9d58a"
               : "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
             borderColor: hasIncompleteEvent ? "#f9d58a" : PALETTE.cardBorder,
-            background: `linear-gradient(180deg, ${PALETTE.cardSoft}, ${PALETTE.blush})`,
+            background: `linear-gradient(180deg, ${PALETTE.cardSoft}, ${PALETTE.accentMuted})`,
           }}
         >
           <CardContent style={{ padding: 0 }}>
@@ -131,11 +131,11 @@ export default function PersonCard({
               </div>
 
               {/* Toggle icon */}
-              <div className="rounded-2xl" style={{ padding: "0.5rem", backgroundColor: PALETTE.blush }}>
+              <div className="rounded-2xl" style={{ padding: "0.5rem", backgroundColor: PALETTE.accentMuted }}>
                 {expanded ? (
-                  <ChevronUp style={{ height: "1.25rem", width: "1.25rem", color: PALETTE.rose }} />
+                  <ChevronUp style={{ height: "1.25rem", width: "1.25rem", color: PALETTE.accent }} />
                 ) : (
-                  <ChevronDown style={{ height: "1.25rem", width: "1.25rem", color: PALETTE.rose }} />
+                  <ChevronDown style={{ height: "1.25rem", width: "1.25rem", color: PALETTE.accent }} />
                 )}
               </div>
             </button>

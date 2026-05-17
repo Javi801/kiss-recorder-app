@@ -164,7 +164,7 @@ export default function StatsTimeTab({ people, allEvents, t }) {
 
                     <Badge
                       className="rounded-full"
-                      style={{ border: "none", color: "white", backgroundColor: PALETTE.rose }}
+                      style={{ border: "none", color: "white", backgroundColor: PALETTE.accent }}
                     >
                       {item.value}
                     </Badge>

@@ -99,8 +99,8 @@ export default function AreaChartCard({
                 <Area
                   type="monotone"
                   dataKey="value"
-                  stroke={PALETTE.sky2}
-                  fill={PALETTE.sky}
+                  stroke={PALETTE.accent2}
+                  fill={PALETTE.gradientEnd}
                 />
               </AreaChart>
             </ResponsiveContainer>

@@ -224,7 +224,7 @@ export default function StatsPeopleTab({ people, t }) {
         tooltipUnit={{ one: t.chartPerson, many: t.chartPersons }}
         headerAction={
           <div style={{ display: "flex", alignItems: "center", gap: "0.375rem", flexShrink: 0 }}>
-            <span style={{ ...TEXT.caption, color: ageAtEvent ? PALETTE.rose : PALETTE.textSoft }}>
+            <span style={{ ...TEXT.caption, color: ageAtEvent ? PALETTE.accent : PALETTE.textSoft }}>
               {t.ageAtEvent}
             </span>
             <button
@@ -236,7 +236,7 @@ export default function StatsPeopleTab({ people, t }) {
                 width: "2.25rem",
                 height: "1.25rem",
                 borderRadius: "9999px",
-                backgroundColor: ageAtEvent ? PALETTE.rose : PALETTE.line,
+                backgroundColor: ageAtEvent ? PALETTE.accent : PALETTE.line,
                 border: "none",
                 cursor: "pointer",
                 position: "relative",

@@ -60,11 +60,11 @@ export default function RadarChartCard({ title, subtitle, data, emptyText, toolt
                 )}
                 <Radar
                   dataKey="value"
-                  stroke={PALETTE.rose}
-                  fill={PALETTE.rose}
+                  stroke={PALETTE.accent}
+                  fill={PALETTE.accent}
                   fillOpacity={0.3}
                   strokeWidth={2}
-                  dot={{ r: 3, fill: PALETTE.rose, strokeWidth: 0 }}
+                  dot={{ r: 3, fill: PALETTE.accent, strokeWidth: 0 }}
                   activeDot={{ r: 5 }}
                 />
               </RadarChart>

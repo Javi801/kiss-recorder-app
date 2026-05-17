@@ -162,8 +162,8 @@ export function DatePicker({ value, onChange, placeholder, className, style }) {
       cursor: isDisabled ? "default" : "pointer",
       fontSize: "0.8125rem",
       fontWeight: isSelected || isToday ? 600 : 400,
-      color: isDisabled ? PALETTE.line : isSelected ? "white" : isActive ? PALETTE.rose : PALETTE.text,
-      backgroundColor: isSelected && !isDisabled ? PALETTE.rose : isActive && !isDisabled ? PALETTE.blush : "transparent",
+      color: isDisabled ? PALETTE.line : isSelected ? "white" : isActive ? PALETTE.accent : PALETTE.text,
+      backgroundColor: isSelected && !isDisabled ? PALETTE.accent : isActive && !isDisabled ? PALETTE.accentMuted : "transparent",
       transition: "background-color 0.1s",
     };
   }
@@ -196,8 +196,8 @@ export function DatePicker({ value, onChange, placeholder, className, style }) {
             flexShrink: 0,
             borderRadius: "0.75rem",
             border: `1px solid ${PALETTE.inputBorder}`,
-            backgroundColor: open ? PALETTE.blush : PALETTE.inputBg,
-            color: PALETTE.rose,
+            backgroundColor: open ? PALETTE.accentMuted : PALETTE.inputBg,
+            color: PALETTE.accent,
             cursor: "pointer",
             transition: "background-color 0.15s",
           }}
@@ -228,7 +228,7 @@ export function DatePicker({ value, onChange, placeholder, className, style }) {
               type="button"
               onClick={handlePrev}
               style={navBtn}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = PALETTE.blush)}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = PALETTE.accentMuted)}
               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
             >
               <ChevronLeft size={14} />
@@ -248,7 +248,7 @@ export function DatePicker({ value, onChange, placeholder, className, style }) {
                 textTransform: "capitalize",
                 transition: "background-color 0.1s",
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = PALETTE.blush)}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = PALETTE.accentMuted)}
               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
             >
               {titleLabel}
@@ -263,7 +263,7 @@ export function DatePicker({ value, onChange, placeholder, className, style }) {
                 cursor: isNextDisabled ? "default" : "pointer",
                 color: isNextDisabled ? PALETTE.line : PALETTE.textSoft,
               }}
-              onMouseEnter={(e) => { if (!isNextDisabled) e.currentTarget.style.backgroundColor = PALETTE.blush; }}
+              onMouseEnter={(e) => { if (!isNextDisabled) e.currentTarget.style.backgroundColor = PALETTE.accentMuted; }}
               onMouseLeave={(e) => { if (!isNextDisabled) e.currentTarget.style.backgroundColor = "transparent"; }}
             >
               <ChevronRight size={14} />
@@ -301,10 +301,10 @@ export function DatePicker({ value, onChange, placeholder, className, style }) {
                         borderRadius: "50%",
                       }}
                       onMouseEnter={(e) => {
-                        if (!isSelected && !isDisabled) e.currentTarget.style.backgroundColor = PALETTE.blush;
+                        if (!isSelected && !isDisabled) e.currentTarget.style.backgroundColor = PALETTE.accentMuted;
                       }}
                       onMouseLeave={(e) => {
-                        if (!isSelected && !isDisabled) e.currentTarget.style.backgroundColor = isToday ? PALETTE.blush : "transparent";
+                        if (!isSelected && !isDisabled) e.currentTarget.style.backgroundColor = isToday ? PALETTE.accentMuted : "transparent";
                       }}
                     >
                       {day}
@@ -335,10 +335,10 @@ export function DatePicker({ value, onChange, placeholder, className, style }) {
                       textTransform: "capitalize",
                     }}
                     onMouseEnter={(e) => {
-                      if (!isSelected && !isDisabled) e.currentTarget.style.backgroundColor = PALETTE.blush;
+                      if (!isSelected && !isDisabled) e.currentTarget.style.backgroundColor = PALETTE.accentMuted;
                     }}
                     onMouseLeave={(e) => {
-                      if (!isSelected && !isDisabled) e.currentTarget.style.backgroundColor = isToday ? PALETTE.blush : "transparent";
+                      if (!isSelected && !isDisabled) e.currentTarget.style.backgroundColor = isToday ? PALETTE.accentMuted : "transparent";
                     }}
                   >
                     {getShortMonth(m)}
@@ -367,10 +367,10 @@ export function DatePicker({ value, onChange, placeholder, className, style }) {
                       padding: "0.4rem 0",
                     }}
                     onMouseEnter={(e) => {
-                      if (!isSelected && !isDisabled) e.currentTarget.style.backgroundColor = PALETTE.blush;
+                      if (!isSelected && !isDisabled) e.currentTarget.style.backgroundColor = PALETTE.accentMuted;
                     }}
                     onMouseLeave={(e) => {
-                      if (!isSelected && !isDisabled) e.currentTarget.style.backgroundColor = isToday ? PALETTE.blush : "transparent";
+                      if (!isSelected && !isDisabled) e.currentTarget.style.backgroundColor = isToday ? PALETTE.accentMuted : "transparent";
                     }}
                   >
                     {yr}

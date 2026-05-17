@@ -18,7 +18,7 @@ export default function IntroScreen({ onOpenMain, t }) {
         justifyContent: "center",
         overflow: "hidden",
         zIndex: 10,
-        background: `linear-gradient(135deg, ${PALETTE.blush}, ${PALETTE.lilac}, ${PALETTE.sky})`,
+        background: `linear-gradient(135deg, ${PALETTE.accentMuted}, ${PALETTE.gradientMid}, ${PALETTE.gradientEnd})`,
       }}
     >
       {/* Interactive poppable bubbles */}
@@ -48,7 +48,7 @@ export default function IntroScreen({ onOpenMain, t }) {
           left: "1rem",
           zIndex: 10,
           padding: "0.25rem",
-          color: PALETTE.roseSoft,
+          color: PALETTE.accentSoft,
           opacity: 0.4,
           transition: "opacity 150ms",
           background: "none",

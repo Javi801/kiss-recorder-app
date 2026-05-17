@@ -132,7 +132,7 @@ export default function DumbbellChartCard({ title, subtitle, data, allYears, emp
                           y1={cy}
                           x2={xForYear(year)}
                           y2={cy}
-                          stroke={PALETTE.rose}
+                          stroke={PALETTE.accent}
                           strokeWidth={2}
                           strokeLinecap="round"
                         />
@@ -146,7 +146,7 @@ export default function DumbbellChartCard({ title, subtitle, data, allYears, emp
                         cx={xForYear(year)}
                         cy={cy}
                         r={DOT_R}
-                        fill={PALETTE.rose}
+                        fill={PALETTE.accent}
                         stroke={PALETTE.card}
                         strokeWidth={2}
                       />

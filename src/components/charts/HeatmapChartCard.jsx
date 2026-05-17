@@ -134,7 +134,7 @@ export default function HeatmapChartCard({ title, subtitle, data, allYears, empt
                               textAnchor="middle"
                               fontSize={11}
                               fontWeight="600"
-                              fill={useDarkText ? "white" : PALETTE.rose}
+                              fill={useDarkText ? "white" : PALETTE.accent}
                             >
                               {count}
                             </text>

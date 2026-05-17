@@ -60,8 +60,8 @@ function SectionLabel({ icon: Icon, label }) {
   const PALETTE = usePalette();
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "0.375rem", marginBottom: "0.625rem" }}>
-      <Icon size={12} style={{ color: PALETTE.rose, flexShrink: 0 }} />
-      <span style={{ ...TEXT.label, textTransform: "uppercase", letterSpacing: "0.09em", color: PALETTE.rose }}>
+      <Icon size={12} style={{ color: PALETTE.accent, flexShrink: 0 }} />
+      <span style={{ ...TEXT.label, textTransform: "uppercase", letterSpacing: "0.09em", color: PALETTE.accent }}>
         {label}
       </span>
     </div>
@@ -79,14 +79,14 @@ function Chip({ label, selected, onClick }) {
         borderRadius: "9999px",
         border: selected ? "none" : `1px solid ${PALETTE.inputBorder}`,
         background: selected
-          ? `linear-gradient(90deg, ${PALETTE.rose}, ${PALETTE.roseSoft})`
+          ? `linear-gradient(90deg, ${PALETTE.accent}, ${PALETTE.accentSoft})`
           : PALETTE.controlBg,
         color: selected ? "white" : PALETTE.textSoft,
         ...TEXT.body,
         fontWeight: selected ? "600" : "400",
         cursor: "pointer",
         transition: "all 0.15s",
-        boxShadow: selected ? `0 1px 4px ${PALETTE.roseShadow}` : "none",
+        boxShadow: selected ? `0 1px 4px ${PALETTE.accentShadow}` : "none",
       }}
     >
       {label}
@@ -137,7 +137,7 @@ export default function FiltersPanel({
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "-0.875rem 0" }}>
         <p style={{ ...TEXT.caption, color: PALETTE.textSoft }}>
           {t.showingResults}{" "}
-          <span style={{ ...TEXT.label, color: PALETTE.rose }}>{peopleCount}</span>{" "}
+          <span style={{ ...TEXT.label, color: PALETTE.accent }}>{peopleCount}</span>{" "}
           {peopleCount === 1 ? t.result : t.results}
         </p>
         <Button
