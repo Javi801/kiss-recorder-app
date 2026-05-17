@@ -1,18 +1,12 @@
 import { useMemo } from "react";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-
 import BarChartCard from "@/components/charts/BarChartCard";
 import DumbbellChartCard from "@/components/charts/DumbbellChartCard";
 import HeatmapChartCard from "@/components/charts/HeatmapChartCard";
-import { TEXT } from "@/lib/constants";
-import { usePalette } from "@/lib/theme";
 import { getMonthKey, getYearKey } from "@/lib/date";
 
 // Renders the time-based statistics tab. It shows monthly, yearly, and multi-year event patterns.
 export default function StatsTimeTab({ people, allEvents, t }) {
-  const PALETTE = usePalette();
   // Groups all events by month. Keys are generated in yyyy-MM format.
   const eventsPerMonth = useMemo(() => {
     const map = new Map();
@@ -131,56 +125,6 @@ export default function StatsTimeTab({ people, allEvents, t }) {
         allYears={allYears}
         emptyText={t.noMultiYearPeopleYet}
       />
-
-      {personsWithEventsInMultipleYears.length ? (
-        <Card
-          className="rounded-3xl"
-          style={{
-            boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
-            backdropFilter: "blur(8px)",
-            borderColor: PALETTE.cardBorder,
-            backgroundColor: PALETTE.cardBg,
-          }}
-        >
-          <CardHeader style={{ paddingBottom: "0.5rem" }}>
-            <CardTitle style={{ ...TEXT.title, color: PALETTE.text }}>{t.multiYearSubtitle}</CardTitle>
-            <CardDescription style={{ color: PALETTE.textSoft }}>{t.yearOverlap}</CardDescription>
-          </CardHeader>
-
-          <CardContent>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-              {personsWithEventsInMultipleYears.map((item) => (
-                <div
-                  key={item.label}
-                  className="rounded-2xl"
-                  style={{ padding: "0.75rem", backgroundColor: PALETTE.cardSoft }}
-                >
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.75rem" }}>
-                    <span
-                      style={{ fontWeight: "500", color: PALETTE.text }}
-                    >
-                      {item.label}
-                    </span>
-
-                    <Badge
-                      className="rounded-full"
-                      style={{ border: "none", color: "white", backgroundColor: PALETTE.accent }}
-                    >
-                      {item.value}
-                    </Badge>
-                  </div>
-
-                  <p
-                    style={{ marginTop: "0.25rem", ...TEXT.body, color: PALETTE.textSoft }}
-                  >
-                    {item.years.join(", ")}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      ) : null}
     </div>
   );
 }
