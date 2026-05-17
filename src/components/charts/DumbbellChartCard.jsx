@@ -10,9 +10,9 @@ const APPROX_CHAR_PX = 6;
 const NAMES_W = 80;
 const MAX_NAME_CHARS = Math.floor((NAMES_W - 14) / APPROX_CHAR_PX);
 const MIN_COL_W = 36;
-const ROW_H = 44;
+const ROW_H = 36;
 const DOT_R = 4;
-const MAX_VISIBLE_ROWS = 10;
+const MAX_VISIBLE_ROWS = 12;
 
 export default function DumbbellChartCard({ title, subtitle, data, allYears, emptyText }) {
   const PALETTE = usePalette();
