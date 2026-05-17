@@ -47,20 +47,6 @@ export default function StatsPeopleTab({ people, t }) {
       .map(([label, value]) => ({ label, value }));
   }, [people, t]);
 
-  // Sums total events by zodiac sign, sorted by count (for bar chart).
-  const eventsByZodiac = useMemo(() => {
-    const map = new Map();
-
-    for (const person of people) {
-      const key = getShortZodiacLabel(person.zodiacSign);
-      map.set(key, (map.get(key) || 0) + (person.events?.length || 0));
-    }
-
-    return [...map.entries()]
-      .sort((a, b) => b[1] - a[1])
-      .map(([label, value]) => ({ label, value }));
-  }, [people]);
-
   // Sums total events by zodiac sign keeping all 12 signs in zodiac order (for radar chart).
   const eventsByZodiacOrdered = useMemo(() => {
     const lang = t.studies === "estudia" ? "es" : "en";
@@ -162,14 +148,6 @@ export default function StatsPeopleTab({ people, t }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <BarChartCard
-        title={t.eventsByZodiac}
-        subtitle={t.groupedBySign}
-        data={eventsByZodiac}
-        emptyText={t.noDataYet}
-        rotateXLabels={true}
-        tooltipUnit={{ one: t.chartEvent, many: t.chartEvents }}
-      />
 
       <ZodiacRadarCard
         personsByZodiac={personsByZodiac}
