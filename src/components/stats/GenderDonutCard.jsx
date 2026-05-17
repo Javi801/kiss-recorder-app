@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/card";
 import { CHART_COLORS, TEXT } from "@/lib/constants";
 import { usePalette } from "@/lib/theme";
-import { getColorForCategory } from "@/lib/format";
 
 const MODES = ["persons", "events"];
 
@@ -68,9 +67,7 @@ export default function GenderDonutCard({
   };
 
   const fills = data.map(
-    (entry, index) =>
-      getColorForCategory(entry.label) ||
-      chartColors[index % chartColors.length],
+    (_, index) => chartColors[index % chartColors.length],
   );
 
   return (
