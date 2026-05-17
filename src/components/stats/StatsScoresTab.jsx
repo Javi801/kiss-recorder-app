@@ -65,8 +65,8 @@ export default function StatsScoresTab({ people, allEvents, t }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       <PieChartCard
-        title={t.scoreDistribution}
-        subtitle={t.scoreDistributionDesc}
+        title={t.scoredVsUnscored}
+        subtitle={t.scoredVsUnscoredDesc}
         data={scoredVsUnscored}
         emptyText={t.noDataYet}
         tooltipUnit={{ one: t.chartEvent, many: t.chartEvents }}
