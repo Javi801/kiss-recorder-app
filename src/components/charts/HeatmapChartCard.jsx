@@ -8,7 +8,6 @@ const MARGIN_RIGHT = 8;
 const MARGIN_BOTTOM = 8;
 const APPROX_CHAR_PX = 6;
 const NAMES_W = 80;
-const MAX_NAME_CHARS = Math.floor((NAMES_W - 14) / APPROX_CHAR_PX);
 const MIN_COL_W = 36;
 const ROW_H = 36;
 const GAP = 3;
@@ -71,6 +70,10 @@ export default function HeatmapChartCard({ title, subtitle, data, allYears, empt
 
   const totalW = marginLeft + dataW + MARGIN_RIGHT;
   const totalH = MARGIN_TOP + chartH + MARGIN_BOTTOM;
+  const labelContentW = Math.max(
+    marginLeft,
+    Math.max(...data.map((person) => person.label?.length ?? 0), 0) * APPROX_CHAR_PX + 16,
+  );
 
   return (
     <Card
@@ -161,31 +164,29 @@ export default function HeatmapChartCard({ title, subtitle, data, allYears, empt
                     left: 0,
                     zIndex: 1,
                     backgroundColor: PALETTE.cardSoft,
+                    overflowX: "auto",
+                    overflowY: "hidden",
+                    WebkitOverflowScrolling: "touch",
                   }}
                 >
                   <svg
-                    width={marginLeft}
+                    width={labelContentW}
                     height={chartH + MARGIN_BOTTOM}
                     aria-hidden="true"
                     style={{ display: "block" }}
                   >
-                    {data.map((person, i) => {
-                      const label = person.label.length > MAX_NAME_CHARS
-                        ? person.label.slice(0, MAX_NAME_CHARS - 1) + "…"
-                        : person.label;
-                      return (
-                        <text
-                          key={person.label}
-                          x={marginLeft - 8}
-                          y={i * ROW_H + ROW_H / 2 + 4}
-                          textAnchor="end"
-                          fontSize={12}
-                          fill={PALETTE.text}
-                        >
-                          {label}
-                        </text>
-                      );
-                    })}
+                    {data.map((person, i) => (
+                      <text
+                        key={person.label}
+                        x={labelContentW - 8}
+                        y={i * ROW_H + ROW_H / 2 + 4}
+                        textAnchor="end"
+                        fontSize={12}
+                        fill={PALETTE.text}
+                      >
+                        {person.label}
+                      </text>
+                    ))}
                   </svg>
                 </div>
 
