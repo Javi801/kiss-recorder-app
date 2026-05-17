@@ -264,6 +264,11 @@ export default function PersonsTimelineChartCard({ people, t }) {
     return { data: [], title: "", avg: 0, maxValue: 1, canNext: false };
   }, [gran, offset, countByDate, countByMonth, fmtWeekday, fmtWeekdayLong, fmtDayMonth, fmtDayMonthYear, fmtMonthYear, fmtShortMonth, allEventDates]);
 
+  const chartData = useMemo(
+    () => data.map((item, index) => ({ ...item, xKey: `${item.tooltipLabel || item.label}-${index}` })),
+    [data],
+  );
+
   const granLabels = { week: t.granWeek, month: t.granMonth, year: t.granYear, historic: t.granHistoric };
   const tooltipUnit = { one: t.chartPerson, many: t.chartPersons };
 
@@ -407,14 +412,15 @@ export default function PersonsTimelineChartCard({ people, t }) {
             </div>
           )}
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
+            <BarChart data={chartData} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
               <CartesianGrid
                 vertical={false}
                 strokeDasharray="3 3"
                 stroke={P.cardBorder}
               />
               <XAxis
-                dataKey="label"
+                dataKey="xKey"
+                tickFormatter={(_, index) => chartData[index]?.label ?? ""}
                 tickLine={false}
                 axisLine={false}
                 fontSize={11}
