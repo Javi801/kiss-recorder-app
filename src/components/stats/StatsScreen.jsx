@@ -134,7 +134,7 @@ export default function StatsScreen({ people, t }) {
                 paddingTop: "0.75rem",
                 paddingBottom: "0.75rem",
                 textAlign: "left",
-                transition: "all 150ms cubic-bezier(0.4, 0, 0.2, 1)",
+                transition: "all 30ms cubic-bezier(0.4, 0, 0.2, 1)",
                 border: active ? "none" : `1px solid ${PALETTE.inputBorder}`,
                 background: active
                   ? `linear-gradient(90deg, ${PALETTE.accent}, ${PALETTE.accentSoft})`

@@ -14,6 +14,7 @@ import BarChartCard from "@/components/charts/BarChartCard";
 import PieChartCard from "@/components/charts/PieChartCard";
 import RadarChartCard from "@/components/charts/RadarChartCard";
 import AgeRangeCard from "@/components/stats/AgeRangeCard";
+import ActivityDonutCard from "@/components/stats/ActivityDonutCard";
 
 /**
  * Renders the people-focused statistics tab.
@@ -182,21 +183,11 @@ export default function StatsPeopleTab({ people, t }) {
         tooltipUnit={{ one: t.chartPerson, many: t.chartPersons }}
       />
 
-      <BarChartCard
-        title={t.eventsByActivity}
-        subtitle={t.groupedByActivity}
-        data={eventsByActivity}
+      <ActivityDonutCard
+        personsByActivity={personsByActivity}
+        eventsByActivity={eventsByActivity}
         emptyText={t.noDataYet}
-        rotateXLabels={true}
-        tooltipUnit={{ one: t.chartEvent, many: t.chartEvents }}
-      />
-
-      <PieChartCard
-        title={t.personsByActivity}
-        subtitle={t.activityDistribution}
-        data={personsByActivity}
-        emptyText={t.noDataYet}
-        tooltipUnit={{ one: t.chartPerson, many: t.chartPersons }}
+        t={t}
       />
 
       <PieChartCard
