@@ -337,6 +337,20 @@ describe("getStatsData", () => {
     expect(result[2].label).toBe("Zoe");
   });
 
+  it("merges events when the same zodiac sign is stored in different languages", () => {
+    const people = [
+      makePerson("Ana", [makeEvent("2024.01.01"), makeEvent("2024.02.01")], {
+        zodiacSign: "♒ Aquarius (January 20 - February 19)",
+      }),
+      makePerson("Bob", [makeEvent("2024.01.01")], {
+        zodiacSign: "♒ Acuario (20 enero - 19 febrero)",
+      }),
+    ];
+    const { eventsByZodiac } = getStatsData(people, t);
+    expect(eventsByZodiac.find((d) => d.label === "Aquarius").value).toBe(3);
+    expect(eventsByZodiac.find((d) => d.label === "Acuario")).toBeUndefined();
+  });
+
   it("sorts eventsByZodiac by event count descending", () => {
     const people = [
       makePerson("Ana", [makeEvent("2024.01.01"), makeEvent("2024.02.01")], {

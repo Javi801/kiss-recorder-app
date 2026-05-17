@@ -8,6 +8,7 @@ import {
   hasScore,
   renderKisses,
   getShortZodiacLabel,
+  getZodiacForLanguage,
   getColorForCategory,
 } from "@/lib/format";
 
@@ -192,6 +193,30 @@ describe("getShortZodiacLabel", () => {
   });
   it("returns empty string for an empty string", () => {
     expect(getShortZodiacLabel("")).toBe("");
+  });
+});
+
+describe("getZodiacForLanguage", () => {
+  it("translates an English zodiac string to Spanish", () => {
+    expect(getZodiacForLanguage("♒ Aquarius (January 20 - February 19)", "es"))
+      .toBe("♒ Acuario (20 enero - 19 febrero)");
+  });
+  it("translates a Spanish zodiac string to English", () => {
+    expect(getZodiacForLanguage("♒ Acuario (20 enero - 19 febrero)", "en"))
+      .toBe("♒ Aquarius (January 20 - February 19)");
+  });
+  it("returns the string unchanged when the language already matches", () => {
+    const sign = "♒ Aquarius (January 20 - February 19)";
+    expect(getZodiacForLanguage(sign, "en")).toBe(sign);
+  });
+  it("returns the original string when the emoji is not found in options", () => {
+    expect(getZodiacForLanguage("? Unknown sign", "en")).toBe("? Unknown sign");
+  });
+  it("returns null for null", () => {
+    expect(getZodiacForLanguage(null, "en")).toBeNull();
+  });
+  it("returns empty string for empty string", () => {
+    expect(getZodiacForLanguage("", "es")).toBe("");
   });
 });
 
