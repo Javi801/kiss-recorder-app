@@ -77,7 +77,6 @@ export default function StatsOverviewTab({ people, allEvents, t }) {
         <StatTile
           label={t.totalEvents}
           value={allEvents.length}
-          helper={t.statsGroupOverview}
         />
       </div>
 
