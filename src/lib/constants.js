@@ -8,6 +8,7 @@ export const LANGUAGE_KEY = "kiss-recorder-language-local-v3";
 export const ICON_COLOR_KEY = "kiss-recorder-icon-color-v1";
 export const THEME_KEY = "kiss-recorder-theme-v1";
 export const STATS_VISIBLE_KEY = "kiss-recorder-stats-visible-v1";
+export const SITUATION_TAGS_KEY = "kiss-recorder-situation-tags-v1";
 export const PEOPLE_FILE_NAME = "kiss-recorder-people.json";
 export const SETTINGS_FILE_NAME = "kiss-recorder-settings.json";
 
@@ -478,6 +479,10 @@ export const COPY = {
     eventObservationsPlaceholder: "Optional additional notes",
     requiredPlace: "Place is required.",
     requiredSituation: "Situation is required.",
+    situationTagsLabel: "Quick tags",
+    addTag: "Add tag",
+    newTagPlaceholder: "New tag...",
+    addTagConfirm: "Add",
     scoredVsUnscored: "Rated vs unrated",
     scoredVsUnscoredDesc: "Share of events with a rating",
     scoreDistribution: "Rating distribution",
@@ -750,6 +755,10 @@ export const COPY = {
     eventObservationsPlaceholder: "Notas adicionales opcionales",
     requiredPlace: "El lugar es obligatorio.",
     requiredSituation: "La situación es obligatoria.",
+    situationTagsLabel: "Etiquetas rápidas",
+    addTag: "Agregar etiqueta",
+    newTagPlaceholder: "Nueva etiqueta...",
+    addTagConfirm: "Agregar",
     scoredVsUnscored: "Calificados vs sin calificar",
     scoredVsUnscoredDesc: "Proporción de eventos con calificación",
     scoreDistribution: "Distribución de calificaciones",

@@ -33,6 +33,8 @@ export default function PeopleManagerScreen({
   t,
   language,
   modalBackRef,
+  situationTags,
+  onAddSituationTag,
 }) {
   const PALETTE = usePalette();
   const [query, setQuery] = useState("");
@@ -405,6 +407,8 @@ export default function PeopleManagerScreen({
                         onDeleteAllEvents={onDeleteAllEvents}
                         t={t}
                         language={language}
+                        situationTags={situationTags}
+                        onAddSituationTag={onAddSituationTag}
                       />
                     ))}
                   </div>
