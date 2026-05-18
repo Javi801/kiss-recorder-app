@@ -7,7 +7,7 @@ import { PALETTES, TEXT, COPY } from "@/lib/constants";
 import { ThemeProvider } from "@/lib/theme";
 import { setAppIconColor } from "@/plugins/appicon";
 import { todayString } from "@/lib/date";
-import { uid, normalizePeople } from "@/lib/helpers";
+import { uid, normalizePeople, mergeSituationTagsFromPeople } from "@/lib/helpers";
 import { hasScore } from "@/lib/format";
 import {
   loadPeopleFromDevice,
@@ -54,6 +54,9 @@ export default function KissRecorderApp() {
 
   // Whether the stats tiles on the home screen are visible.
   const [statsVisible, setStatsVisible] = useState(true);
+
+  // User-defined situation tags shared across all event forms.
+  const [situationTags, setSituationTags] = useState([]);
 
   // Prevents saving before the initial load completes.
   const [isLoaded, setIsLoaded] = useState(false);
@@ -128,7 +131,8 @@ export default function KissRecorderApp() {
         if (!isMounted) return;
 
         // Normalize loaded data before storing it in state.
-        setPeople(normalizePeople(rawPeople));
+        const loadedPeople = normalizePeople(rawPeople);
+        setPeople(loadedPeople);
 
         // Restore saved settings (language + icon color).
         const settings = await loadSettings();
@@ -137,6 +141,9 @@ export default function KissRecorderApp() {
           if (["yellow", "blue", "pink", "purple"].includes(settings.iconColor)) setIconColor(settings.iconColor);
           if (["pink", "green", "dark"].includes(settings.theme)) setTheme(settings.theme);
           setStatsVisible(settings.statsVisible);
+
+          const savedTags = Array.isArray(settings.situationTags) ? settings.situationTags : [];
+          setSituationTags(mergeSituationTagsFromPeople(loadedPeople, savedTags));
         }
       } catch (error) {
         if (import.meta.env.DEV) console.error("Failed to load app data", error);
@@ -169,13 +176,13 @@ export default function KissRecorderApp() {
     });
   }, [people, isLoaded]);
 
-  // Persists settings whenever language, iconColor, theme or statsVisible change (after boot).
+  // Persists settings whenever language, iconColor, theme, statsVisible or situationTags change (after boot).
   useEffect(() => {
     if (!isLoaded) return;
-    saveSettings({ iconColor, language, theme, statsVisible }).catch((error) => {
+    saveSettings({ iconColor, language, theme, statsVisible, situationTags }).catch((error) => {
       if (import.meta.env.DEV) console.error("Failed to save settings", error);
     });
-  }, [iconColor, language, theme, statsVisible, isLoaded]);
+  }, [iconColor, language, theme, statsVisible, situationTags, isLoaded]);
 
   // Applies the dark class to <html> so shadcn portal components also get dark styles.
   useEffect(() => {
@@ -200,6 +207,11 @@ export default function KissRecorderApp() {
 
   // Active translation dictionary.
   const t = COPY[language];
+
+  // Adds a new situation tag if it doesn't already exist.
+  function addSituationTag(tag) {
+    setSituationTags((prev) => (prev.includes(tag) ? prev : [...prev, tag]));
+  }
 
   // Clears all app data and resets the app to its initial state.
   async function clearAllAppData() {
@@ -402,6 +414,8 @@ export default function KissRecorderApp() {
               t={t}
               language={language}
               modalBackRef={modalBackRef}
+              situationTags={situationTags}
+              onAddSituationTag={addSituationTag}
             />
           ) : null}
 

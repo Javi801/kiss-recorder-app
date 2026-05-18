@@ -1,6 +1,6 @@
 import { Capacitor } from "@capacitor/core";
 import { Filesystem, Directory, Encoding } from "@capacitor/filesystem";
-import { PEOPLE_FILE_NAME, SETTINGS_FILE_NAME, STORAGE_KEY, LANGUAGE_KEY, ICON_COLOR_KEY, THEME_KEY, STATS_VISIBLE_KEY } from "@/lib/constants";
+import { PEOPLE_FILE_NAME, SETTINGS_FILE_NAME, STORAGE_KEY, LANGUAGE_KEY, ICON_COLOR_KEY, THEME_KEY, STATS_VISIBLE_KEY, SITUATION_TAGS_KEY } from "@/lib/constants";
 
 // Returns localStorage only when it is safely available
 export function getSafeStorage() {
@@ -82,7 +82,7 @@ export async function savePeopleToDevice(people) {
   storage.setItem(STORAGE_KEY, JSON.stringify(people));
 }
 
-const SETTINGS_DEFAULTS = { iconColor: 'yellow', language: 'en', theme: 'pink', statsVisible: true }
+const SETTINGS_DEFAULTS = { iconColor: 'yellow', language: 'en', theme: 'pink', statsVisible: true, situationTags: [] }
 
 // Loads app settings from native file system or localStorage.
 // On native, if the settings file doesn't exist yet, migrates values from
@@ -116,21 +116,23 @@ export async function loadSettings() {
   const storage = getSafeStorage()
   if (!storage) return { ...SETTINGS_DEFAULTS }
   const rawVisible = storage.getItem(STATS_VISIBLE_KEY)
+  const rawTags = storage.getItem(SITUATION_TAGS_KEY)
   return {
-    iconColor:    storage.getItem(ICON_COLOR_KEY) || SETTINGS_DEFAULTS.iconColor,
-    language:     storage.getItem(LANGUAGE_KEY)  || SETTINGS_DEFAULTS.language,
-    theme:        storage.getItem(THEME_KEY)      || SETTINGS_DEFAULTS.theme,
-    statsVisible: rawVisible === null ? SETTINGS_DEFAULTS.statsVisible : rawVisible !== 'false',
+    iconColor:     storage.getItem(ICON_COLOR_KEY) || SETTINGS_DEFAULTS.iconColor,
+    language:      storage.getItem(LANGUAGE_KEY)   || SETTINGS_DEFAULTS.language,
+    theme:         storage.getItem(THEME_KEY)       || SETTINGS_DEFAULTS.theme,
+    statsVisible:  rawVisible === null ? SETTINGS_DEFAULTS.statsVisible : rawVisible !== 'false',
+    situationTags: rawTags ? JSON.parse(rawTags) : [],
   }
 }
 
 // Saves app settings to native file system or localStorage
-export async function saveSettings({ iconColor, language, theme, statsVisible }) {
+export async function saveSettings({ iconColor, language, theme, statsVisible, situationTags }) {
   if (isNativePlatform()) {
     await Filesystem.writeFile({
       path: SETTINGS_FILE_NAME,
       directory: Directory.Data,
-      data: JSON.stringify({ iconColor, language, theme, statsVisible }),
+      data: JSON.stringify({ iconColor, language, theme, statsVisible, situationTags }),
       encoding: Encoding.UTF8,
       recursive: true,
     })
@@ -142,6 +144,7 @@ export async function saveSettings({ iconColor, language, theme, statsVisible })
   if (language !== undefined) storage.setItem(LANGUAGE_KEY, language)
   if (theme !== undefined) storage.setItem(THEME_KEY, theme)
   if (statsVisible !== undefined) storage.setItem(STATS_VISIBLE_KEY, String(statsVisible))
+  if (situationTags !== undefined) storage.setItem(SITUATION_TAGS_KEY, JSON.stringify(situationTags))
 }
 
 const PERSON_REQUIRED_STRINGS = ["name", "gender", "howWeMet", "zodiacSign", "activity"];
