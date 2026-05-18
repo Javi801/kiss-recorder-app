@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { uid, normalizePeople, hexToRgb } from "@/lib/helpers";
+import { uid, normalizePeople, hexToRgb, mergeEventTagsFromPeople } from "@/lib/helpers";
 
 describe("uid", () => {
   it("returns a non-empty alphanumeric string", () => {
@@ -22,6 +22,77 @@ describe("hexToRgb", () => {
   });
   it("accepts hex without # prefix", () => {
     expect(hexToRgb("ffffff")).toEqual({ r: 255, g: 255, b: 255 });
+  });
+});
+
+describe("mergeEventTagsFromPeople", () => {
+  const person = (values, field = "situation") => ({
+    events: values.map((v) => ({ [field]: v })),
+  });
+
+  it("returns existing tags unchanged when people have no events", () => {
+    expect(mergeEventTagsFromPeople([], ["Party"], "situation")).toEqual(["Party"]);
+  });
+
+  it("appends new values found in events for the given field", () => {
+    expect(mergeEventTagsFromPeople([person(["Date"])], [], "situation")).toEqual(["Date"]);
+  });
+
+  it("works for a different field (place)", () => {
+    expect(mergeEventTagsFromPeople([person(["Café"], "place")], [], "place")).toEqual(["Café"]);
+  });
+
+  it("preserves existing tags at the front", () => {
+    const result = mergeEventTagsFromPeople([person(["Trip"])], ["Party"], "situation");
+    expect(result).toEqual(["Party", "Trip"]);
+  });
+
+  it("skips values that already exist in tags (case-insensitive)", () => {
+    expect(mergeEventTagsFromPeople([person(["party"])], ["Party"], "situation")).toEqual(["Party"]);
+    expect(mergeEventTagsFromPeople([person(["PARTY"])], ["Party"], "situation")).toEqual(["Party"]);
+  });
+
+  it("deduplicates across events (case-insensitive)", () => {
+    const result = mergeEventTagsFromPeople([person(["Date", "date", "DATE"])], [], "situation");
+    expect(result).toEqual(["Date"]);
+  });
+
+  it("deduplicates across multiple people", () => {
+    const people = [person(["Date"]), person(["date"])];
+    expect(mergeEventTagsFromPeople(people, [], "situation")).toEqual(["Date"]);
+  });
+
+  it("ignores empty and whitespace-only values", () => {
+    expect(mergeEventTagsFromPeople([person(["", "  "])], [], "situation")).toEqual([]);
+  });
+
+  it("trims whitespace before comparing", () => {
+    expect(mergeEventTagsFromPeople([person(["  Date  "])], ["Date"], "situation")).toEqual(["Date"]);
+  });
+
+  it("preserves the casing of existing tags when a duplicate arrives", () => {
+    const result = mergeEventTagsFromPeople([person(["trip"])], ["Trip"], "situation");
+    expect(result[0]).toBe("Trip");
+  });
+
+  it("preserves the casing of the first new occurrence", () => {
+    const result = mergeEventTagsFromPeople([person(["First Date", "first date"])], [], "situation");
+    expect(result).toEqual(["First Date"]);
+  });
+
+  it("handles events without the requested field", () => {
+    const people = [{ events: [{ score: 3 }, { situation: undefined }] }];
+    expect(mergeEventTagsFromPeople(people, [], "situation")).toEqual([]);
+  });
+
+  it("handles people with no events field", () => {
+    expect(mergeEventTagsFromPeople([{ name: "Ana" }], [], "situation")).toEqual([]);
+  });
+
+  it("does not mutate the existingTags array", () => {
+    const existing = ["Party"];
+    mergeEventTagsFromPeople([person(["Trip"])], existing, "situation");
+    expect(existing).toEqual(["Party"]);
   });
 });
 

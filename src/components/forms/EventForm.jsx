@@ -2,7 +2,6 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/ui/date-picker";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -28,8 +27,9 @@ import { SCORE_OPTIONS, TEXT } from "@/lib/constants";
 import { usePalette } from "@/lib/theme";
 import { todayString, isValidDateString, isFutureDate } from "@/lib/date";
 import { hasScore, renderKisses } from "@/lib/format";
+import TagInput from "@/components/forms/TagInput";
 
-export default function EventForm({ initialValues, onSave, onCancel, onDelete, t }) {
+export default function EventForm({ initialValues, onSave, onCancel, onDelete, t, situationTags = [], onAddSituationTag, placeTags = [], onAddPlaceTag }) {
   const PALETTE = usePalette();
   const [date, setDate] = useState(initialValues?.date || todayString());
   const [details, setDetails] = useState(initialValues?.details || "");
@@ -114,13 +114,15 @@ export default function EventForm({ initialValues, onSave, onCancel, onDelete, t
       {/* Place */}
       <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
         <Label>{t.eventPlace} *</Label>
-        <Input
+        <TagInput
           value={place}
-          onChange={(e) => setPlace(e.target.value)}
+          onChange={setPlace}
+          tags={placeTags}
+          onAddTag={onAddPlaceTag}
           placeholder={t.eventPlacePlaceholder}
           maxLength={200}
-          className="rounded-2xl"
           style={{ ...inputStyle, ...TEXT.input }}
+          addTagLabel={t.addTag}
         />
         <p style={{ ...TEXT.caption, color: PALETTE.textSoft, textAlign: "right" }}>
           {place.length}/200
@@ -133,13 +135,15 @@ export default function EventForm({ initialValues, onSave, onCancel, onDelete, t
       {/* Situation */}
       <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
         <Label>{t.eventSituation} *</Label>
-        <Input
+        <TagInput
           value={situation}
-          onChange={(e) => setSituation(e.target.value)}
+          onChange={setSituation}
+          tags={situationTags}
+          onAddTag={onAddSituationTag}
           placeholder={t.eventSituationPlaceholder}
           maxLength={200}
-          className="rounded-2xl"
           style={{ ...inputStyle, ...TEXT.input }}
+          addTagLabel={t.addTag}
         />
         <p style={{ ...TEXT.caption, color: PALETTE.textSoft, textAlign: "right" }}>
           {situation.length}/200

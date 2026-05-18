@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Search, Users, BarChart3, UserPlus } from "lucide-react";
 import { App as CapacitorApp } from "@capacitor/app";
+import { Capacitor } from "@capacitor/core";
 
 import { PALETTES, TEXT, COPY } from "@/lib/constants";
 import { ThemeProvider } from "@/lib/theme";
 import { setAppIconColor } from "@/plugins/appicon";
 import { todayString } from "@/lib/date";
-import { uid, normalizePeople } from "@/lib/helpers";
+import { uid, normalizePeople, mergeEventTagsFromPeople } from "@/lib/helpers";
 import { hasScore } from "@/lib/format";
 import {
   loadPeopleFromDevice,
@@ -21,6 +22,7 @@ import PeopleManagerScreen from "@/components/people/PeopleManagerScreen";
 import HomeScreen from "./components/app/HomeScreen";
 import AddPersonScreen from "./components/app/AddPersonScreen";
 import IntroScreen from "./components/app/IntroScreen";
+import PrivacyScreen from "./components/app/PrivacyScreen";
 import StatsScreen from "@/components/stats/StatsScreen";
 
 /**
@@ -55,8 +57,17 @@ export default function KissRecorderApp() {
   // Whether the stats tiles on the home screen are visible.
   const [statsVisible, setStatsVisible] = useState(true);
 
+  // User-defined situation tags shared across all event forms.
+  const [situationTags, setSituationTags] = useState([]);
+
+  // User-defined place tags shared across all event forms.
+  const [placeTags, setPlaceTags] = useState([]);
+
   // Prevents saving before the initial load completes.
   const [isLoaded, setIsLoaded] = useState(false);
+
+  // True while the app is backgrounded — triggers the privacy overlay.
+  const [isPrivate, setIsPrivate] = useState(false);
 
   // Keep screenRef in sync so the Capacitor listener always sees the latest value.
   useEffect(() => {
@@ -114,6 +125,29 @@ export default function KissRecorderApp() {
     };
   }, []);
 
+  useEffect(() => {
+    const hide = () => setIsPrivate(true);
+
+    if (Capacitor.isNativePlatform()) {
+      // pause fires early (before the app-switcher screenshot) and is reliable for showing.
+      // resume fires spuriously on EMUI ~1s after pause even while still in the switcher,
+      // so we ignore it and only restore via appStateChange which fires on true foreground.
+      document.addEventListener("pause", hide);
+      const capListener = CapacitorApp.addListener("appStateChange", ({ isActive }) => {
+        if (isActive) setIsPrivate(false);
+      });
+      return () => {
+        document.removeEventListener("pause", hide);
+        capListener.then((h) => h.remove());
+      };
+    }
+
+    // Web / browser dev: visibilitychange is the only option
+    const handleVisibility = () => setIsPrivate(document.hidden);
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, []);
+
   /**
    * Bootstraps persisted app data on first render.
    * It loads saved people and the saved language if available.
@@ -128,7 +162,8 @@ export default function KissRecorderApp() {
         if (!isMounted) return;
 
         // Normalize loaded data before storing it in state.
-        setPeople(normalizePeople(rawPeople));
+        const loadedPeople = normalizePeople(rawPeople);
+        setPeople(loadedPeople);
 
         // Restore saved settings (language + icon color).
         const settings = await loadSettings();
@@ -137,6 +172,12 @@ export default function KissRecorderApp() {
           if (["yellow", "blue", "pink", "purple"].includes(settings.iconColor)) setIconColor(settings.iconColor);
           if (["pink", "green", "dark"].includes(settings.theme)) setTheme(settings.theme);
           setStatsVisible(settings.statsVisible);
+
+          const savedTags = Array.isArray(settings.situationTags) ? settings.situationTags : [];
+          setSituationTags(mergeEventTagsFromPeople(loadedPeople, savedTags, "situation"));
+
+          const savedPlaceTags = Array.isArray(settings.placeTags) ? settings.placeTags : [];
+          setPlaceTags(mergeEventTagsFromPeople(loadedPeople, savedPlaceTags, "place"));
         }
       } catch (error) {
         if (import.meta.env.DEV) console.error("Failed to load app data", error);
@@ -169,13 +210,13 @@ export default function KissRecorderApp() {
     });
   }, [people, isLoaded]);
 
-  // Persists settings whenever language, iconColor, theme or statsVisible change (after boot).
+  // Persists settings whenever language, iconColor, theme, statsVisible, situationTags or placeTags change (after boot).
   useEffect(() => {
     if (!isLoaded) return;
-    saveSettings({ iconColor, language, theme, statsVisible }).catch((error) => {
+    saveSettings({ iconColor, language, theme, statsVisible, situationTags, placeTags }).catch((error) => {
       if (import.meta.env.DEV) console.error("Failed to save settings", error);
     });
-  }, [iconColor, language, theme, statsVisible, isLoaded]);
+  }, [iconColor, language, theme, statsVisible, situationTags, placeTags, isLoaded]);
 
   // Applies the dark class to <html> so shadcn portal components also get dark styles.
   useEffect(() => {
@@ -189,17 +230,25 @@ export default function KissRecorderApp() {
   // Switches the icon from user actions only, because Android may kill the app while changing aliases.
   async function changeIconColor(newColor) {
     setIconColor(newColor);
-    await saveSettings({ iconColor: newColor, language, theme });
     setAppIconColor(newColor);
   }
 
-  async function changeTheme(newTheme) {
+  function changeTheme(newTheme) {
     setTheme(newTheme);
-    await saveSettings({ iconColor, language, theme: newTheme });
   }
 
   // Active translation dictionary.
   const t = COPY[language];
+
+  // Adds a new situation tag if it doesn't already exist.
+  function addSituationTag(tag) {
+    setSituationTags((prev) => (prev.includes(tag) ? prev : [...prev, tag]));
+  }
+
+  // Adds a new place tag if it doesn't already exist.
+  function addPlaceTag(tag) {
+    setPlaceTags((prev) => (prev.includes(tag) ? prev : [...prev, tag]));
+  }
 
   // Clears all app data and resets the app to its initial state.
   async function clearAllAppData() {
@@ -402,6 +451,10 @@ export default function KissRecorderApp() {
               t={t}
               language={language}
               modalBackRef={modalBackRef}
+              situationTags={situationTags}
+              onAddSituationTag={addSituationTag}
+              placeTags={placeTags}
+              onAddPlaceTag={addPlaceTag}
             />
           ) : null}
 
@@ -463,6 +516,9 @@ export default function KissRecorderApp() {
 
       </div>
     </div>
+    <AnimatePresence>
+      {isPrivate && <PrivacyScreen key="privacy" />}
+    </AnimatePresence>
     </ThemeProvider>
   );
 }

@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Search, Filter, Users } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -33,6 +33,10 @@ export default function PeopleManagerScreen({
   t,
   language,
   modalBackRef,
+  situationTags,
+  onAddSituationTag,
+  placeTags,
+  onAddPlaceTag,
 }) {
   const PALETTE = usePalette();
   const [query, setQuery] = useState("");
@@ -53,6 +57,8 @@ export default function PeopleManagerScreen({
   const alphabetRef = useRef(null);
   const [activeLetter, setActiveLetter] = useState(null);
   const fadeTimerRef = useRef(null);
+
+  useEffect(() => () => clearTimeout(fadeTimerRef.current), []);
 
   function activateLetter(letter) {
     if (fadeTimerRef.current) clearTimeout(fadeTimerRef.current);
@@ -164,6 +170,7 @@ export default function PeopleManagerScreen({
 
   function handleAlphabetTouchMove(e) {
     e.preventDefault();
+    if (!e.touches.length) return;
     const touch = e.touches[0];
     const target = document.elementFromPoint(touch.clientX, touch.clientY);
     const letter = target?.dataset?.letter;
@@ -405,6 +412,10 @@ export default function PeopleManagerScreen({
                         onDeleteAllEvents={onDeleteAllEvents}
                         t={t}
                         language={language}
+                        situationTags={situationTags}
+                        onAddSituationTag={onAddSituationTag}
+                        placeTags={placeTags}
+                        onAddPlaceTag={onAddPlaceTag}
                       />
                     ))}
                   </div>
