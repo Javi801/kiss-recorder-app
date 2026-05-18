@@ -131,7 +131,8 @@ export default function KissRecorderApp() {
         if (!isMounted) return;
 
         // Normalize loaded data before storing it in state.
-        setPeople(normalizePeople(rawPeople));
+        const loadedPeople = normalizePeople(rawPeople);
+        setPeople(loadedPeople);
 
         // Restore saved settings (language + icon color).
         const settings = await loadSettings();
@@ -140,7 +141,20 @@ export default function KissRecorderApp() {
           if (["yellow", "blue", "pink", "purple"].includes(settings.iconColor)) setIconColor(settings.iconColor);
           if (["pink", "green", "dark"].includes(settings.theme)) setTheme(settings.theme);
           setStatsVisible(settings.statsVisible);
-          if (Array.isArray(settings.situationTags)) setSituationTags(settings.situationTags);
+
+          const savedTags = Array.isArray(settings.situationTags) ? settings.situationTags : [];
+          const seen = new Set(savedTags.map((t) => t.toLowerCase()));
+          const merged = [...savedTags];
+          for (const person of loadedPeople) {
+            for (const event of (person.events || [])) {
+              const s = event.situation?.trim();
+              if (s && !seen.has(s.toLowerCase())) {
+                seen.add(s.toLowerCase());
+                merged.push(s);
+              }
+            }
+          }
+          setSituationTags(merged);
         }
       } catch (error) {
         if (import.meta.env.DEV) console.error("Failed to load app data", error);
