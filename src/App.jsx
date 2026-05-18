@@ -230,13 +230,11 @@ export default function KissRecorderApp() {
   // Switches the icon from user actions only, because Android may kill the app while changing aliases.
   async function changeIconColor(newColor) {
     setIconColor(newColor);
-    await saveSettings({ iconColor: newColor, language, theme });
     setAppIconColor(newColor);
   }
 
-  async function changeTheme(newTheme) {
+  function changeTheme(newTheme) {
     setTheme(newTheme);
-    await saveSettings({ iconColor, language, theme: newTheme });
   }
 
   // Active translation dictionary.
