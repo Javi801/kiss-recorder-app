@@ -1,8 +1,7 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/ui/date-picker";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -28,8 +27,9 @@ import { SCORE_OPTIONS, TEXT } from "@/lib/constants";
 import { usePalette } from "@/lib/theme";
 import { todayString, isValidDateString, isFutureDate } from "@/lib/date";
 import { hasScore, renderKisses } from "@/lib/format";
+import TagInput from "@/components/forms/TagInput";
 
-export default function EventForm({ initialValues, onSave, onCancel, onDelete, t, situationTags = [], onAddSituationTag }) {
+export default function EventForm({ initialValues, onSave, onCancel, onDelete, t, situationTags = [], onAddSituationTag, placeTags = [], onAddPlaceTag }) {
   const PALETTE = usePalette();
   const [date, setDate] = useState(initialValues?.date || todayString());
   const [details, setDetails] = useState(initialValues?.details || "");
@@ -39,10 +39,6 @@ export default function EventForm({ initialValues, onSave, onCancel, onDelete, t
   const [place, setPlace] = useState(initialValues?.place || "");
   const [situation, setSituation] = useState(initialValues?.situation || "");
   const [observations, setObservations] = useState(initialValues?.observations || "");
-
-  const [addingTag, setAddingTag] = useState(false);
-  const [newTagText, setNewTagText] = useState("");
-  const newTagInputRef = useRef(null);
 
   const [errors, setErrors] = useState({});
 
@@ -70,15 +66,6 @@ export default function EventForm({ initialValues, onSave, onCancel, onDelete, t
       situation: situation.trim(),
       observations: observations.trim(),
     });
-  }
-
-  function confirmNewTag() {
-    const tag = newTagText.trim();
-    if (!tag) return;
-    onAddSituationTag?.(tag);
-    setSituation(tag);
-    setNewTagText("");
-    setAddingTag(false);
   }
 
   const inputStyle = {
@@ -127,13 +114,15 @@ export default function EventForm({ initialValues, onSave, onCancel, onDelete, t
       {/* Place */}
       <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
         <Label>{t.eventPlace} *</Label>
-        <Input
+        <TagInput
           value={place}
-          onChange={(e) => setPlace(e.target.value)}
+          onChange={setPlace}
+          tags={placeTags}
+          onAddTag={onAddPlaceTag}
           placeholder={t.eventPlacePlaceholder}
           maxLength={200}
-          className="rounded-2xl"
           style={{ ...inputStyle, ...TEXT.input }}
+          addTagLabel={t.addTag}
         />
         <p style={{ ...TEXT.caption, color: PALETTE.textSoft, textAlign: "right" }}>
           {place.length}/200
@@ -146,94 +135,15 @@ export default function EventForm({ initialValues, onSave, onCancel, onDelete, t
       {/* Situation */}
       <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
         <Label>{t.eventSituation} *</Label>
-
-        {/* Tag chips */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.375rem", alignItems: "center" }}>
-          {situationTags.map((tag) => {
-            const selected = situation === tag;
-            return (
-              <button
-                key={tag}
-                type="button"
-                onClick={() => setSituation(selected ? "" : tag)}
-                style={{
-                  padding: "0.25rem 0.75rem",
-                  borderRadius: "9999px",
-                  ...TEXT.caption,
-                  border: `1px solid ${selected ? PALETTE.accent : PALETTE.inputBorder}`,
-                  backgroundColor: selected ? PALETTE.accentMuted : PALETTE.inputBg,
-                  color: selected ? PALETTE.accent : PALETTE.textSoft,
-                  fontWeight: selected ? "600" : "400",
-                  cursor: "pointer",
-                  transition: "all 0.15s",
-                }}
-              >
-                {tag}
-              </button>
-            );
-          })}
-
-          {/* Add tag inline */}
-          {addingTag ? (
-            <div style={{ display: "flex", gap: "0.25rem", alignItems: "center", flex: "1 1 10rem" }}>
-              <Input
-                ref={newTagInputRef}
-                value={newTagText}
-                onChange={(e) => setNewTagText(e.target.value)}
-                placeholder={t.newTagPlaceholder}
-                maxLength={50}
-                autoFocus
-                className="rounded-2xl"
-                style={{ ...inputStyle, ...TEXT.input, height: "1.75rem", flex: 1 }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") { e.preventDefault(); confirmNewTag(); }
-                  if (e.key === "Escape") { setAddingTag(false); setNewTagText(""); }
-                }}
-              />
-              <Button
-                type="button"
-                className="rounded-2xl"
-                style={{ height: "1.75rem", padding: "0 0.625rem", ...TEXT.caption, background: `linear-gradient(90deg, ${PALETTE.accent}, ${PALETTE.accentSoft})`, color: "white", border: "none" }}
-                onClick={confirmNewTag}
-              >
-                {t.addTagConfirm ?? "+"}
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                className="rounded-2xl"
-                style={{ height: "1.75rem", padding: "0 0.625rem", ...TEXT.caption, ...inputStyle }}
-                onClick={() => { setAddingTag(false); setNewTagText(""); }}
-              >
-                ✕
-              </Button>
-            </div>
-          ) : (
-            <button
-              type="button"
-              onClick={() => setAddingTag(true)}
-              style={{
-                padding: "0.25rem 0.625rem",
-                borderRadius: "9999px",
-                ...TEXT.caption,
-                border: `1px dashed ${PALETTE.inputBorder}`,
-                backgroundColor: "transparent",
-                color: PALETTE.textSoft,
-                cursor: "pointer",
-              }}
-            >
-              + {t.addTag}
-            </button>
-          )}
-        </div>
-
-        <Input
+        <TagInput
           value={situation}
-          onChange={(e) => setSituation(e.target.value)}
+          onChange={setSituation}
+          tags={situationTags}
+          onAddTag={onAddSituationTag}
           placeholder={t.eventSituationPlaceholder}
           maxLength={200}
-          className="rounded-2xl"
           style={{ ...inputStyle, ...TEXT.input }}
+          addTagLabel={t.addTag}
         />
         <p style={{ ...TEXT.caption, color: PALETTE.textSoft, textAlign: "right" }}>
           {situation.length}/200

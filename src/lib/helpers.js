@@ -21,15 +21,15 @@ export function normalizePeople(rawPeople) {
 }
 
 
-// Merges situation tags from existing event data into a tag list.
+// Merges event field values from existing people data into a tag list.
 // Tags from `existingTags` take priority; new ones are appended preserving
 // their original casing. Comparison is case-insensitive so duplicates are skipped.
-export function mergeSituationTagsFromPeople(people, existingTags) {
+export function mergeEventTagsFromPeople(people, existingTags, field) {
   const seen = new Set(existingTags.map((t) => t.toLowerCase()));
   const merged = [...existingTags];
   for (const person of people) {
     for (const event of (person.events || [])) {
-      const s = event.situation?.trim();
+      const s = event[field]?.trim();
       if (s && !seen.has(s.toLowerCase())) {
         seen.add(s.toLowerCase());
         merged.push(s);
