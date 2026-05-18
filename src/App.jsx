@@ -7,7 +7,7 @@ import { PALETTES, TEXT, COPY } from "@/lib/constants";
 import { ThemeProvider } from "@/lib/theme";
 import { setAppIconColor } from "@/plugins/appicon";
 import { todayString } from "@/lib/date";
-import { uid, normalizePeople, mergeSituationTagsFromPeople } from "@/lib/helpers";
+import { uid, normalizePeople, mergeEventTagsFromPeople } from "@/lib/helpers";
 import { hasScore } from "@/lib/format";
 import {
   loadPeopleFromDevice,
@@ -143,7 +143,7 @@ export default function KissRecorderApp() {
           setStatsVisible(settings.statsVisible);
 
           const savedTags = Array.isArray(settings.situationTags) ? settings.situationTags : [];
-          setSituationTags(mergeSituationTagsFromPeople(loadedPeople, savedTags));
+          setSituationTags(mergeEventTagsFromPeople(loadedPeople, savedTags, "situation"));
         }
       } catch (error) {
         if (import.meta.env.DEV) console.error("Failed to load app data", error);
