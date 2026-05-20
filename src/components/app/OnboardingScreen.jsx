@@ -2,18 +2,6 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePalette } from "@/lib/theme";
 
-/**
- * Detects the device/browser language and maps it to a supported app language.
- * Returns "es" if the primary language starts with "es", otherwise "en".
- */
-export function detectDeviceLanguage() {
-  const lang =
-    (typeof navigator !== "undefined" &&
-      (navigator.language || (navigator.languages && navigator.languages[0]))) ||
-    "en";
-  return lang.startsWith("es") ? "es" : "en";
-}
-
 const SLIDE_VARIANTS = {
   enter: (direction) => ({
     x: direction > 0 ? "100%" : "-100%",

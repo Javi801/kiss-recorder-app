@@ -4,7 +4,7 @@ import { Search, Users, BarChart3, UserPlus } from "lucide-react";
 import { App as CapacitorApp } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
 
-import { PALETTES, TEXT, COPY } from "@/lib/constants";
+import { PALETTES, TEXT, COPY, detectDeviceLanguage } from "@/lib/constants";
 import { ThemeProvider } from "@/lib/theme";
 import { setAppIconColor } from "@/plugins/appicon";
 import { todayString } from "@/lib/date";
@@ -22,7 +22,7 @@ import PeopleManagerScreen from "@/components/people/PeopleManagerScreen";
 import HomeScreen from "./components/app/HomeScreen";
 import AddPersonScreen from "./components/app/AddPersonScreen";
 import IntroScreen from "./components/app/IntroScreen";
-import OnboardingScreen, { detectDeviceLanguage } from "./components/app/OnboardingScreen";
+import OnboardingScreen from "./components/app/OnboardingScreen";
 import PrivacyScreen from "./components/app/PrivacyScreen";
 import StatsScreen from "@/components/stats/StatsScreen";
 

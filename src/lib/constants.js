@@ -247,6 +247,18 @@ export const ZODIAC_OPTIONS = {
   ],
 };
 
+/**
+ * Detects the device/browser language and maps it to a supported app language.
+ * Returns "es" if the primary language starts with "es", otherwise "en".
+ */
+export function detectDeviceLanguage() {
+  const lang =
+    (typeof navigator !== "undefined" &&
+      (navigator.language || (navigator.languages && navigator.languages[0]))) ||
+    "en";
+  return lang.startsWith("es") ? "es" : "en";
+}
+
 // List of texts in the app, organized by language.
 export const COPY = {
   en: {
