@@ -297,6 +297,21 @@ describe("getStatsData", () => {
     expect(personsByAge.find((d) => d.label === "30").value).toBe(1);
   });
 
+  it("excludes persons with no resolvable age from personsByAge", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-03-15T12:00:00"));
+    const AQUARIUS = "♒ Aquarius (January 20 - February 19)";
+    const people = [
+      makePerson("WithAge", [], { birthYear: 2001, zodiacSign: AQUARIUS }), // → 25
+      makePerson("NoAge",   [], { age: undefined, zodiacSign: null }),       // → skipped
+    ];
+    const { personsByAge } = getStatsData(people, t);
+    expect(personsByAge.find((d) => d.label === "undefined")).toBeUndefined();
+    expect(personsByAge).toHaveLength(1);
+    expect(personsByAge[0].label).toBe("25");
+    vi.useRealTimers();
+  });
+
   it("sums events by zodiac sign", () => {
     const people = [
       makePerson("Ana", [makeEvent("2024.01.01"), makeEvent("2024.02.01")], {

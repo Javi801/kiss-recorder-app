@@ -1,14 +1,21 @@
 // @vitest-environment jsdom
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+
+const mockNative = vi.hoisted(() => ({ isNative: false }));
+const mockFilesystem = vi.hoisted(() => ({
+  readFile: vi.fn(),
+  writeFile: vi.fn(),
+  deleteFile: vi.fn(),
+}));
 
 vi.mock("@capacitor/core", () => ({
-  Capacitor: { isNativePlatform: () => false },
+  Capacitor: { isNativePlatform: () => mockNative.isNative },
 }));
 
 vi.mock("@capacitor/filesystem", () => ({
-  Filesystem: {},
-  Directory: {},
-  Encoding: {},
+  Filesystem: mockFilesystem,
+  Directory: { Data: "DATA", External: "EXTERNAL" },
+  Encoding: { UTF8: "utf8" },
 }));
 
 // jsdom does not implement these URL methods
@@ -406,5 +413,48 @@ describe("saveSettings (web path)", () => {
   it("round-trips correctly through save and load", async () => {
     await saveSettings({ iconColor: "blue", language: "es", theme: "dark", statsVisible: true, situationTags: ["Date", "Party"], placeTags: ["Café", "Home"] });
     expect(await loadSettings()).toEqual({ iconColor: "blue", language: "es", theme: "dark", statsVisible: true, situationTags: ["Date", "Party"], placeTags: ["Café", "Home"] });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// loadSettings (native path — first-run migration from localStorage)
+// ---------------------------------------------------------------------------
+describe("loadSettings (native path — migration from localStorage)", () => {
+  beforeEach(() => {
+    localStorage.clear();
+    mockNative.isNative = true;
+    mockFilesystem.readFile.mockRejectedValue(new Error("File not found"));
+    mockFilesystem.writeFile.mockResolvedValue(undefined);
+  });
+
+  afterEach(() => {
+    mockNative.isNative = false;
+    vi.clearAllMocks();
+  });
+
+  it("migrates situationTags from localStorage", async () => {
+    localStorage.setItem(SITUATION_TAGS_KEY, JSON.stringify(["Party", "Trip"]));
+    expect((await loadSettings()).situationTags).toEqual(["Party", "Trip"]);
+  });
+
+  it("migrates placeTags from localStorage", async () => {
+    localStorage.setItem(PLACE_TAGS_KEY, JSON.stringify(["Café", "Home"]));
+    expect((await loadSettings()).placeTags).toEqual(["Café", "Home"]);
+  });
+
+  it("returns empty tag arrays when localStorage has none", async () => {
+    const settings = await loadSettings();
+    expect(settings.situationTags).toEqual([]);
+    expect(settings.placeTags).toEqual([]);
+  });
+
+  it("persists migrated tags to the native settings file", async () => {
+    localStorage.setItem(SITUATION_TAGS_KEY, JSON.stringify(["Date"]));
+    localStorage.setItem(PLACE_TAGS_KEY, JSON.stringify(["Home"]));
+    await loadSettings();
+    expect(mockFilesystem.writeFile).toHaveBeenCalledOnce();
+    const written = JSON.parse(mockFilesystem.writeFile.mock.calls[0][0].data);
+    expect(written.situationTags).toEqual(["Date"]);
+    expect(written.placeTags).toEqual(["Home"]);
   });
 });
