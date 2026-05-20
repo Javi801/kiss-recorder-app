@@ -522,6 +522,31 @@ export const COPY = {
     birthdayAlreadyHappenedThird: "Has their birthday already happened this year?",
     birthdayYes: "Yes",
     birthdayNo: "Not yet",
+    onboardingSkip: "Skip",
+    onboardingNext: "Next",
+    onboardingDone: "Get started",
+    onboardingSlides: [
+      {
+        emoji: "💋",
+        title: "Welcome",
+        description: "Your private space to save and remember your most meaningful connections.",
+      },
+      {
+        emoji: "👤",
+        title: "Add people",
+        description: "Save the name and a few details about each person that matters to you.",
+      },
+      {
+        emoji: "📅",
+        title: "Track moments",
+        description: "Log the date, notes, and a score from 1 to 5 for each encounter.",
+      },
+      {
+        emoji: "🔒",
+        title: "Your privacy, always",
+        description: "Everything stays on your device. No accounts, no cloud, no tracking.",
+      },
+    ],
   },
   es: {
     appTitle: "KissRecorder",
@@ -798,5 +823,30 @@ export const COPY = {
     birthdayAlreadyHappenedThird: "¿Ya estuvo de cumpleaños este año?",
     birthdayYes: "Sí",
     birthdayNo: "Todavía no",
+    onboardingSkip: "Omitir",
+    onboardingNext: "Siguiente",
+    onboardingDone: "Empezar",
+    onboardingSlides: [
+      {
+        emoji: "💋",
+        title: "Bienvenido/a",
+        description: "Tu espacio privado para guardar y recordar tus conexiones más especiales.",
+      },
+      {
+        emoji: "👤",
+        title: "Agrega personas",
+        description: "Guarda el nombre y algunos detalles de cada persona que importa.",
+      },
+      {
+        emoji: "📅",
+        title: "Registra momentos",
+        description: "Anota la fecha, notas y una puntuación del 1 al 5 por cada encuentro.",
+      },
+      {
+        emoji: "🔒",
+        title: "Tu privacidad, siempre",
+        description: "Todo se guarda en tu dispositivo. Sin cuentas, sin nube, sin rastreo.",
+      },
+    ],
   },
 };

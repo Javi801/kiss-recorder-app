@@ -22,6 +22,7 @@ import PeopleManagerScreen from "@/components/people/PeopleManagerScreen";
 import HomeScreen from "./components/app/HomeScreen";
 import AddPersonScreen from "./components/app/AddPersonScreen";
 import IntroScreen from "./components/app/IntroScreen";
+import OnboardingScreen, { detectDeviceLanguage } from "./components/app/OnboardingScreen";
 import PrivacyScreen from "./components/app/PrivacyScreen";
 import StatsScreen from "@/components/stats/StatsScreen";
 
@@ -62,6 +63,10 @@ export default function KissRecorderApp() {
 
   // User-defined place tags shared across all event forms.
   const [placeTags, setPlaceTags] = useState([]);
+
+  // Whether the onboarding flow has been completed (true = skip, show app normally).
+  // Initialized to true to avoid flashing the onboarding on re-renders; boot corrects it.
+  const [onboardingDone, setOnboardingDone] = useState(true);
 
   // Prevents saving before the initial load completes.
   const [isLoaded, setIsLoaded] = useState(false);
@@ -168,7 +173,15 @@ export default function KissRecorderApp() {
         // Restore saved settings (language + icon color).
         const settings = await loadSettings();
         if (isMounted) {
-          if (settings.language === "en" || settings.language === "es") setLanguage(settings.language);
+          if (!settings.onboardingDone) {
+            // First launch: detect the device language and show onboarding.
+            setLanguage(detectDeviceLanguage());
+            setOnboardingDone(false);
+            setScreen("onboarding");
+          } else {
+            if (settings.language === "en" || settings.language === "es") setLanguage(settings.language);
+          }
+
           if (["yellow", "blue", "pink", "purple"].includes(settings.iconColor)) setIconColor(settings.iconColor);
           if (["pink", "green", "dark"].includes(settings.theme)) setTheme(settings.theme);
           setStatsVisible(settings.statsVisible);
@@ -210,13 +223,13 @@ export default function KissRecorderApp() {
     });
   }, [people, isLoaded]);
 
-  // Persists settings whenever language, iconColor, theme, statsVisible, situationTags or placeTags change (after boot).
+  // Persists settings whenever language, iconColor, theme, statsVisible, situationTags, placeTags or onboardingDone change (after boot).
   useEffect(() => {
     if (!isLoaded) return;
-    saveSettings({ iconColor, language, theme, statsVisible, situationTags, placeTags }).catch((error) => {
+    saveSettings({ iconColor, language, theme, statsVisible, situationTags, placeTags, onboardingDone }).catch((error) => {
       if (import.meta.env.DEV) console.error("Failed to save settings", error);
     });
-  }, [iconColor, language, theme, statsVisible, situationTags, placeTags, isLoaded]);
+  }, [iconColor, language, theme, statsVisible, situationTags, placeTags, onboardingDone, isLoaded]);
 
   // Applies the dark class to <html> so shadcn portal components also get dark styles.
   useEffect(() => {
@@ -373,6 +386,16 @@ export default function KissRecorderApp() {
     );
   }
 
+  /**
+   * Called when the user finishes or skips the onboarding flow.
+   * Marks onboarding as done (triggers the save effect) and goes to the intro screen.
+   */
+  function handleOnboardingComplete() {
+    setOnboardingDone(true);
+    screenHistoryRef.current = [];
+    setScreen("intro");
+  }
+
   // Bottom navigation configuration.
   const navItems = [
     { key: "main", label: t.home, icon: Users },
@@ -382,7 +405,7 @@ export default function KissRecorderApp() {
   ];
 
   // Hide bottom navigation on screens that use a focused layout.
-  const hideBottomBar = screen === "add" || screen === "intro";
+  const hideBottomBar = screen === "add" || screen === "intro" || screen === "onboarding";
 
   const palette = PALETTES[theme] ?? PALETTES.pink;
 
@@ -404,6 +427,11 @@ export default function KissRecorderApp() {
           transition={{ duration: 0.25 }}
           style={{ flex: "1 1 0%", overflowY: "scroll", paddingTop: "1.25rem", paddingBottom: "5rem", WebkitOverflowScrolling: "touch" }}
         >
+          {/* Onboarding — shown only on first launch */}
+          {screen === "onboarding" ? (
+            <OnboardingScreen t={t} onComplete={handleOnboardingComplete} />
+          ) : null}
+
           {/* Entry screen */}
           {screen === "intro" ? (
             <IntroScreen onOpenMain={() => navigateTo("main")} t={t} />
