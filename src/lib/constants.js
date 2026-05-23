@@ -560,6 +560,11 @@ export const COPY = {
         title: "Your privacy, always",
         description: "Everything stays on your device. No accounts, no cloud, no tracking.",
       },
+      {
+        type: "mockup",
+        title: "Here's how to enter",
+        description: "Tap the ♡ in the corner to open your space.",
+      },
     ],
   },
   es: {
@@ -860,6 +865,11 @@ export const COPY = {
         emoji: "🔒",
         title: "Tu privacidad, siempre",
         description: "Todo se guarda en tu dispositivo. Sin cuentas, sin nube, sin rastreo.",
+      },
+      {
+        type: "mockup",
+        title: "Por aquí se entra",
+        description: "Toca el ♡ en la esquina para abrir tu espacio.",
       },
     ],
   },
