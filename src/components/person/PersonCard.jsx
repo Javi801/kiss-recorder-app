@@ -157,8 +157,13 @@ export default function PersonCard({
                 >
                   <div style={{ display: "flex", flexDirection: "column", gap: "1rem", padding: "0rem 1.25rem 1.25rem" }}>
                     {/* Extra info */}
-                    {(person.howWeMet || person.detail) && (
+                    {(person.realName || person.howWeMet || person.detail) && (
                       <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+                        {person.realName && (
+                          <p style={{ ...TEXT.body, color: PALETTE.text }}>
+                            {t.realName}: {person.realName}
+                          </p>
+                        )}
                         {person.howWeMet && (
                           <p style={{ ...TEXT.body, color: PALETTE.text }}>
                             {t.met}: {person.howWeMet}
@@ -327,6 +332,7 @@ export default function PersonCard({
             onCancel={() => setEditingPerson(false)}
             t={t}
             language={language}
+            includeRealName
             howWeMetTags={howWeMetTags}
             onAddHowWeMetTag={onAddHowWeMetTag}
             isParentOpen={editingPerson}

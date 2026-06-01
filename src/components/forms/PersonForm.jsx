@@ -30,6 +30,7 @@ export default function PersonForm({
   t,
   language,
   includeHowWeMet = true,
+  includeRealName = false,
   saveLabel,
   mode,
   howWeMetTags = [],
@@ -40,13 +41,13 @@ export default function PersonForm({
   // Local form state initialization.
   const [form, setForm] = useState(() => {
     if (!initialValues) {
-      return { name: "", age: "", gender: "", howWeMet: "", zodiacSign: "", activity: "", detail: "" };
+      return { name: "", realName: "", age: "", gender: "", howWeMet: "", zodiacSign: "", activity: "", detail: "" };
     }
     const zodiacSign = getZodiacForLanguage(initialValues.zodiacSign, language);
     const displayAge = initialValues.birthYear
       ? String(calculateAge(initialValues.birthYear, zodiacSign) ?? "")
       : String(initialValues.age ?? "");
-    return { ...initialValues, zodiacSign, age: displayAge, howWeMet: initialValues.howWeMet ?? "", detail: initialValues.detail ?? "" };
+    return { ...initialValues, zodiacSign, age: displayAge, realName: initialValues.realName ?? "", howWeMet: initialValues.howWeMet ?? "", detail: initialValues.detail ?? "" };
   });
 
   const [errors, setErrors] = useState({});
@@ -98,6 +99,7 @@ export default function PersonForm({
         ? form.howWeMet.trim()
         : initialValues?.howWeMet || "",
       name: form.name.trim(),
+      realName: includeRealName ? form.realName.trim() : initialValues?.realName || "",
     });
   }
 
@@ -110,21 +112,40 @@ export default function PersonForm({
   return (
     <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       <div style={{ display: "grid", gap: "1rem" }}>
-        {/* Name */}
+        {/* Name + Real name grouped */}
         <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-          <Label>{t.name} *</Label>
-          <Input
-            value={form.name}
-            onChange={(e) => update("name", e.target.value)}
-            maxLength={100}
-            className="rounded-2xl"
-            style={{ ...inputStyle }}
-          />
-          <p style={{ ...TEXT.caption, color: PALETTE.textSoft, textAlign: "right" }}>
-            {form.name.length}/100
-          </p>
-          {errors.name && (
-            <p style={{ ...TEXT.caption, color: "#ef4444" }}>{errors.name}</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+            <Label>{t.name} *</Label>
+            <Input
+              value={form.name}
+              onChange={(e) => update("name", e.target.value)}
+              maxLength={100}
+              className="rounded-2xl"
+              style={{ ...inputStyle }}
+            />
+            <p style={{ ...TEXT.caption, color: PALETTE.textSoft, textAlign: "right" }}>
+              {form.name.length}/100
+            </p>
+            {errors.name && (
+              <p style={{ ...TEXT.caption, color: "#ef4444" }}>{errors.name}</p>
+            )}
+          </div>
+
+          {includeRealName && (
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+              <Label>{t.realName}</Label>
+              <Input
+                value={form.realName}
+                onChange={(e) => update("realName", e.target.value)}
+                maxLength={100}
+                className="rounded-2xl"
+                placeholder={t.realNamePlaceholder}
+                style={{ ...inputStyle }}
+              />
+              <p style={{ ...TEXT.caption, color: PALETTE.textSoft, textAlign: "right" }}>
+                {form.realName.length}/100
+              </p>
+            </div>
           )}
         </div>
 

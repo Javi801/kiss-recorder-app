@@ -10,6 +10,7 @@ export function normalizePeople(rawPeople) {
   return Array.isArray(rawPeople)
     ? rawPeople.map((person) => ({
         ...person,
+        realName: person.realName || "",
         events: Array.isArray(person.events)
           ? person.events.map((event) => ({
               ...event,

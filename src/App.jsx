@@ -310,6 +310,7 @@ export default function KissRecorderApp() {
     const newPerson = {
       id: uid(),
       ...values,
+      realName: values.realName || "",
       howWeMet: values.howWeMet || "",
       events: [
         {

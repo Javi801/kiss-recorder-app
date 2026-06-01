@@ -79,6 +79,7 @@ export default function PeopleManagerScreen({
     const result = people.filter((person) => {
       const searchable = [
         person.name,
+        person.realName || "",
         person.detail || "",
         person.howWeMet || "",
         ...(person.events || []).map((event) => event.details || ""),
