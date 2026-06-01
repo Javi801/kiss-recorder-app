@@ -17,7 +17,7 @@ import {
 import { GENDERS, ZODIAC_OPTIONS, TEXT } from "@/lib/constants";
 import { usePalette } from "@/lib/theme";
 import { translateGender, getZodiacForLanguage } from "@/lib/format";
-import { calculateAge, deriveBirthYear, isWithinZodiacPeriod } from "@/lib/date";
+import { calculateDisplayAge, deriveBirthYear, isWithinZodiacPeriod } from "@/lib/date";
 
 /**
  * Form used for creating or editing a person.
@@ -45,13 +45,13 @@ export default function PersonForm({
     }
     const zodiacSign = getZodiacForLanguage(initialValues.zodiacSign, language);
     const displayAge = initialValues.birthYear
-      ? String(calculateAge(initialValues.birthYear, zodiacSign) ?? "")
+      ? String(calculateDisplayAge(initialValues.birthYear, zodiacSign, initialValues.birthdayAlreadyHappened) ?? "")
       : String(initialValues.age ?? "");
     return { ...initialValues, zodiacSign, age: displayAge, realName: initialValues.realName ?? "", howWeMet: initialValues.howWeMet ?? "", detail: initialValues.detail ?? "" };
   });
 
   const [errors, setErrors] = useState({});
-  const [birthdayAlreadyHappened, setBirthdayAlreadyHappened] = useState(false);
+  const [birthdayAlreadyHappened, setBirthdayAlreadyHappened] = useState(initialValues?.birthdayAlreadyHappened ?? false);
 
   const showBirthdayCheckbox = isWithinZodiacPeriod(form.zodiacSign);
 
@@ -94,6 +94,7 @@ export default function PersonForm({
     onSave({
       ...rest,
       birthYear: deriveBirthYear(Number(age), form.zodiacSign, showBirthdayCheckbox && birthdayAlreadyHappened),
+      birthdayAlreadyHappened: showBirthdayCheckbox ? birthdayAlreadyHappened : (initialValues?.birthdayAlreadyHappened ?? false),
       detail: form.detail.trim(),
       howWeMet: includeHowWeMet
         ? form.howWeMet.trim()
