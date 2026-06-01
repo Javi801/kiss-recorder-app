@@ -4,11 +4,11 @@ import { Search, Users, BarChart3, UserPlus } from "lucide-react";
 import { App as CapacitorApp } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
 
-import { PALETTES, TEXT, COPY } from "@/lib/constants";
+import { PALETTES, TEXT, COPY, ONBOARDING_VERSION, detectDeviceLanguage } from "@/lib/constants";
 import { ThemeProvider } from "@/lib/theme";
 import { setAppIconColor } from "@/plugins/appicon";
 import { todayString } from "@/lib/date";
-import { uid, normalizePeople, mergeEventTagsFromPeople } from "@/lib/helpers";
+import { uid, normalizePeople, mergeEventTagsFromPeople, mergePeopleFieldTags } from "@/lib/helpers";
 import { hasScore } from "@/lib/format";
 import {
   loadPeopleFromDevice,
@@ -22,6 +22,7 @@ import PeopleManagerScreen from "@/components/people/PeopleManagerScreen";
 import HomeScreen from "./components/app/HomeScreen";
 import AddPersonScreen from "./components/app/AddPersonScreen";
 import IntroScreen from "./components/app/IntroScreen";
+import OnboardingScreen from "./components/app/OnboardingScreen";
 import PrivacyScreen from "./components/app/PrivacyScreen";
 import StatsScreen from "@/components/stats/StatsScreen";
 
@@ -33,8 +34,8 @@ export default function KissRecorderApp() {
   // Main people dataset used across the whole app.
   const [people, setPeople] = useState([]);
 
-  // Current visible screen.
-  const [screen, setScreen] = useState("intro");
+  // Current visible screen. Boot starts blank until persisted settings are read.
+  const [screen, setScreen] = useState("boot");
 
   // Navigation history stack for hardware back button support.
   const screenHistoryRef = useRef([]);
@@ -43,7 +44,7 @@ export default function KissRecorderApp() {
   // The back button handler checks this before doing screen navigation.
   const modalBackRef = useRef(null);
   // Ref keeps the latest screen value accessible inside the Capacitor listener.
-  const screenRef = useRef("intro");
+  const screenRef = useRef("boot");
 
   // Current UI language.
   const [language, setLanguage] = useState("en");
@@ -62,6 +63,14 @@ export default function KissRecorderApp() {
 
   // User-defined place tags shared across all event forms.
   const [placeTags, setPlaceTags] = useState([]);
+
+  // User-defined how-we-met tags shared across all person forms.
+  const [howWeMetTags, setHowWeMetTags] = useState([]);
+
+  // Whether the onboarding flow has been completed (true = skip, show app normally).
+  // Initialized to true to avoid flashing the onboarding on re-renders; boot corrects it.
+  const [onboardingDone, setOnboardingDone] = useState(true);
+  const [onboardingVersion, setOnboardingVersion] = useState(ONBOARDING_VERSION);
 
   // Prevents saving before the initial load completes.
   const [isLoaded, setIsLoaded] = useState(false);
@@ -169,6 +178,20 @@ export default function KissRecorderApp() {
         const settings = await loadSettings();
         if (isMounted) {
           if (settings.language === "en" || settings.language === "es") setLanguage(settings.language);
+
+          const needsOnboarding = !settings.onboardingDone || settings.onboardingVersion !== ONBOARDING_VERSION;
+          if (needsOnboarding) {
+            // First launch or updated tutorial: show onboarding.
+            if (!settings.onboardingDone) setLanguage(detectDeviceLanguage());
+            setOnboardingDone(false);
+            setOnboardingVersion(settings.onboardingVersion || 0);
+            setScreen("onboarding");
+          } else {
+            setOnboardingDone(true);
+            setOnboardingVersion(settings.onboardingVersion);
+            setScreen("intro");
+          }
+
           if (["yellow", "blue", "pink", "purple"].includes(settings.iconColor)) setIconColor(settings.iconColor);
           if (["pink", "green", "dark"].includes(settings.theme)) setTheme(settings.theme);
           setStatsVisible(settings.statsVisible);
@@ -178,12 +201,21 @@ export default function KissRecorderApp() {
 
           const savedPlaceTags = Array.isArray(settings.placeTags) ? settings.placeTags : [];
           setPlaceTags(mergeEventTagsFromPeople(loadedPeople, savedPlaceTags, "place"));
+
+          const savedHowWeMetTags = Array.isArray(settings.howWeMetTags) ? settings.howWeMetTags : [];
+          setHowWeMetTags(mergePeopleFieldTags(loadedPeople, savedHowWeMetTags, "howWeMet"));
         }
       } catch (error) {
         if (import.meta.env.DEV) console.error("Failed to load app data", error);
 
         // Fallback to an empty dataset if loading fails.
-        if (isMounted) setPeople([]);
+        if (isMounted) {
+          setPeople([]);
+          setOnboardingDone(false);
+          setOnboardingVersion(0);
+          setLanguage(detectDeviceLanguage());
+          setScreen("onboarding");
+        }
       } finally {
         // Mark app as loaded only if the component is still mounted.
         if (isMounted) setIsLoaded(true);
@@ -210,13 +242,13 @@ export default function KissRecorderApp() {
     });
   }, [people, isLoaded]);
 
-  // Persists settings whenever language, iconColor, theme, statsVisible, situationTags or placeTags change (after boot).
+  // Persists settings whenever language, iconColor, theme, statsVisible, situationTags, placeTags or onboardingDone change (after boot).
   useEffect(() => {
     if (!isLoaded) return;
-    saveSettings({ iconColor, language, theme, statsVisible, situationTags, placeTags }).catch((error) => {
+    saveSettings({ iconColor, language, theme, statsVisible, situationTags, placeTags, howWeMetTags, onboardingDone, onboardingVersion }).catch((error) => {
       if (import.meta.env.DEV) console.error("Failed to save settings", error);
     });
-  }, [iconColor, language, theme, statsVisible, situationTags, placeTags, isLoaded]);
+  }, [iconColor, language, theme, statsVisible, situationTags, placeTags, howWeMetTags, onboardingDone, onboardingVersion, isLoaded]);
 
   // Applies the dark class to <html> so shadcn portal components also get dark styles.
   useEffect(() => {
@@ -250,6 +282,11 @@ export default function KissRecorderApp() {
     setPlaceTags((prev) => (prev.includes(tag) ? prev : [...prev, tag]));
   }
 
+  // Adds a new how-we-met tag if it doesn't already exist.
+  function addHowWeMetTag(tag) {
+    setHowWeMetTags((prev) => (prev.includes(tag) ? prev : [...prev, tag]));
+  }
+
   // Clears all app data and resets the app to its initial state.
   async function clearAllAppData() {
     try {
@@ -273,6 +310,7 @@ export default function KissRecorderApp() {
     const newPerson = {
       id: uid(),
       ...values,
+      realName: values.realName || "",
       howWeMet: values.howWeMet || "",
       events: [
         {
@@ -373,6 +411,17 @@ export default function KissRecorderApp() {
     );
   }
 
+  /**
+   * Called when the user finishes or skips the onboarding flow.
+   * Marks onboarding as done (triggers the save effect) and goes to the intro screen.
+   */
+  function handleOnboardingComplete() {
+    setOnboardingDone(true);
+    setOnboardingVersion(ONBOARDING_VERSION);
+    screenHistoryRef.current = [];
+    setScreen("intro");
+  }
+
   // Bottom navigation configuration.
   const navItems = [
     { key: "main", label: t.home, icon: Users },
@@ -382,7 +431,7 @@ export default function KissRecorderApp() {
   ];
 
   // Hide bottom navigation on screens that use a focused layout.
-  const hideBottomBar = screen === "add" || screen === "intro";
+  const hideBottomBar = screen === "boot" || screen === "add" || screen === "intro" || screen === "onboarding";
 
   const palette = PALETTES[theme] ?? PALETTES.pink;
 
@@ -402,13 +451,8 @@ export default function KissRecorderApp() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.25 }}
-          style={{ flex: "1 1 0%", overflowY: "scroll", paddingTop: "1.25rem", paddingBottom: "5rem", WebkitOverflowScrolling: "touch" }}
+          style={{ flex: "1 1 0%", overflowY: "scroll", paddingTop: "1.5rem", paddingBottom: "5.5rem", scrollPaddingTop: "1rem", scrollPaddingBottom: "1.5rem", WebkitOverflowScrolling: "touch", maskImage: "linear-gradient(to bottom, transparent 0px, black 20px, black calc(100% - 20px), transparent 100%)", WebkitMaskImage: "linear-gradient(to bottom, transparent 0px, black 20px, black calc(100% - 20px), transparent 100%)" }}
         >
-          {/* Entry screen */}
-          {screen === "intro" ? (
-            <IntroScreen onOpenMain={() => navigateTo("main")} t={t} />
-          ) : null}
-
           {/* Main dashboard */}
           {screen === "main" ? (
             <HomeScreen
@@ -455,6 +499,8 @@ export default function KissRecorderApp() {
               onAddSituationTag={addSituationTag}
               placeTags={placeTags}
               onAddPlaceTag={addPlaceTag}
+              howWeMetTags={howWeMetTags}
+              onAddHowWeMetTag={addHowWeMetTag}
             />
           ) : null}
 
@@ -516,6 +562,13 @@ export default function KissRecorderApp() {
 
       </div>
     </div>
+    {/* Full-screen overlays rendered outside the masked scroll area */}
+    {screen === "onboarding" ? (
+      <OnboardingScreen t={t} onComplete={handleOnboardingComplete} />
+    ) : null}
+    {screen === "intro" ? (
+      <IntroScreen onOpenMain={() => navigateTo("main")} t={t} />
+    ) : null}
     <AnimatePresence>
       {isPrivate && <PrivacyScreen key="privacy" />}
     </AnimatePresence>

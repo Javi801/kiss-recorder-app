@@ -6,6 +6,7 @@ import {
   Download,
   Eye,
   EyeOff,
+  HelpCircle,
   Languages,
   Settings,
   Trash2,
@@ -32,6 +33,7 @@ import { exportPeopleJson } from "@/lib/device-storage";
 import { saveErrorLog } from "@/lib/pdf-export";
 import StatTile from "@/components/shared/StatTile";
 import ColorSelector from "@/components/app/ColorSelector";
+import OnboardingScreen from "@/components/app/OnboardingScreen";
 
 /**
  * Renders the main dashboard screen.
@@ -56,6 +58,7 @@ export default function MainScreen({
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [tutorialOpen, setTutorialOpen] = useState(false);
   // null = idle | { fileName, isNative, hadMissingFields } = success | Error = failed
   const [jsonExportStatus, setJsonExportStatus] = useState(null);
   // null = idle | { type: "confirm", count, data } | { type: "success", count } | { type: "error_type" | "error_format" }
@@ -163,6 +166,10 @@ export default function MainScreen({
     { value: "en", label: t.english },
     { value: "es", label: t.spanish },
   ];
+
+  if (tutorialOpen) {
+    return <OnboardingScreen t={t} onComplete={() => setTutorialOpen(false)} />;
+  }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
@@ -398,6 +405,26 @@ export default function MainScreen({
               t={t}
               accent={false}
             />
+            <Button
+              type="button"
+              variant="outline"
+              className="rounded-2xl"
+              style={{
+                height: "3.25rem",
+                justifyContent: "flex-start",
+                ...TEXT.base,
+                borderColor: PALETTE.inputBorder,
+                backgroundColor: PALETTE.controlBg,
+                color: PALETTE.text,
+              }}
+              onClick={() => {
+                setSettingsOpen(false);
+                setTutorialOpen(true);
+              }}
+            >
+              <HelpCircle style={{ marginRight: "0.75rem", height: "1.25rem", width: "1.25rem", color: PALETTE.accent }} />
+              {t.viewOnboarding}
+            </Button>
           </section>
         </DialogContent>
       </Dialog>

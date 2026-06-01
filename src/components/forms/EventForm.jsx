@@ -29,7 +29,7 @@ import { todayString, isValidDateString, isFutureDate } from "@/lib/date";
 import { hasScore, renderKisses } from "@/lib/format";
 import TagInput from "@/components/forms/TagInput";
 
-export default function EventForm({ initialValues, onSave, onCancel, onDelete, t, situationTags = [], onAddSituationTag, placeTags = [], onAddPlaceTag }) {
+export default function EventForm({ initialValues, onSave, onCancel, onDelete, t, situationTags = [], onAddSituationTag, placeTags = [], onAddPlaceTag, isParentOpen }) {
   const PALETTE = usePalette();
   const [date, setDate] = useState(initialValues?.date || todayString());
   const [details, setDetails] = useState(initialValues?.details || "");
@@ -123,6 +123,7 @@ export default function EventForm({ initialValues, onSave, onCancel, onDelete, t
           maxLength={200}
           style={{ ...inputStyle, ...TEXT.input }}
           addTagLabel={t.addTag}
+          isParentOpen={isParentOpen}
         />
         <p style={{ ...TEXT.caption, color: PALETTE.textSoft, textAlign: "right" }}>
           {place.length}/200
@@ -144,6 +145,7 @@ export default function EventForm({ initialValues, onSave, onCancel, onDelete, t
           maxLength={200}
           style={{ ...inputStyle, ...TEXT.input }}
           addTagLabel={t.addTag}
+          isParentOpen={isParentOpen}
         />
         <p style={{ ...TEXT.caption, color: PALETTE.textSoft, textAlign: "right" }}>
           {situation.length}/200

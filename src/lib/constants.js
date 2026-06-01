@@ -10,6 +10,9 @@ export const THEME_KEY = "kiss-recorder-theme-v1";
 export const STATS_VISIBLE_KEY = "kiss-recorder-stats-visible-v1";
 export const SITUATION_TAGS_KEY = "kiss-recorder-situation-tags-v1";
 export const PLACE_TAGS_KEY = "kiss-recorder-place-tags-v1";
+export const ONBOARDING_DONE_KEY = "kiss-recorder-onboarding-done-v1";
+export const ONBOARDING_VERSION_KEY = "kiss-recorder-onboarding-version-v1";
+export const ONBOARDING_VERSION = 2;
 export const PEOPLE_FILE_NAME = "kiss-recorder-people.json";
 export const SETTINGS_FILE_NAME = "kiss-recorder-settings.json";
 
@@ -246,6 +249,18 @@ export const ZODIAC_OPTIONS = {
   ],
 };
 
+/**
+ * Detects the device/browser language and maps it to a supported app language.
+ * Returns "es" if the primary language starts with "es", otherwise "en".
+ */
+export function detectDeviceLanguage() {
+  const lang =
+    (typeof navigator !== "undefined" &&
+      (navigator.language || (navigator.languages && navigator.languages[0]))) ||
+    "en";
+  return lang.startsWith("es") ? "es" : "en";
+}
+
 // List of texts in the app, organized by language.
 export const COPY = {
   en: {
@@ -292,6 +307,8 @@ export const COPY = {
     people: "People",
     stats: "Stats",
     name: "Name",
+    realName: "Real name",
+    realNamePlaceholder: "Optional real name",
     age: "Age",
     gender: "Gender",
     howWeMet: "How we met",
@@ -435,6 +452,7 @@ export const COPY = {
     granHistoric: "Historic",
     language: "Language",
     settings: "Settings",
+    viewOnboarding: "View tutorial",
     hideStats: "Hide stats",
     showStats: "Show stats",
     english: "English",
@@ -521,6 +539,36 @@ export const COPY = {
     birthdayAlreadyHappenedThird: "Has their birthday already happened this year?",
     birthdayYes: "Yes",
     birthdayNo: "Not yet",
+    onboardingSkip: "Skip",
+    onboardingNext: "Next",
+    onboardingDone: "Get started",
+    onboardingSlides: [
+      {
+        emoji: "💋",
+        title: "Welcome",
+        description: "Your private space to save and remember your most meaningful connections.",
+      },
+      {
+        emoji: "👤",
+        title: "Add people",
+        description: "Save the name and a few details about each person that matters to you.",
+      },
+      {
+        emoji: "📅",
+        title: "Track moments",
+        description: "Log the date, notes, and a score from 1 to 5 for each encounter.",
+      },
+      {
+        emoji: "🔒",
+        title: "Your privacy, always",
+        description: "Everything stays on your device. No accounts, no cloud, no tracking.",
+      },
+      {
+        type: "mockup",
+        title: "Here's how to enter",
+        description: "Tap the ♡ in the corner to open your space.",
+      },
+    ],
   },
   es: {
     appTitle: "KissRecorder",
@@ -566,6 +614,8 @@ export const COPY = {
     people: "Personas",
     stats: "Estadísticas",
     name: "Nombre",
+    realName: "Nombre real",
+    realNamePlaceholder: "Nombre real opcional",
     age: "Edad",
     gender: "Género",
     howWeMet: "Cómo nos conocimos",
@@ -711,6 +761,7 @@ export const COPY = {
     granHistoric: "Histórico",
     language: "Idioma",
     settings: "Configuración",
+    viewOnboarding: "Ver tutorial",
     hideStats: "Ocultar estadísticas",
     showStats: "Mostrar estadísticas",
     english: "English",
@@ -797,5 +848,35 @@ export const COPY = {
     birthdayAlreadyHappenedThird: "¿Ya estuvo de cumpleaños este año?",
     birthdayYes: "Sí",
     birthdayNo: "Todavía no",
+    onboardingSkip: "Omitir",
+    onboardingNext: "Siguiente",
+    onboardingDone: "Empezar",
+    onboardingSlides: [
+      {
+        emoji: "💋",
+        title: "Bienvenido/a",
+        description: "Tu espacio privado para guardar y recordar tus conexiones más especiales.",
+      },
+      {
+        emoji: "👤",
+        title: "Agrega personas",
+        description: "Guarda el nombre y algunos detalles de cada persona que importa.",
+      },
+      {
+        emoji: "📅",
+        title: "Registra momentos",
+        description: "Anota la fecha, notas y una puntuación del 1 al 5 por cada encuentro.",
+      },
+      {
+        emoji: "🔒",
+        title: "Tu privacidad, siempre",
+        description: "Todo se guarda en tu dispositivo. Sin cuentas, sin nube, sin rastreo.",
+      },
+      {
+        type: "mockup",
+        title: "Por aquí se entra",
+        description: "Toca el ♡ en la esquina para abrir tu espacio.",
+      },
+    ],
   },
 };
