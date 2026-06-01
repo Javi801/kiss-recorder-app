@@ -451,18 +451,8 @@ export default function KissRecorderApp() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.25 }}
-          style={{ flex: "1 1 0%", overflowY: "scroll", paddingTop: "1.25rem", paddingBottom: "5rem", WebkitOverflowScrolling: "touch" }}
+          style={{ flex: "1 1 0%", overflowY: "scroll", paddingTop: "1.5rem", paddingBottom: "5.5rem", scrollPaddingTop: "1rem", scrollPaddingBottom: "1.5rem", WebkitOverflowScrolling: "touch", maskImage: "linear-gradient(to bottom, transparent 0px, black 20px, black calc(100% - 20px), transparent 100%)", WebkitMaskImage: "linear-gradient(to bottom, transparent 0px, black 20px, black calc(100% - 20px), transparent 100%)" }}
         >
-          {/* Onboarding — shown only on first launch */}
-          {screen === "onboarding" ? (
-            <OnboardingScreen t={t} onComplete={handleOnboardingComplete} />
-          ) : null}
-
-          {/* Entry screen */}
-          {screen === "intro" ? (
-            <IntroScreen onOpenMain={() => navigateTo("main")} t={t} />
-          ) : null}
-
           {/* Main dashboard */}
           {screen === "main" ? (
             <HomeScreen
@@ -572,6 +562,13 @@ export default function KissRecorderApp() {
 
       </div>
     </div>
+    {/* Full-screen overlays rendered outside the masked scroll area */}
+    {screen === "onboarding" ? (
+      <OnboardingScreen t={t} onComplete={handleOnboardingComplete} />
+    ) : null}
+    {screen === "intro" ? (
+      <IntroScreen onOpenMain={() => navigateTo("main")} t={t} />
+    ) : null}
     <AnimatePresence>
       {isPrivate && <PrivacyScreen key="privacy" />}
     </AnimatePresence>
