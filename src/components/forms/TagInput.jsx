@@ -27,7 +27,8 @@ export default function TagInput({
   );
   const showAddOption =
     trimmed && !tags.some((t) => t.toLowerCase() === trimmed.toLowerCase());
-  const showDropdown = open && rect && (filtered.length > 0 || showAddOption);
+  const effectiveOpen = isParentOpen === false ? false : open;
+  const showDropdown = effectiveOpen && rect && (filtered.length > 0 || showAddOption);
 
   function measure() {
     if (containerRef.current) {
@@ -47,11 +48,7 @@ export default function TagInput({
   }
 
   useEffect(() => {
-    if (isParentOpen === false) setOpen(false);
-  }, [isParentOpen]);
-
-  useEffect(() => {
-    if (!open) return;
+    if (!effectiveOpen) return;
 
     function closeIfOutside(e) {
       if (!containerRef.current?.contains(e.target)) setOpen(false);
@@ -75,7 +72,7 @@ export default function TagInput({
       window.removeEventListener("scroll", reposition, true);
       window.removeEventListener("resize", reposition);
     };
-  }, [open]);
+  }, [effectiveOpen]);
 
   function selectTag(tag) {
     onChange(tag);
@@ -104,65 +101,77 @@ export default function TagInput({
       />
 
       {showDropdown && createPortal(
-        <div
-          style={{
-            position: "fixed",
-            top: rect.bottom + 4,
-            left: rect.left,
-            width: rect.width,
-            zIndex: 9999,
-            borderRadius: "0.75rem",
-            border: `1px solid ${PALETTE.inputBorder}`,
-            backgroundColor: PALETTE.card,
-            boxShadow: "0 4px 16px rgba(0,0,0,0.12)",
-            overflow: "hidden",
-            pointerEvents: "auto",
-          }}
-        >
-          {filtered.map((tag, i) => {
-            const selected = value === tag;
-            return (
-              <button
-                key={tag}
-                type="button"
-                onMouseDown={(e) => { e.preventDefault(); selectTag(tag); }}
-                style={{
-                  display: "block",
-                  width: "100%",
-                  textAlign: "left",
-                  padding: "0.5rem 0.75rem",
-                  ...TEXT.body,
-                  color: selected ? PALETTE.accent : PALETTE.text,
-                  backgroundColor: selected ? PALETTE.accentMuted : "transparent",
-                  fontWeight: selected ? "600" : "400",
-                  cursor: "pointer",
-                  borderTop: i > 0 ? `1px solid ${PALETTE.inputBorder}` : "none",
-                }}
-              >
-                {tag}
-              </button>
-            );
-          })}
-          {showAddOption && (
-            <button
-              type="button"
-              onMouseDown={(e) => { e.preventDefault(); handleAddTag(); }}
+        (() => {
+          const spaceBelow = window.innerHeight - rect.bottom - 4;
+          const spaceAbove = rect.top - 4;
+          const openUpward = spaceBelow < 160 && spaceAbove > spaceBelow;
+          const maxHeight = Math.min(openUpward ? spaceAbove : spaceBelow, 240);
+          return (
+            <div
               style={{
-                display: "block",
-                width: "100%",
-                textAlign: "left",
-                padding: "0.5rem 0.75rem",
-                ...TEXT.body,
-                color: PALETTE.accent,
-                fontWeight: "500",
-                cursor: "pointer",
-                borderTop: filtered.length > 0 ? `1px solid ${PALETTE.inputBorder}` : "none",
+                position: "fixed",
+                ...(openUpward
+                  ? { bottom: window.innerHeight - rect.top + 4 }
+                  : { top: rect.bottom + 4 }),
+                left: rect.left,
+                width: rect.width,
+                zIndex: 9999,
+                borderRadius: "0.75rem",
+                border: `1px solid ${PALETTE.inputBorder}`,
+                backgroundColor: PALETTE.card,
+                boxShadow: "0 4px 16px rgba(0,0,0,0.12)",
+                overflow: "hidden",
+                overflowY: "auto",
+                maxHeight,
+                pointerEvents: "auto",
               }}
             >
-              {`+ ${addTagLabel} "${trimmed}"`}
-            </button>
-          )}
-        </div>,
+              {filtered.map((tag, i) => {
+                const selected = value.toLowerCase() === tag.toLowerCase();
+                return (
+                  <button
+                    key={tag}
+                    type="button"
+                    onMouseDown={(e) => { e.preventDefault(); selectTag(tag); }}
+                    style={{
+                      display: "block",
+                      width: "100%",
+                      textAlign: "left",
+                      padding: "0.5rem 0.75rem",
+                      ...TEXT.body,
+                      color: selected ? PALETTE.accent : PALETTE.text,
+                      backgroundColor: selected ? PALETTE.accentMuted : "transparent",
+                      fontWeight: selected ? "600" : "400",
+                      cursor: "pointer",
+                      borderTop: i > 0 ? `1px solid ${PALETTE.inputBorder}` : "none",
+                    }}
+                  >
+                    {tag}
+                  </button>
+                );
+              })}
+              {showAddOption && (
+                <button
+                  type="button"
+                  onMouseDown={(e) => { e.preventDefault(); handleAddTag(); }}
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    textAlign: "left",
+                    padding: "0.5rem 0.75rem",
+                    ...TEXT.body,
+                    color: PALETTE.accent,
+                    fontWeight: "500",
+                    cursor: "pointer",
+                    borderTop: filtered.length > 0 ? `1px solid ${PALETTE.inputBorder}` : "none",
+                  }}
+                >
+                  {`+ ${addTagLabel} "${trimmed}"`}
+                </button>
+              )}
+            </div>
+          );
+        })(),
         document.body,
       )}
     </div>
