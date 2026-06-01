@@ -372,6 +372,7 @@ export default function PersonCard({
             onAddSituationTag={onAddSituationTag}
             placeTags={placeTags}
             onAddPlaceTag={onAddPlaceTag}
+            isParentOpen={eventModal.open}
           />
         </DialogContent>
       </Dialog>
