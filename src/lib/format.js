@@ -27,7 +27,8 @@ export function personHasIncompleteEvent(person) {
     !person.birthYear ||
     !person.gender ||
     !person.zodiacSign ||
-    !person.activity;
+    !person.activity ||
+    !person.howWeMet?.trim();
 
   return personMissing || (person.events || []).some(eventIsMissingRequired);
 }
