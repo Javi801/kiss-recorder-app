@@ -27,7 +27,7 @@ export default function TagInput({
     (tag) => !trimmed || tag.toLowerCase().includes(trimmed.toLowerCase()),
   );
   const showAddOption =
-    trimmed && !tags.some((t) => t.toLowerCase() === trimmed.toLowerCase());
+    trimmed && onAddTag && !tags.some((t) => t.toLowerCase() === trimmed.toLowerCase());
   const effectiveOpen = isParentOpen === false ? false : open;
   const showDropdown = effectiveOpen && rect && (filtered.length > 0 || showAddOption);
 
