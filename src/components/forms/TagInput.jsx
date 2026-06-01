@@ -14,6 +14,7 @@ export default function TagInput({
   maxLength,
   style,
   addTagLabel,
+  isParentOpen,
 }) {
   const PALETTE = usePalette();
   const [open, setOpen] = useState(false);
@@ -44,6 +45,10 @@ export default function TagInput({
     measure();
     setOpen(true);
   }
+
+  useEffect(() => {
+    if (isParentOpen === false) setOpen(false);
+  }, [isParentOpen]);
 
   useEffect(() => {
     if (!open) return;
