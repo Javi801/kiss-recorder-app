@@ -88,7 +88,15 @@ describe("exportStatsPdf", () => {
   it("uses a date-based file name ending in .pdf", async () => {
     await exportStatsPdf([], t);
     const call = mockFilesystem.writeFile.mock.calls[0][0];
-    expect(call.path).toMatch(/^kiss-recorder-stats-2-\d{4}-\d{2}-\d{2}\.pdf$/);
+    expect(call.path).toMatch(/^kisswrapped-\d{4}-\d{2}-\d{2}\.pdf$/);
+  });
+
+  it("creates a landscape slide deck", async () => {
+    await exportStatsPdf([], t);
+    expect(mockJsPDF).toHaveBeenCalledWith(
+      expect.objectContaining({ orientation: "landscape" }),
+    );
+    expect(mockDoc.addPage).toHaveBeenCalled();
   });
 
   it("opens the Share sheet with the file URI", async () => {
