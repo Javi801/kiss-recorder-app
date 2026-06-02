@@ -152,7 +152,7 @@ export default function BarChartCard({
   const hLabelContentWidth = horizontal
     ? Math.max(
         H_LABEL_VIEWPORT_W,
-        Math.max(...data.map((d) => (d.label?.length ?? 0)), 0) * H_LABEL_CHAR_W + 16,
+        Math.max(...data.map((d) => (d.label?.length ?? 0)), 0) * H_LABEL_CHAR_W,
       )
     : H_LABEL_VIEWPORT_W;
   const hRowHeight = data.length
@@ -216,8 +216,8 @@ export default function BarChartCard({
                         height: hRowHeight,
                         display: "flex",
                         alignItems: "center",
-                        justifyContent: "flex-end",
-                        paddingRight: 8,
+                        justifyContent: "flex-start",
+                        paddingLeft: 8,
                         boxSizing: "border-box",
                         color: PALETTE.textSoft,
                         fontSize: 12,
@@ -229,7 +229,9 @@ export default function BarChartCard({
                   ))}
                 </div>
               </div>
-              <BarChart data={data} layout="vertical" width={hPlotWidth} height={chartHeight} margin={{ top: 5, right: 16, left: 0, bottom: 5 }}>
+              <div style={{
+                  borderLeft: `1px solid ${PALETTE.cardBorder}`, marginLeft: 8}}>
+              <BarChart data={data} layout="vertical" width={hPlotWidth} height={chartHeight} margin={{ top: 5, right: 16, left: 8, bottom: 5 }}>
                 <CartesianGrid horizontal={false} strokeDasharray="3 3" stroke={PALETTE.cardBorder} />
                 <YAxis
                   dataKey="label"
@@ -258,10 +260,10 @@ export default function BarChartCard({
                     return <Cell key={`${entry.label}-${index}`} fill={fill} />;
                   })}
                 </Bar>
-              </BarChart>
+              </BarChart></div>
             </div>
           ) : (
-          <div style={{ height: `${chartHeight}px`, width: "100%", outline: "none" }}>
+          <div data-bar-chart-container ref={vertChartRef} style={{ height: `${chartHeight}px`, width: "100%", outline: "none" }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data} margin={{ top: 5, right: 5, left: -15, bottom: 5 }}>
                 <CartesianGrid vertical={false} strokeDasharray="3 3" stroke={PALETTE.cardBorder} />
