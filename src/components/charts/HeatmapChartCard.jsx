@@ -2,6 +2,8 @@ import { useRef, useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { TEXT } from "@/lib/constants";
 import { usePalette } from "@/lib/theme";
+import FullscreenChartWrapper from "./FullscreenChartWrapper";
+import { useFullscreen } from "./FullscreenContext";
 
 const MARGIN_TOP = 40;
 const MARGIN_RIGHT = 8;
@@ -22,6 +24,7 @@ function cellColor(count, maxCount, cardSoft, heatmapRgb, alphaBase = 0.15, expo
 
 export default function HeatmapChartCard({ title, subtitle, data, allYears, emptyText }) {
   const PALETTE = usePalette();
+  const isFullscreen = useFullscreen();
   const containerRef = useRef(null);
   const scrollRef = useRef(null);
   const scrolledRef = useRef(false);
@@ -53,7 +56,7 @@ export default function HeatmapChartCard({ title, subtitle, data, allYears, empt
 
   const chartH = data.length * ROW_H;
   // Cap visible rows so vertical scroll activates inside the card instead of the page.
-  const maxHeight = MARGIN_TOP + Math.min(data.length, MAX_VISIBLE_ROWS) * ROW_H + MARGIN_BOTTOM;
+  const maxHeight = isFullscreen ? undefined : MARGIN_TOP + Math.min(data.length, MAX_VISIBLE_ROWS) * ROW_H + MARGIN_BOTTOM;
 
   const maxCount = useMemo(() => {
     let max = 0;
@@ -76,6 +79,7 @@ export default function HeatmapChartCard({ title, subtitle, data, allYears, empt
   );
 
   return (
+    <FullscreenChartWrapper>
     <Card
       className="rounded-3xl"
       style={{ overflow: "hidden", boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)", backdropFilter: "blur(8px)", ...cardStyle }}
@@ -263,5 +267,6 @@ export default function HeatmapChartCard({ title, subtitle, data, allYears, empt
         )}
       </CardContent>
     </Card>
+    </FullscreenChartWrapper>
   );
 }

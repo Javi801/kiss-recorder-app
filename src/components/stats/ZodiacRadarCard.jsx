@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/card";
 import { TEXT } from "@/lib/constants";
 import { usePalette } from "@/lib/theme";
+import FullscreenChartWrapper from "@/components/charts/FullscreenChartWrapper";
 
 const MODES = ["persons", "events"];
 
@@ -70,6 +71,7 @@ export default function ZodiacRadarCard({
   };
 
   return (
+    <FullscreenChartWrapper>
     <Card
       className="rounded-3xl"
       style={{
@@ -167,5 +169,6 @@ export default function ZodiacRadarCard({
         )}
       </CardContent>
     </Card>
+    </FullscreenChartWrapper>
   );
 }
