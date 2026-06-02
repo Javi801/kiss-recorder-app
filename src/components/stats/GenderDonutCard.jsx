@@ -15,6 +15,9 @@ import {
 } from "@/components/ui/card";
 import { CHART_COLORS, TEXT } from "@/lib/constants";
 import { usePalette } from "@/lib/theme";
+import FullscreenChartWrapper from "@/components/charts/FullscreenChartWrapper";
+import { useFullscreen } from "@/components/charts/FullscreenContext";
+import { useResponsivePieRadius } from "@/components/charts/useResponsivePieRadius";
 
 const MODES = ["persons", "events"];
 
@@ -48,7 +51,9 @@ export default function GenderDonutCard({
   t,
 }) {
   const P = usePalette();
+  const isFullscreen = useFullscreen();
   const [mode, setMode] = useState("persons");
+  const { chartHeight, innerRadius, outerRadius } = useResponsivePieRadius(isFullscreen);
 
   const chartColors = P.chartColors ?? CHART_COLORS;
   const data = mode === "persons" ? personsByGender : eventsByGender;
@@ -71,6 +76,7 @@ export default function GenderDonutCard({
   );
 
   return (
+    <FullscreenChartWrapper>
     <Card
       className="rounded-3xl"
       style={{
@@ -131,15 +137,15 @@ export default function GenderDonutCard({
               overflow: "hidden",
             }}
           >
-            <div style={{ height: "14rem", width: "100%", outline: "none" }}>
+            <div style={{ height: chartHeight, width: "100%", outline: "none" }}>
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={data}
                     dataKey="value"
                     nameKey="label"
-                    innerRadius={50}
-                    outerRadius={80}
+                    innerRadius={innerRadius}
+                    outerRadius={outerRadius}
                     paddingAngle={3}
                   >
                     {data.map((entry, index) => (
@@ -227,5 +233,6 @@ export default function GenderDonutCard({
         )}
       </CardContent>
     </Card>
+    </FullscreenChartWrapper>
   );
 }
