@@ -121,7 +121,7 @@ export default function EventForm({ initialValues, onSave, onCancel, onDelete, t
           onAddTag={onAddPlaceTag}
           placeholder={t.eventPlacePlaceholder}
           maxLength={200}
-          style={{ ...inputStyle, ...TEXT.input }}
+          style={{ ...inputStyle }}
           addTagLabel={t.addTag}
           isParentOpen={isParentOpen}
         />
@@ -143,7 +143,7 @@ export default function EventForm({ initialValues, onSave, onCancel, onDelete, t
           onAddTag={onAddSituationTag}
           placeholder={t.eventSituationPlaceholder}
           maxLength={200}
-          style={{ ...inputStyle, ...TEXT.input }}
+          style={{ ...inputStyle }}
           addTagLabel={t.addTag}
           isParentOpen={isParentOpen}
         />
@@ -164,7 +164,7 @@ export default function EventForm({ initialValues, onSave, onCancel, onDelete, t
           placeholder={t.eventDetailsPlaceholder}
           maxLength={1000}
           className="rounded-2xl"
-          style={{ ...inputStyle, ...TEXT.input }}
+          style={{ ...inputStyle }}
         />
         <p style={{ ...TEXT.caption, color: PALETTE.textSoft, textAlign: "right" }}>
           {details.length}/1000
@@ -180,7 +180,7 @@ export default function EventForm({ initialValues, onSave, onCancel, onDelete, t
           placeholder={t.eventObservationsPlaceholder}
           maxLength={1000}
           className="rounded-2xl"
-          style={{ ...inputStyle, ...TEXT.input }}
+          style={{ ...inputStyle }}
         />
         <p style={{ ...TEXT.caption, color: PALETTE.textSoft, textAlign: "right" }}>
           {observations.length}/1000
