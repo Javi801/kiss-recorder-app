@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Pencil, Plus, Trash2, Calendar, ChevronDown, ChevronUp } from "lucide-react";
 
@@ -53,6 +53,7 @@ export default function PersonCard({
   onDeleteAllEvents,
   t,
   language,
+  modalBackRef,
   situationTags,
   onAddSituationTag,
   placeTags,
@@ -71,6 +72,20 @@ export default function PersonCard({
     mode: "add",
     event: null,
   });
+
+  useEffect(() => {
+    if (!modalBackRef) return;
+    modalBackRef.current = editingPerson ? () => setEditingPerson(false) : null;
+    return () => { if (editingPerson) modalBackRef.current = null; };
+  }, [editingPerson, modalBackRef]);
+
+  useEffect(() => {
+    if (!modalBackRef) return;
+    modalBackRef.current = eventModal.open
+      ? () => setEventModal((prev) => ({ ...prev, open: false }))
+      : null;
+    return () => { if (eventModal.open) modalBackRef.current = null; };
+  }, [eventModal.open, modalBackRef]);
 
   // Check if any event lacks details.
   const hasIncompleteEvent = personHasIncompleteEvent(person);
@@ -92,9 +107,9 @@ export default function PersonCard({
           style={{
             overflow: "hidden",
             boxShadow: hasIncompleteEvent
-              ? "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 0 0 2px #f9d58a"
+              ? `0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 0 0 2px ${PALETTE.warningBorder}`
               : "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
-            borderColor: hasIncompleteEvent ? "#f9d58a" : PALETTE.cardBorder,
+            borderColor: hasIncompleteEvent ? PALETTE.warningBorder : PALETTE.cardBorder,
             background: `linear-gradient(180deg, ${PALETTE.cardSoft}, ${PALETTE.accentMuted})`,
           }}
         >
@@ -114,7 +129,7 @@ export default function PersonCard({
                   </h3>
 
                   {hasIncompleteEvent && (
-                    <Badge className="rounded-full" style={{ border: "none", backgroundColor: "#fef3c7", color: "#b45309" }}>
+                    <Badge className="rounded-full" style={{ border: "none", backgroundColor: PALETTE.warningBadgeBg, color: PALETTE.warningBadgeText }}>
                       {t.missingEventDetailsBadge}
                     </Badge>
                   )}
@@ -180,7 +195,7 @@ export default function PersonCard({
                     <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
                       <Button
                         onClick={() => setEditingPerson(true)}
-                        style={{ background: `linear-gradient(90deg, ${PALETTE.accent}, ${PALETTE.accentSoft})`, color: "white", border: "none" }}
+                        style={{ background: `linear-gradient(90deg, ${PALETTE.accent}, ${PALETTE.accentSoft})`, color: PALETTE.textOnAccent, border: "none" }}
                       >
                         <Pencil style={{ marginRight: "0.5rem", height: "1rem", width: "1rem" }} />
                         {t.editPerson}
@@ -190,7 +205,7 @@ export default function PersonCard({
                         onClick={() =>
                           setEventModal({ open: true, mode: "add", event: null })
                         }
-                        style={{ background: `linear-gradient(90deg, ${PALETTE.accent}, ${PALETTE.accentSoft})`, color: "white", border: "none" }}
+                        style={{ background: `linear-gradient(90deg, ${PALETTE.accent}, ${PALETTE.accentSoft})`, color: PALETTE.textOnAccent, border: "none" }}
                       >
                         <Plus style={{ marginRight: "0.5rem", height: "1rem", width: "1rem" }} />
                         {t.addEvent}
@@ -198,7 +213,7 @@ export default function PersonCard({
 
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
-                          <Button variant="outline" style={{ color: "#dc2626" }}>
+                          <Button variant="outline" style={{ color: PALETTE.dangerEmphasis }}>
                             <Trash2 style={{ marginRight: "0.5rem", height: "1rem", width: "1rem" }} />
                             {t.deletePerson}
                           </Button>
@@ -211,7 +226,7 @@ export default function PersonCard({
                           <AlertDialogFooter>
                             <AlertDialogCancel>{t.cancel}</AlertDialogCancel>
                             <AlertDialogAction
-                              style={{ background: "#ef4444", color: "white" }}
+                              style={{ background: PALETTE.danger, color: PALETTE.textOnAccent }}
                               onClick={() => onDeletePerson(person.id)}
                             >
                               {t.deletePersonConfirmAction}
@@ -223,7 +238,7 @@ export default function PersonCard({
                       {sortedEvents.length > 0 && (
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
-                            <Button variant="outline" style={{ color: "#dc2626" }}>
+                            <Button variant="outline" style={{ color: PALETTE.dangerEmphasis }}>
                               <Trash2 style={{ marginRight: "0.5rem", height: "1rem", width: "1rem" }} />
                               {t.deleteAllEvents}
                             </Button>
@@ -236,7 +251,7 @@ export default function PersonCard({
                             <AlertDialogFooter>
                               <AlertDialogCancel>{t.cancel}</AlertDialogCancel>
                               <AlertDialogAction
-                                style={{ background: "#ef4444", color: "white" }}
+                                style={{ background: PALETTE.danger, color: PALETTE.textOnAccent }}
                                 onClick={() => onDeleteAllEvents(person.id)}
                               >
                                 {t.deleteAllEventsConfirmAction}
@@ -256,7 +271,7 @@ export default function PersonCard({
                             className="rounded-2xl"
                             style={{
                               width: "100%",
-                              border: eventIsMissingRequired(event) ? "1px solid #f9d58a" : `1px solid ${PALETTE.innerCardBorder}`,
+                              border: eventIsMissingRequired(event) ? `1px solid ${PALETTE.warningBorder}` : `1px solid ${PALETTE.innerCardBorder}`,
                               backgroundColor: eventIsMissingRequired(event) ? "rgba(249,213,138,0.08)" : PALETTE.card,
                               padding: "0.75rem",
                               textAlign: "left",

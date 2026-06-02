@@ -4,9 +4,10 @@ import {
   Check,
   CheckCircle2,
   Download,
+  ExternalLink,
   Eye,
   EyeOff,
-  HelpCircle,
+  Info,
   Languages,
   Settings,
   Trash2,
@@ -27,13 +28,12 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 
-import { TEXT } from "@/lib/constants";
+import { TEXT, APP_VERSION, APP_GITHUB_USER, APP_GITHUB_REPO } from "@/lib/constants";
 import { usePalette } from "@/lib/theme";
 import { exportPeopleJson } from "@/lib/device-storage";
 import { saveErrorLog } from "@/lib/pdf-export";
 import StatTile from "@/components/shared/StatTile";
 import ColorSelector from "@/components/app/ColorSelector";
-import OnboardingScreen from "@/components/app/OnboardingScreen";
 
 /**
  * Renders the main dashboard screen.
@@ -58,7 +58,7 @@ export default function MainScreen({
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [tutorialOpen, setTutorialOpen] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
   // null = idle | { fileName, isNative, hadMissingFields } = success | Error = failed
   const [jsonExportStatus, setJsonExportStatus] = useState(null);
   // null = idle | { type: "confirm", count, data } | { type: "success", count } | { type: "error_type" | "error_format" }
@@ -139,7 +139,7 @@ export default function MainScreen({
   const outlineActionStyle = {
     height: "3.5rem",
     justifyContent: "flex-start",
-    ...TEXT.base,
+    ...TEXT.body,
     boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
     borderColor: PALETTE.inputBorder,
     backgroundColor: PALETTE.controlBg,
@@ -167,10 +167,6 @@ export default function MainScreen({
     { value: "es", label: t.spanish },
   ];
 
-  if (tutorialOpen) {
-    return <OnboardingScreen t={t} onComplete={() => setTutorialOpen(false)} />;
-  }
-
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
       <input
@@ -186,7 +182,7 @@ export default function MainScreen({
           overflow: "hidden",
           borderRadius: "30px",
           border: "none",
-          color: "white",
+          color: PALETTE.textOnAccent,
           boxShadow:
             "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
           background: `linear-gradient(135deg, ${PALETTE.accent}, ${PALETTE.accentSoft}, ${PALETTE.gradientEnd})`,
@@ -264,7 +260,7 @@ export default function MainScreen({
                 style={frostedButtonStyle}
                 onClick={() => setLanguageOpen(true)}
               >
-                <Languages style={{ height: "1.25rem", width: "1.25rem", color: "white" }} />
+                <Languages style={{ height: "1.25rem", width: "1.25rem", color: PALETTE.textOnAccent }} />
               </Button>
               <span style={buttonLabelStyle}>{t.language}</span>
             </div>
@@ -287,7 +283,7 @@ export default function MainScreen({
                 onClick={() => setStatsVisible((visible) => !visible)}
               >
                 {statsVisible ? (
-                  <Eye style={{ height: "1.25rem", width: "1.25rem", color: "white" }} />
+                  <Eye style={{ height: "1.25rem", width: "1.25rem", color: PALETTE.textOnAccent }} />
                 ) : (
                   <EyeOff style={{ height: "1.25rem", width: "1.25rem", color: "rgba(255,255,255,0.55)" }} />
                 )}
@@ -303,7 +299,7 @@ export default function MainScreen({
                 style={frostedButtonStyle}
                 onClick={() => setSettingsOpen(true)}
               >
-                <Settings style={{ height: "1.25rem", width: "1.25rem", color: "white" }} />
+                <Settings style={{ height: "1.25rem", width: "1.25rem", color: PALETTE.textOnAccent }} />
               </Button>
               <span style={buttonLabelStyle}>{t.settings}</span>
             </div>
@@ -328,7 +324,7 @@ export default function MainScreen({
                   boxShadow: `0 4px 14px ${PALETTE.accentGlow}`,
                 }}
               >
-                <Languages style={{ height: "1.5rem", width: "1.5rem", color: "white" }} />
+                <Languages style={{ height: "1.5rem", width: "1.5rem", color: PALETTE.textOnAccent }} />
               </div>
               <DialogTitle style={{ ...TEXT.subheading, color: PALETTE.accentEmphasis2 }}>
                 {t.language}
@@ -389,7 +385,7 @@ export default function MainScreen({
                   boxShadow: `0 4px 14px rgba(60,9,108,0.25)`,
                 }}
               >
-                <Settings style={{ height: "1.5rem", width: "1.5rem", color: "white" }} />
+                <Settings style={{ height: "1.5rem", width: "1.5rem", color: PALETTE.textOnAccent }} />
               </div>
               <DialogTitle style={{ ...TEXT.subheading, color: PALETTE.accentEmphasis2 }}>
                 {t.settings}
@@ -410,20 +406,20 @@ export default function MainScreen({
               variant="outline"
               className="rounded-2xl"
               style={{
-                height: "3.25rem",
+                height: "3rem",
                 justifyContent: "flex-start",
-                ...TEXT.base,
+                ...TEXT.body,
                 borderColor: PALETTE.inputBorder,
                 backgroundColor: PALETTE.controlBg,
                 color: PALETTE.text,
               }}
               onClick={() => {
                 setSettingsOpen(false);
-                setTutorialOpen(true);
+                setAboutOpen(true);
               }}
             >
-              <HelpCircle style={{ marginRight: "0.75rem", height: "1.25rem", width: "1.25rem", color: PALETTE.accent }} />
-              {t.viewOnboarding}
+              <Info style={{ marginRight: "0.75rem", height: "1rem", width: "1rem", color: PALETTE.accent }} />
+              {t.about}
             </Button>
           </section>
         </DialogContent>
@@ -436,8 +432,8 @@ export default function MainScreen({
           style={{
             height: "3.5rem",
             justifyContent: "flex-start",
-            ...TEXT.base,
-            color: "white",
+            ...TEXT.body,
+            color: PALETTE.textOnAccent,
             boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
             background: `linear-gradient(90deg, ${PALETTE.accent}, ${PALETTE.accentSoft})`,
           }}
@@ -502,7 +498,7 @@ export default function MainScreen({
           <Button
             variant="outline"
             className="rounded-2xl"
-            style={{ ...dataButtonStyle, color: "#dc2626" }}
+            style={{ ...dataButtonStyle, color: PALETTE.dangerEmphasis }}
             onClick={() => setConfirmOpen(true)}
           >
             <Trash2 style={{ height: "1.25rem", width: "1.25rem" }} />
@@ -527,7 +523,7 @@ export default function MainScreen({
                 display: "flex",
                 alignItems: "center",
                 gap: "0.5rem",
-                color: jsonExportStatus?.hadMissingFields ? "#b45309" : PALETTE.accent,
+                color: jsonExportStatus?.hadMissingFields ? PALETTE.warningBadgeText : PALETTE.accent,
               }}
             >
               {jsonExportStatus?.hadMissingFields ? (
@@ -536,7 +532,7 @@ export default function MainScreen({
                 <CheckCircle2 style={{ height: "1.25rem", width: "1.25rem", flexShrink: 0 }} />
               )}
               <DialogTitle
-                style={{ color: jsonExportStatus?.hadMissingFields ? "#b45309" : PALETTE.accent }}
+                style={{ color: jsonExportStatus?.hadMissingFields ? PALETTE.warningBadgeText : PALETTE.accent }}
               >
                 {jsonExportStatus?.hadMissingFields
                   ? t.exportJsonSuccessWithWarningsTitle
@@ -565,7 +561,7 @@ export default function MainScreen({
           <DialogFooter>
             <Button
               className="rounded-xl"
-              style={{ background: `linear-gradient(90deg, ${PALETTE.accent}, ${PALETTE.accentSoft})`, color: "white", border: "none" }}
+              style={{ background: `linear-gradient(90deg, ${PALETTE.accent}, ${PALETTE.accentSoft})`, color: PALETTE.textOnAccent, border: "none" }}
               onClick={() => setJsonExportStatus(null)}
             >
               {t.close}
@@ -606,7 +602,7 @@ export default function MainScreen({
             </Button>
             <Button
               className="rounded-xl"
-              style={{ background: PALETTE.accentEmphasis, color: "white", border: "none" }}
+              style={{ background: PALETTE.accentEmphasis, color: PALETTE.textOnAccent, border: "none" }}
               onClick={() => {
                 saveErrorLog(jsonExportStatus).catch(console.error);
                 setJsonExportStatus(null);
@@ -654,7 +650,7 @@ export default function MainScreen({
             </Button>
             <Button
               className="rounded-xl"
-              style={{ background: `linear-gradient(90deg, ${PALETTE.accentEmphasis2}, ${PALETTE.emphasisEnd})`, color: "white", border: "none" }}
+              style={{ background: `linear-gradient(90deg, ${PALETTE.accentEmphasis2}, ${PALETTE.emphasisEnd})`, color: PALETTE.textOnAccent, border: "none" }}
               onClick={() => {
                 onImportData(importStatus.data);
                 setImportStatus({ type: "success", newCount: importStatus.newCount });
@@ -685,7 +681,7 @@ export default function MainScreen({
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button className="rounded-xl" style={{ background: `linear-gradient(90deg, ${PALETTE.accent}, ${PALETTE.accentSoft})`, color: "white", border: "none" }} onClick={() => setImportStatus(null)}>
+            <Button className="rounded-xl" style={{ background: `linear-gradient(90deg, ${PALETTE.accent}, ${PALETTE.accentSoft})`, color: PALETTE.textOnAccent, border: "none" }} onClick={() => setImportStatus(null)}>
               {t.close}
             </Button>
           </DialogFooter>
@@ -706,7 +702,7 @@ export default function MainScreen({
             <DialogDescription style={{ color: PALETTE.textSoft }}>{t.importJsonEmptyDesc}</DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button className="rounded-xl" style={{ background: `linear-gradient(90deg, ${PALETTE.accent}, ${PALETTE.accentSoft})`, color: "white", border: "none" }} onClick={() => setImportStatus(null)}>
+            <Button className="rounded-xl" style={{ background: `linear-gradient(90deg, ${PALETTE.accent}, ${PALETTE.accentSoft})`, color: PALETTE.textOnAccent, border: "none" }} onClick={() => setImportStatus(null)}>
               {t.close}
             </Button>
           </DialogFooter>
@@ -731,7 +727,96 @@ export default function MainScreen({
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button className="rounded-xl" style={{ background: PALETTE.accentEmphasis, color: "white", border: "none" }} onClick={() => setImportStatus(null)}>
+            <Button className="rounded-xl" style={{ background: PALETTE.accentEmphasis, color: PALETTE.textOnAccent, border: "none" }} onClick={() => setImportStatus(null)}>
+              {t.close}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* About dialog */}
+      <Dialog open={aboutOpen} onOpenChange={setAboutOpen}>
+        <DialogContent
+          showCloseButton={false}
+          className="rounded-2xl"
+          style={{ background: PALETTE.bgSoft, borderColor: PALETTE.line }}
+        >
+          <DialogHeader>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem" }}>
+              <div
+                className="rounded-full"
+                style={{
+                  width: "3.5rem",
+                  height: "3.5rem",
+                  background: `linear-gradient(135deg, ${PALETTE.accent}, ${PALETTE.accentSoft})`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: `0 4px 14px ${PALETTE.accentGlow}`,
+                }}
+              >
+                <Info style={{ height: "1.5rem", width: "1.5rem", color: "white" }} />
+              </div>
+              <div style={{ textAlign: "center" }}>
+                <DialogTitle style={{ ...TEXT.subheading, color: PALETTE.accentEmphasis2 }}>
+                  {t.appTitle}
+                </DialogTitle>
+                <span
+                  style={{
+                    display: "inline-block",
+                    marginTop: "0.25rem",
+                    padding: "0.125rem 0.625rem",
+                    borderRadius: "9999px",
+                    backgroundColor: PALETTE.accentMuted,
+                    color: PALETTE.accent,
+                    ...TEXT.caption,
+                    fontWeight: "600",
+                  }}
+                >
+                  {t.aboutVersion} {APP_VERSION}
+                </span>
+              </div>
+            </div>
+          </DialogHeader>
+
+          <DialogDescription asChild>
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              <p style={{ ...TEXT.caption, color: PALETTE.textSoft, textAlign: "center", lineHeight: "1.5" }}>
+                {t.aboutDescription}
+              </p>
+
+              <div style={{ height: "1px", backgroundColor: PALETTE.line }} />
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.375rem" }}>
+                <span style={{ ...TEXT.label, color: PALETTE.textSoft }}>{t.aboutFeedback}</span>
+                <p style={{ ...TEXT.caption, color: PALETTE.textSoft }}>{t.aboutFeedbackDesc}</p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="rounded-xl"
+                  style={{
+                    height: "2.75rem",
+                    justifyContent: "flex-start",
+                    ...TEXT.caption,
+                    borderColor: PALETTE.inputBorder,
+                    backgroundColor: PALETTE.controlBg,
+                    color: PALETTE.text,
+                  }}
+                  onClick={() => window.open(APP_GITHUB_REPO, "_blank")}
+                >
+                  <ExternalLink style={{ marginRight: "0.75rem", height: "1rem", width: "1rem", color: PALETTE.accent }} />
+                  {APP_GITHUB_USER}
+                </Button>
+              </div>
+            </div>
+          </DialogDescription>
+
+          <DialogFooter>
+            <Button
+              className="rounded-xl"
+              style={{ background: `linear-gradient(90deg, ${PALETTE.accent}, ${PALETTE.accentSoft})`, color: "white", border: "none" }}
+              onClick={() => setAboutOpen(false)}
+            >
               {t.close}
             </Button>
           </DialogFooter>
@@ -742,10 +827,10 @@ export default function MainScreen({
         <DialogContent showCloseButton={false}>
           <DialogHeader>
             <div
-              style={{ display: "flex", alignItems: "center", gap: "0.5rem", color: "#dc2626" }}
+              style={{ display: "flex", alignItems: "center", gap: "0.5rem", color: PALETTE.dangerEmphasis }}
             >
               <TriangleAlert style={{ height: "1.25rem", width: "1.25rem", flexShrink: 0 }} />
-              <DialogTitle style={{ color: "#dc2626" }}>
+              <DialogTitle style={{ color: PALETTE.dangerEmphasis }}>
                 {t.clearDataConfirmTitle}
               </DialogTitle>
             </div>
@@ -757,7 +842,7 @@ export default function MainScreen({
             </Button>
             <Button
               className="hover:bg-red-700"
-              style={{ backgroundColor: "#dc2626", color: "white" }}
+              style={{ backgroundColor: PALETTE.dangerEmphasis, color: PALETTE.textOnAccent }}
               onClick={() => {
                 setConfirmOpen(false);
                 onClearData();

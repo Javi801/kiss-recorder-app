@@ -6,15 +6,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { TEXT } from "@/lib/constants";
+import { TEXT, PALETTES } from "@/lib/constants";
 import { usePalette } from "@/lib/theme";
 import { SPARKLE_PALETTES, PALETTE_SWATCHES } from "@/components/shared/SparkleIcon";
 
-const THEMES = [
-  { key: "pink",  gradient: "linear-gradient(135deg, #ffddea, #f8abc7, #bde0fe)" },
-  { key: "green", gradient: "linear-gradient(135deg, #d4edda, #a8d5b5, #bde0fe)" },
-  { key: "dark",  gradient: "linear-gradient(135deg, #1a1535, #1e2d5a, #0f1e3d)" },
-];
+const THEMES = Object.keys(PALETTES).map((key) => ({
+  key,
+  gradient: `linear-gradient(135deg, ${PALETTES[key].bgGradientFrom}, ${PALETTES[key].bgGradientVia}, ${PALETTES[key].bgGradientTo})`,
+}));
 
 export default function ColorSelector({
   iconColor,
@@ -36,7 +35,7 @@ export default function ColorSelector({
     <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
       {theme !== undefined && setTheme && (
         <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-          <p style={{ ...TEXT.bodyStrong, textTransform: "uppercase", color: accent ? "rgba(255,255,255,0.88)" : PALETTE.textSoft }}>
+          <p style={{ ...TEXT.body, textTransform: "uppercase", color: accent ? "rgba(255,255,255,0.88)" : PALETTE.textSoft }}>
             {t.appTheme}
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0.5rem" }}>
@@ -84,16 +83,16 @@ export default function ColorSelector({
 
       <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
         <p
-          style={{ ...TEXT.bodyStrong, textTransform: "uppercase", color: accent ? "rgba(255,255,255,0.88)" : PALETTE.textSoft }}
+          style={{ ...TEXT.body, textTransform: "uppercase", color: accent ? "rgba(255,255,255,0.88)" : PALETTE.textSoft }}
         >
           {t.iconColor}
         </p>
 
-        <Select value={iconColor} onValueChange={setIconColor}>
+        <Select modal={false} value={iconColor} onValueChange={setIconColor}>
           <SelectTrigger
             aria-label={t.iconColor}
             className="rounded-3xl"
-            style={{ height: "3.5rem", ...TEXT.base, boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)", ...triggerStyle }}
+            style={{ height: "3rem", boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)", ...triggerStyle }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
               <SelectValue placeholder={t.iconColor} />

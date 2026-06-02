@@ -2,9 +2,11 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Maximize2, X, Download } from "lucide-react";
 import { toPng } from "html-to-image";
-import { Filesystem, Directory } from "@capacitor/filesystem";
+import { Filesystem, Directory, Encoding } from "@capacitor/filesystem";
 import { Share } from "@capacitor/share";
+import { Capacitor } from "@capacitor/core";
 import { usePalette } from "@/lib/theme";
+import { TEXT } from "@/lib/constants";
 import { FullscreenContext } from "./FullscreenContext";
 
 function getChartFilename() {
@@ -67,12 +69,49 @@ export default function FullscreenChartWrapper({ children, centerContent = false
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState("");
+  const [downloadErrorObj, setDownloadErrorObj] = useState(null);
+  const [sharingLog, setSharingLog] = useState(false);
   const [hovered, setHovered] = useState(false);
   const captureRef = useRef(null);
   const PALETTE = usePalette();
 
+  const shareDownloadLog = useCallback(async () => {
+    if (!downloadErrorObj) return;
+    setSharingLog(true);
+    try {
+      const timestamp = new Date().toISOString();
+      const platform = Capacitor.getPlatform?.() ?? "unknown";
+      const content = [
+        "KissRecorder Chart Export Error",
+        `Timestamp: ${timestamp}`,
+        `Platform: ${platform}`,
+        `Error: ${downloadErrorObj?.message || String(downloadErrorObj)}`,
+        "",
+        "Stack trace:",
+        downloadErrorObj?.stack || "(no stack trace available)",
+      ].join("\n");
+
+      const fileName = `kiss-recorder-export-error-${timestamp.slice(0, 10)}.txt`;
+      await Filesystem.writeFile({
+        path: fileName,
+        directory: Directory.Cache,
+        data: content,
+        encoding: Encoding.UTF8,
+        recursive: true,
+      });
+      const { uri } = await Filesystem.getUri({ path: fileName, directory: Directory.Cache });
+      await Share.share({ files: [uri] });
+      Filesystem.deleteFile({ path: fileName, directory: Directory.Cache }).catch(() => {});
+    } catch {
+      // sharing failed silently
+    } finally {
+      setSharingLog(false);
+    }
+  }, [downloadErrorObj]);
+
   const open = useCallback(() => {
     setDownloadError("");
+    setDownloadErrorObj(null);
     setIsFullscreen(true);
   }, []);
   const close = useCallback(() => setIsFullscreen(false), []);
@@ -137,20 +176,17 @@ export default function FullscreenChartWrapper({ children, centerContent = false
     try {
       const { width, height } = getCaptureSize(el);
       const dataUrl = await toPng(el, {
-        backgroundColor: PALETTE.cardBg || "#ffffff",
-        scale: 2,
-        useCORS: true,
-        logging: false,
+        backgroundColor: PALETTE.cardBg,
+        pixelRatio: 2,
         width,
         height,
-        windowWidth: width,
-        windowHeight: height,
       });
 
       await shareImage(dataUrl, finalFilename);
     } catch (error) {
       console.error("Failed to download chart image", error);
       setDownloadError(`Error: ${error?.message || String(error)}`);
+      setDownloadErrorObj(error);
     } finally {
       saved.forEach(({ el: s, overflow, overflowX, overflowY, maxHeight, height }) => {
         s.style.overflow = overflow;
@@ -206,7 +242,7 @@ export default function FullscreenChartWrapper({ children, centerContent = false
             data-fullscreen-chart
             data-center-content={centerContent ? "true" : undefined}
             style={{
-              padding: "3.5rem 1.25rem 3rem",
+              padding: 0,
               minHeight: "100dvh",
               boxSizing: "border-box",
               position: "relative",
@@ -218,8 +254,9 @@ export default function FullscreenChartWrapper({ children, centerContent = false
                 [data-fullscreen-chart] > [data-slot="card"] {
                   flex: 1 1 auto;
                   width: 100%;
-                  min-height: calc(100dvh - 6.5rem);
-                  border-radius: 1.25rem !important;
+                  min-height: 100dvh;
+                  border-radius: 0 !important;
+                  box-shadow: none !important;
                   position: relative;
                 }
 
@@ -253,23 +290,19 @@ export default function FullscreenChartWrapper({ children, centerContent = false
                 }
 
                 [data-fullscreen-watermark] {
-                  bottom: calc(3rem + 10px);
-                  right: calc(1.25rem + 14px);
+                  bottom: 10px;
+                  right: 14px;
                 }
 
                 @media (max-width: 640px) {
-                  [data-fullscreen-chart] {
-                    padding: 3.25rem 0.75rem 2.5rem !important;
-                  }
-
                   [data-fullscreen-chart] > [data-slot="card"] {
-                    min-height: calc(100dvh - 5.75rem);
-                    border-radius: 1rem !important;
+                    min-height: 100dvh;
+                    border-radius: 0 !important;
                   }
 
                   [data-fullscreen-watermark] {
-                    bottom: calc(2.5rem + 10px);
-                    right: calc(0.75rem + 14px);
+                    bottom: 10px;
+                    right: 14px;
                   }
 
                   [data-fullscreen-chart] [data-slot="card-content"] div:has(> .recharts-responsive-container):not([data-bar-chart-container]) {
@@ -298,12 +331,33 @@ export default function FullscreenChartWrapper({ children, centerContent = false
                   borderRadius: 999,
                   background: PALETTE.card,
                   color: PALETTE.text,
-                  padding: "0.35rem 0.75rem",
+                  padding: "0.35rem 0.5rem 0.35rem 0.75rem",
                   fontSize: 12,
                   boxShadow: "0 6px 18px rgb(0 0 0 / 0.08)",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                  whiteSpace: "nowrap",
                 }}
               >
                 {downloadError}
+                <button
+                  onClick={shareDownloadLog}
+                  disabled={sharingLog}
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: PALETTE.accent,
+                    background: "none",
+                    border: "none",
+                    cursor: sharingLog ? "default" : "pointer",
+                    opacity: sharingLog ? 0.5 : 1,
+                    padding: "0.1rem 0.25rem",
+                    flexShrink: 0,
+                  }}
+                >
+                  {sharingLog ? "…" : "Compartir log"}
+                </button>
               </div>
             ) : null}
 
@@ -312,11 +366,10 @@ export default function FullscreenChartWrapper({ children, centerContent = false
               data-fullscreen-watermark
               style={{
                 position: "absolute",
-                color: PALETTE.watermark ?? PALETTE.textSoft,
-                opacity: PALETTE.watermarkOpacity ?? 0.35,
-                fontSize: 11,
-                letterSpacing: "0.06em",
-                fontWeight: 500,
+                color: PALETTE.accent,
+                opacity: PALETTE.watermarkOpacity ?? 0.5,
+                ...TEXT.bodyStrong,
+                letterSpacing: "0.1em",
                 pointerEvents: "none",
                 userSelect: "none",
               }}
@@ -350,12 +403,12 @@ export default function FullscreenChartWrapper({ children, centerContent = false
           width: 28,
           height: 28,
           borderRadius: 999,
-          border: `1px solid ${PALETTE.cardBorder}`,
-          background: PALETTE.card,
-          color: PALETTE.textSoft,
+          border: `1px solid ${PALETTE.accentSoft}`,
+          background: hovered ? PALETTE.accentMuted : PALETTE.card,
+          color: PALETTE.accent,
           cursor: "pointer",
-          opacity: hovered ? 0.85 : 0.3,
-          transition: "opacity 0.15s",
+          opacity: hovered ? 1 : 0.65,
+          transition: "opacity 0.15s, background 0.15s",
           zIndex: 10,
         }}
       >
