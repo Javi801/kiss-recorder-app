@@ -2,6 +2,8 @@ import { useRef, useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { TEXT } from "@/lib/constants";
 import { usePalette } from "@/lib/theme";
+import FullscreenChartWrapper from "./FullscreenChartWrapper";
+import { useFullscreen } from "./FullscreenContext";
 
 const MARGIN_TOP = 28;
 const MARGIN_RIGHT = 16;
@@ -15,6 +17,7 @@ const MAX_VISIBLE_ROWS = 12;
 
 export default function DumbbellChartCard({ title, subtitle, data, allYears, emptyText }) {
   const PALETTE = usePalette();
+  const isFullscreen = useFullscreen();
   const containerRef = useRef(null);
   const scrollRef = useRef(null);
   const scrolledRef = useRef(false);
@@ -55,7 +58,7 @@ export default function DumbbellChartCard({ title, subtitle, data, allYears, emp
     return idx * (chartW / (numYears - 1));
   };
 
-  const maxHeight = MARGIN_TOP + Math.min(data.length, MAX_VISIBLE_ROWS) * ROW_H + MARGIN_BOTTOM;
+  const maxHeight = isFullscreen ? undefined : MARGIN_TOP + Math.min(data.length, MAX_VISIBLE_ROWS) * ROW_H + MARGIN_BOTTOM;
   const totalH = MARGIN_TOP + chartH + MARGIN_BOTTOM;
 
   const cardStyle = { borderColor: PALETTE.cardBorder, backgroundColor: PALETTE.cardBg };
@@ -66,6 +69,7 @@ export default function DumbbellChartCard({ title, subtitle, data, allYears, emp
   );
 
   return (
+    <FullscreenChartWrapper centerContent>
     <Card
       className="rounded-3xl"
       style={{ overflow: "hidden", boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)", backdropFilter: "blur(8px)", ...cardStyle }}
@@ -269,5 +273,6 @@ export default function DumbbellChartCard({ title, subtitle, data, allYears, emp
         )}
       </CardContent>
     </Card>
+    </FullscreenChartWrapper>
   );
 }

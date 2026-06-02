@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/card";
 import { TEXT } from "@/lib/constants";
 import { usePalette } from "@/lib/theme";
+import FullscreenChartWrapper from "./FullscreenChartWrapper";
+import { useFullscreen } from "./FullscreenContext";
 
 /**
  * Renders a reusable area chart card.
@@ -42,6 +44,7 @@ export default function AreaChartCard({
   tooltipUnit = null,
 }) {
   const PALETTE = usePalette();
+  const isFullscreen = useFullscreen();
   // Shared card style for consistency.
   const cardStyle = {
     borderColor: PALETTE.cardBorder,
@@ -55,6 +58,7 @@ export default function AreaChartCard({
   };
 
   return (
+    <FullscreenChartWrapper>
     <Card className="rounded-3xl" style={{ boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)", backdropFilter: "blur(8px)", ...cardStyle }}>
       <CardHeader style={{ paddingBottom: "0.5rem" }}>
         <CardTitle style={{ ...TEXT.title, color: PALETTE.text }}>
@@ -65,7 +69,7 @@ export default function AreaChartCard({
 
       <CardContent>
         {data.length ? (
-          <div style={{ height: "16rem", width: "100%", outline: "none" }}>
+          <div data-bar-chart-container style={{ height: isFullscreen ? undefined : "16rem", width: "100%", outline: "none" }}>
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={data} margin={{ top: 5, right: 5, left: -15, bottom: 5 }}>
                 {/* Grid lines */}
@@ -100,7 +104,7 @@ export default function AreaChartCard({
 
                 {/* Area */}
                 <Area
-                  type="natural"
+                  type="linear"
                   dataKey="value"
                   stroke={PALETTE.accent2}
                   fill={PALETTE.gradientEnd}
@@ -120,5 +124,6 @@ export default function AreaChartCard({
         )}
       </CardContent>
     </Card>
+    </FullscreenChartWrapper>
   );
 }

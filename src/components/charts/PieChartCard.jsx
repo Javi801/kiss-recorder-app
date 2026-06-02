@@ -14,6 +14,9 @@ import {
 } from "@/components/ui/card";
 import { CHART_COLORS, TEXT } from "@/lib/constants";
 import { usePalette } from "@/lib/theme";
+import FullscreenChartWrapper from "./FullscreenChartWrapper";
+import { useFullscreen } from "./FullscreenContext";
+import { useResponsivePieRadius } from "./useResponsivePieRadius";
 import { getColorForCategory } from "@/lib/format";
 
 /**
@@ -42,7 +45,9 @@ export default function PieChartCard({
   tooltipUnit = null,
 }) {
   const PALETTE = usePalette();
+  const isFullscreen = useFullscreen();
   const chartColors = PALETTE.chartColors ?? CHART_COLORS;
+  const { chartHeight, innerRadius, outerRadius } = useResponsivePieRadius(isFullscreen);
   // Resolve colors for each slice.
   const fills = data.map(
     (entry, index) =>
@@ -63,6 +68,7 @@ export default function PieChartCard({
   };
 
   return (
+    <FullscreenChartWrapper>
     <Card className="rounded-3xl overflow-visible" style={{ boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)", backdropFilter: "blur(8px)", ...cardStyle }}>
       <CardHeader style={{ paddingBottom: "0.5rem" }}>
         <CardTitle style={{ ...TEXT.title, color: PALETTE.text }}>
@@ -75,15 +81,15 @@ export default function PieChartCard({
         {data.length ? (
           <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             {/* Chart */}
-            <div style={{ height: "14rem", width: "100%", outline: "none" }}>
+            <div style={{ height: chartHeight, width: "100%", outline: "none" }}>
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={data}
                     dataKey="value"
                     nameKey="label"
-                    innerRadius={50}
-                    outerRadius={80}
+                    innerRadius={innerRadius}
+                    outerRadius={outerRadius}
                     paddingAngle={3}
                   >
                     {data.map((entry, index) => (
@@ -146,5 +152,6 @@ export default function PieChartCard({
         )}
       </CardContent>
     </Card>
+    </FullscreenChartWrapper>
   );
 }
