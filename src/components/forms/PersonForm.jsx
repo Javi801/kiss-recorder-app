@@ -312,7 +312,7 @@ export default function PersonForm({
               }
               maxLength={500}
               className="rounded-2xl"
-              style={{ ...inputStyle, ...TEXT.input }}
+              style={{ ...inputStyle }}
             />
             <p style={{ ...TEXT.caption, color: PALETTE.textSoft, textAlign: "right" }}>
               {form.detail.length}/500
