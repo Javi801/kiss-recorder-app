@@ -100,7 +100,7 @@ export default function AreaChartCard({
 
                 {/* Area */}
                 <Area
-                  type="natural"
+                  type="linear"
                   dataKey="value"
                   stroke={PALETTE.accent2}
                   fill={PALETTE.gradientEnd}
