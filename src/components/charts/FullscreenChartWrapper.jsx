@@ -1,8 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Maximize2, X, Download } from "lucide-react";
-import html2canvas from "html2canvas";
-import { Capacitor } from "@capacitor/core";
+import { toPng } from "html-to-image";
 import { Filesystem, Directory } from "@capacitor/filesystem";
 import { Share } from "@capacitor/share";
 import { usePalette } from "@/lib/theme";
@@ -20,35 +19,18 @@ function getCaptureSize(el) {
   };
 }
 
-async function shareCanvasImage(canvas, filename) {
-  if (!Capacitor.isNativePlatform()) {
-    throw new Error("Chart image download is only available on mobile.");
-  }
-
-  const dataUrl = canvas.toDataURL("image/png");
-  const base64Data = dataUrl.split(",")[1];
-  const path = `${Date.now()}-${filename}`;
+async function shareImage(dataUrl, filename) {
+  const base64 = dataUrl.split(",")[1];
 
   await Filesystem.writeFile({
-    path,
+    path: filename,
     directory: Directory.Cache,
-    data: base64Data,
+    data: base64,
     recursive: true,
   });
-
-  try {
-    const { uri } = await Filesystem.getUri({
-      path,
-      directory: Directory.Cache,
-    });
-    await Share.share({
-      title: filename,
-      dialogTitle: "Guardar imagen",
-      files: [uri],
-    });
-  } finally {
-    Filesystem.deleteFile({ path, directory: Directory.Cache }).catch(() => {});
-  }
+  const { uri } = await Filesystem.getUri({ path: filename, directory: Directory.Cache });
+  await Share.share({ files: [uri] });
+  Filesystem.deleteFile({ path: filename, directory: Directory.Cache }).catch(() => {});
 }
 
 function IconButton({ onClick, disabled, children, palette, title }) {
@@ -154,7 +136,7 @@ export default function FullscreenChartWrapper({ children, centerContent = false
 
     try {
       const { width, height } = getCaptureSize(el);
-      const canvas = await html2canvas(el, {
+      const dataUrl = await toPng(el, {
         backgroundColor: PALETTE.cardBg || "#ffffff",
         scale: 2,
         useCORS: true,
@@ -165,10 +147,10 @@ export default function FullscreenChartWrapper({ children, centerContent = false
         windowHeight: height,
       });
 
-      await shareCanvasImage(canvas, finalFilename);
+      await shareImage(dataUrl, finalFilename);
     } catch (error) {
-      if (import.meta.env.DEV) console.error("Failed to download chart image", error);
-      setDownloadError("No se pudo descargar la imagen.");
+      console.error("Failed to download chart image", error);
+      setDownloadError(`Error: ${error?.message || String(error)}`);
     } finally {
       saved.forEach(({ el: s, overflow, overflowX, overflowY, maxHeight, height }) => {
         s.style.overflow = overflow;
