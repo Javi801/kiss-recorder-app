@@ -17,6 +17,7 @@ import {
 import { TEXT } from "@/lib/constants";
 import { usePalette } from "@/lib/theme";
 import FullscreenChartWrapper from "./FullscreenChartWrapper";
+import { useFullscreen } from "./FullscreenContext";
 
 /**
  * Renders a reusable area chart card.
@@ -43,6 +44,7 @@ export default function AreaChartCard({
   tooltipUnit = null,
 }) {
   const PALETTE = usePalette();
+  const isFullscreen = useFullscreen();
   // Shared card style for consistency.
   const cardStyle = {
     borderColor: PALETTE.cardBorder,
@@ -67,7 +69,7 @@ export default function AreaChartCard({
 
       <CardContent>
         {data.length ? (
-          <div style={{ height: "16rem", width: "100%", outline: "none" }}>
+          <div data-bar-chart-container style={{ height: isFullscreen ? undefined : "16rem", width: "100%", outline: "none" }}>
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={data} margin={{ top: 5, right: 5, left: -15, bottom: 5 }}>
                 {/* Grid lines */}

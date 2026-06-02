@@ -239,18 +239,17 @@ export default function FullscreenChartWrapper({ children, centerContent = false
                   max-width: 100%;
                 }
 
-                [data-fullscreen-chart] [data-slot="card-content"] div:has(> .recharts-responsive-container) {
+                [data-fullscreen-chart] [data-slot="card-content"] div:has(> .recharts-responsive-container):not([data-bar-chart-container]) {
                   flex: 1 1 auto;
                   height: clamp(20rem, 64dvh, 44rem) !important;
                   min-height: 20rem;
                 }
 
                 [data-fullscreen-chart] [data-bar-chart-container] {
-                  /* TODO: Tune the fullscreen height of vertical bar charts.
-                     They should keep a pleasant max proportion, close to 4 high by 3 wide. */
                   flex: 0 1 auto !important;
-                  height: min(58dvh, calc(133.333vw - 3.333rem), 34rem) !important;
+                  height: min(58dvh, calc(133.333vw - 7.333rem), 34rem) !important;
                   min-height: 18rem !important;
+                  margin-block: auto;
                 }
 
                 [data-fullscreen-watermark] {
@@ -273,13 +272,13 @@ export default function FullscreenChartWrapper({ children, centerContent = false
                     right: calc(0.75rem + 14px);
                   }
 
-                  [data-fullscreen-chart] [data-slot="card-content"] div:has(> .recharts-responsive-container) {
+                  [data-fullscreen-chart] [data-slot="card-content"] div:has(> .recharts-responsive-container):not([data-bar-chart-container]) {
                     height: clamp(18rem, 62dvh, 34rem) !important;
                     min-height: 18rem;
                   }
 
                   [data-fullscreen-chart] [data-bar-chart-container] {
-                    height: min(56dvh, calc(133.333vw - 2rem), 30rem) !important;
+                    height: min(56dvh, calc(133.333vw - 6rem), 30rem) !important;
                     min-height: 16rem !important;
                   }
                 }

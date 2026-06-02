@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { CHART_COLORS, TEXT } from "@/lib/constants";
 import { usePalette } from "@/lib/theme";
 import FullscreenChartWrapper from "./FullscreenChartWrapper";
+import { useFullscreen } from "./FullscreenContext";
 
 const H_LABEL_VIEWPORT_W = 80;
 const H_LABEL_CHAR_W = 7;
@@ -100,6 +101,7 @@ export default function BarChartCard({
 }) {
   const PALETTE = usePalette();
   const chartColors = PALETTE.chartColors ?? CHART_COLORS;
+  const isFullscreen = useFullscreen();
   // Shared container style for consistency across charts.
   const cardStyle = {
     borderColor: PALETTE.cardBorder,
@@ -263,7 +265,7 @@ export default function BarChartCard({
               </BarChart></div>
             </div>
           ) : (
-          <div data-bar-chart-container ref={vertChartRef} style={{ height: `${chartHeight}px`, width: "100%", outline: "none" }}>
+          <div data-bar-chart-container ref={vertChartRef} style={{ height: isFullscreen ? undefined : `${chartHeight}px`, width: "100%", outline: "none" }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data} margin={{ top: 5, right: 5, left: -15, bottom: 5 }}>
                 <CartesianGrid vertical={false} strokeDasharray="3 3" stroke={PALETTE.cardBorder} />
