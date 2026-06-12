@@ -8,12 +8,14 @@ import { useFullscreen } from "./FullscreenContext";
 const MARGIN_TOP = 40;
 const MARGIN_RIGHT = 8;
 const MARGIN_BOTTOM = 8;
+const MARGIN_HORIZONTAL = 5;
 const APPROX_CHAR_PX = 6;
 const NAMES_W = 80;
 const MIN_COL_W = 36;
 const ROW_H = 36;
 const GAP = 3;
 const MAX_VISIBLE_ROWS = 10;
+const DATA_LEFT_PAD = 8;
 
 function cellColor(count, maxCount, cardSoft, heatmapRgb, alphaBase = 0.15, exponent = 1) {
   if (!count || !maxCount) return cardSoft;
@@ -52,7 +54,8 @@ export default function HeatmapChartCard({ title, subtitle, data, allYears, empt
   const numYears = allYears.length;
   const availableW = Math.max(containerWidth - marginLeft, 0);
   const dataW = numYears > 0 ? Math.max(availableW, numYears * MIN_COL_W) : availableW;
-  const colW = numYears > 0 ? dataW / numYears : 0;
+  // Reserve DATA_LEFT_PAD on the left so columns start away from the names border.
+  const colW = numYears > 0 ? (dataW - DATA_LEFT_PAD) / numYears : 0;
 
   const chartH = data.length * ROW_H;
   // Cap visible rows so vertical scroll activates inside the card instead of the page.
@@ -109,7 +112,7 @@ export default function HeatmapChartCard({ title, subtitle, data, allYears, empt
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: `${marginLeft}px ${dataW + MARGIN_RIGHT}px`,
+                  gridTemplateColumns: `${marginLeft}px ${MARGIN_HORIZONTAL + 1}px ${dataW + MARGIN_RIGHT}px`,
                   gridTemplateRows: `${MARGIN_TOP}px ${chartH + MARGIN_BOTTOM}px`,
                   width: totalW,
                   height: totalH,
@@ -118,17 +121,34 @@ export default function HeatmapChartCard({ title, subtitle, data, allYears, empt
                 {/* Top-left corner: sticky in both directions */}
                 <div
                   style={{
+                    gridColumn: 1,
                     position: "sticky",
                     top: 0,
                     left: 0,
-                    zIndex: 3,
+                    zIndex: 4,
                     backgroundColor: PALETTE.cardSoft,
+                    
+                  }}
+                />
+
+                <div style={{
+                    gridColumn: 2,
+                    gridRow: "0 / 2",
+                    backgroundColor: PALETTE.cardSoft,
+                    position: "sticky",
+                    height: "100%",
+                    top: 0,
+                    left: marginLeft,
+                    zIndex: 5,
+                    width: MARGIN_HORIZONTAL + 1,
+                    borderLeft: `1px solid ${PALETTE.cardBorder}`,
                   }}
                 />
 
                 {/* Year labels row: sticky to top, scrolls horizontally with data */}
                 <div
                   style={{
+                    gridColumn: 3,
                     position: "sticky",
                     top: 0,
                     zIndex: 2,
@@ -142,7 +162,7 @@ export default function HeatmapChartCard({ title, subtitle, data, allYears, empt
                     style={{ display: "block" }}
                   >
                     {allYears.map((year, j) => {
-                      const cx = j * colW + colW / 2;
+                      const cx = DATA_LEFT_PAD + j * colW + colW / 2;
                       const cy = MARGIN_TOP - 6;
                       return (
                         <text
@@ -164,6 +184,7 @@ export default function HeatmapChartCard({ title, subtitle, data, allYears, empt
                 {/* Person name labels: sticky to left, scrolls vertically with rows */}
                 <div
                   style={{
+                    gridColumn: 1,
                     position: "sticky",
                     left: 0,
                     zIndex: 1,
@@ -182,9 +203,9 @@ export default function HeatmapChartCard({ title, subtitle, data, allYears, empt
                     {data.map((person, i) => (
                       <text
                         key={person.label}
-                        x={labelContentW - 8}
+                        x={8}
                         y={i * ROW_H + ROW_H / 2 + 4}
-                        textAnchor="end"
+                        textAnchor="start"
                         fontSize={12}
                         fill={PALETTE.text}
                       >
@@ -192,6 +213,30 @@ export default function HeatmapChartCard({ title, subtitle, data, allYears, empt
                       </text>
                     ))}
                   </svg>
+                </div>
+
+                <div style={{
+                    gridColumn: 2,
+                    gridRow: "2 / 3",
+                    position: "sticky",
+                    left: marginLeft,
+                    zIndex: 2,
+                    display: "flex",
+                    }}
+                    >
+                <div style={{
+                    justifyContent: "flex-start",
+                    width: 1,
+                    backgroundColor: PALETTE.cardBorder,
+                  }}
+                />
+
+                <div style={{
+                    justifyContent: "flex-end",
+                    backgroundColor: PALETTE.cardBg,
+                    width: MARGIN_HORIZONTAL,
+                  }}
+                />
                 </div>
 
                 {/* Data cells */}
@@ -207,7 +252,7 @@ export default function HeatmapChartCard({ title, subtitle, data, allYears, empt
                       <g key={person.label}>
                         {allYears.map((year, j) => {
                           const count = person.yearCounts[year] || 0;
-                          const cellX = j * colW + GAP / 2;
+                          const cellX = DATA_LEFT_PAD + j * colW + GAP / 2;
                           const cellW = colW - GAP;
                           const cellH = ROW_H - GAP;
                           const useDarkText = maxCount > 0 && count / maxCount > 0.55;
