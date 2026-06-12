@@ -8,6 +8,7 @@ import { useFullscreen } from './FullscreenContext'
 const MARGIN_TOP = 28
 const MARGIN_RIGHT = 16
 const MARGIN_BOTTOM = 8
+const MARGIN_HORIZONTAL = 5
 const APPROX_CHAR_PX = 6
 const NAMES_W = 80
 const MIN_COL_W = 36
@@ -105,6 +106,7 @@ export default function DumbbellChartCard({ title, subtitle, data, allYears, emp
                 <div
                   style={{
                     display: 'grid',
+                    gridTemplateColumns: `${marginLeft}px ${MARGIN_HORIZONTAL + 1}px ${dataW}px`,
                     gridTemplateRows: `${MARGIN_TOP}px ${chartH + MARGIN_BOTTOM}px`,
                     width: totalW,
                     height: totalH,
@@ -113,17 +115,35 @@ export default function DumbbellChartCard({ title, subtitle, data, allYears, emp
                   {/* Top-left corner: sticky in both directions */}
                   <div
                     style={{
+                      gridColumn: 1,
                       position: 'sticky',
                       top: 0,
                       left: 0,
                       zIndex: 4,
                       backgroundColor: PALETTE.cardSoft,
+                      marginLeft: 0,
+                    }}
+                  />
+
+                  <div
+                    style={{
+                      gridColumn: 2,
+                      gridRow: '0 / 2',
+                      backgroundColor: PALETTE.cardSoft,
+                      position: 'sticky',
+                      height: '100%',
+                      top: 0,
+                      left: marginLeft,
+                      zIndex: 5,
+                      width: MARGIN_HORIZONTAL + 1,
+                      borderLeft: `1px solid ${PALETTE.cardBorder}`,
                     }}
                   />
 
                   {/* Year labels row: sticky to top, scrolls horizontally with data */}
                   <div
                     style={{
+                      gridColumn: 3,
                       position: 'sticky',
                       top: 0,
                       zIndex: 2,
@@ -154,6 +174,7 @@ export default function DumbbellChartCard({ title, subtitle, data, allYears, emp
                   {/* Person name labels: sticky to left, scrolls vertically with rows */}
                   <div
                     style={{
+                      gridColumn: 1,
                       position: 'sticky',
                       left: 0,
                       zIndex: 1,
@@ -182,6 +203,31 @@ export default function DumbbellChartCard({ title, subtitle, data, allYears, emp
                           </text>
                         ))}
                       </svg>
+                  <div
+                    style={{
+                      gridColumn: 2,
+                      gridRow: '2 / 3',
+                      position: 'sticky',
+                      left: marginLeft,
+                      zIndex: 2,
+                      display: 'flex',
+                    }}
+                  >
+                    <div
+                      style={{
+                        justifyContent: 'flex-start',
+                        width: 1,
+                        backgroundColor: PALETTE.cardBorder,
+                      }}
+                    />
+
+                    <div
+                      style={{
+                        justifyContent: 'flex-end',
+                        backgroundColor: PALETTE.cardBg,
+                        width: MARGIN_HORIZONTAL,
+                      }}
+                    />
                   </div>
 
                   {/* Data area: grid lines, row dividers, dots and connecting lines */}
