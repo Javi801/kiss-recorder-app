@@ -49,13 +49,13 @@ At a glance:
 <table>
   <tr>
     <td width="50%" valign="top">
-      <img src="assets/<!-- feature-people icon placeholder -->" width="55" alt="People icon"><br>
+      <picture><source media="(prefers-color-scheme: dark)" srcset="assets/readme/feature-people-dark.svg"><img src="assets/readme/feature-people-light.svg" width="55" alt="People icon"></picture><br>
       <strong>People profiles</strong><br>
       Add people with name, optional real name, birth year, zodiac sign, gender, activity, and a tag-based <em>how we met</em> field. Age is computed at runtime from the zodiac calendar, not stored.<br><br>
       <code>Zodiac age</code> <code>Optional real name</code> <code>Tag input</code>
     </td>
     <td width="50%" valign="top">
-      <img src="assets/<!-- feature-events icon placeholder -->" width="55" alt="Events icon"><br>
+      <picture><source media="(prefers-color-scheme: dark)" srcset="assets/readme/feature-events-dark.svg"><img src="assets/readme/feature-events-light.svg" width="55" alt="Events icon"></picture><br>
       <strong>Event log</strong><br>
       Record each interaction with a date, place, situation, and an optional score from 1 to 5. Events are tied to a person and editable or deletable at any time.<br><br>
       <code>Dated entries</code> <code>Place + situation tags</code> <code>Scores</code>
@@ -63,13 +63,13 @@ At a glance:
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <img src="assets/<!-- feature-stats icon placeholder -->" width="55" alt="Stats icon"><br>
+      <picture><source media="(prefers-color-scheme: dark)" srcset="assets/readme/feature-stats-dark.svg"><img src="assets/readme/feature-stats-light.svg" width="55" alt="Stats icon"></picture><br>
       <strong>Analytics dashboard</strong><br>
       Four stat tabs: Overview, Time, People, and Scores. Includes heatmaps, area charts, zodiac distributions, score dumbbells, and age-range boxplots.<br><br>
       <code>Heatmap</code> <code>Distributions</code> <code>Age at event</code>
     </td>
     <td width="50%" valign="top">
-      <img src="assets/<!-- feature-export icon placeholder -->" width="55" alt="Export icon"><br>
+      <picture><source media="(prefers-color-scheme: dark)" srcset="assets/readme/feature-export-dark.svg"><img src="assets/readme/feature-export-light.svg" width="55" alt="Export icon"></picture><br>
       <strong>Export and share</strong><br>
       Export your full data as a JSON backup and share it via the device's native share sheet.<br><br>
       <code>JSON backup</code> <code>Native share</code>
@@ -77,13 +77,13 @@ At a glance:
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <img src="assets/<!-- feature-crash icon placeholder -->" width="55" alt="Crash reporting icon"><br>
+      <picture><source media="(prefers-color-scheme: dark)" srcset="assets/readme/feature-crash-dark.svg"><img src="assets/readme/feature-crash-light.svg" width="55" alt="Crash reporting icon"></picture><br>
       <strong>Crash reporting</strong><br>
       An ErrorBoundary wraps the entire app. If something crashes, the error is written to a local log file and the user can share it immediately via the native share sheet.<br><br>
       <code>ErrorBoundary</code> <code>Local crash log</code> <code>Share to report</code>
     </td>
     <td width="50%" valign="top">
-      <img src="assets/<!-- feature-themes icon placeholder -->" width="55" alt="Themes icon"><br>
+      <picture><source media="(prefers-color-scheme: dark)" srcset="assets/readme/feature-themes-dark.svg"><img src="assets/readme/feature-themes-light.svg" width="55" alt="Themes icon"></picture><br>
       <strong>Themes and localization</strong><br>
       Three color palettes: light, green, and dark, driven by shared tokens and persisted across sessions. UI available in English and Spanish.<br><br>
       <code>Light / Green / Dark</code> <code>EN / ES</code> <code>Persisted</code>
