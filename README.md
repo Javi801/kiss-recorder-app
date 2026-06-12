@@ -94,15 +94,21 @@ At a glance:
 
 ## Screenshots
 
-<table>
-  <tr>
-    <td width="20%" align="center"><img src="assets/<!-- screenshot 1 placeholder -->" alt="Screenshot 1" width="100%"></td>
-    <td width="20%" align="center"><img src="assets/<!-- screenshot 2 placeholder -->" alt="Screenshot 2" width="100%"></td>
-    <td width="20%" align="center"><img src="assets/<!-- screenshot 3 placeholder -->" alt="Screenshot 3" width="100%"></td>
-    <td width="20%" align="center"><img src="assets/<!-- screenshot 4 placeholder -->" alt="Screenshot 4" width="100%"></td>
-    <td width="20%" align="center"><img src="assets/<!-- screenshot 5 placeholder -->" alt="Screenshot 5" width="100%"></td>
-  </tr>
-</table>
+<p align="center">
+  <img src="assets/readme/screenshots/ss-fake-main.jpg" alt="Privacy decoy screen" width="19%">
+  <img src="assets/readme/screenshots/ss-main-pink-theme.jpg" alt="Home screen, pink theme" width="19%">
+  <img src="assets/readme/screenshots/ss-main-green-theme.jpg" alt="Home screen, green theme" width="19%">
+  <img src="assets/readme/screenshots/ss-main-dark-theme.jpg" alt="Home screen, dark theme" width="19%">
+  <img src="assets/readme/screenshots/ss-config-selector.jpg" alt="Theme and icon color settings" width="19%">
+</p>
+
+<p align="center">
+  <img src="assets/readme/screenshots/ss-new-person.png" alt="Add new person form" width="19%">
+  <img src="assets/readme/screenshots/ss-people-list-.jpg" alt="People list with search" width="19%">
+  <img src="assets/readme/screenshots/ss-people-list-filter.jpg" alt="Filter panel for the people list" width="19%">
+  <img src="assets/readme/screenshots/ss-stats-overview.jpg" alt="Stats overview tab" width="19%">
+  <img src="assets/readme/screenshots/ss-graphs.jpg" alt="Bar and radar charts" width="19%">
+</p>
 
 ## Project structure
 
