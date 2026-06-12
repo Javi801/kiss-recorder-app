@@ -6,9 +6,9 @@ import FullscreenChartWrapper from './FullscreenChartWrapper'
 import { useFullscreen } from './FullscreenContext'
 
 const MARGIN_TOP = 28
-const MARGIN_RIGHT = 16
 const MARGIN_BOTTOM = 8
 const MARGIN_HORIZONTAL = 5
+const PADDING_HORIZONTAL = 30
 const APPROX_CHAR_PX = 6
 const NAMES_W = 80
 const MIN_COL_W = 36
@@ -46,18 +46,19 @@ export default function DumbbellChartCard({ title, subtitle, data, allYears, emp
   const chartH = data.length * ROW_H
 
   // Data column width: at least MIN_COL_W per year so horizontal scroll activates when needed.
-  const availableW = Math.max(containerWidth - marginLeft, 0);
-  const dataW = Math.max(availableW, numYears * MIN_COL_W) + MARGIN_RIGHT;
+  const availableW = Math.max(containerWidth - marginLeft, 0)
+  const dataW = Math.max(availableW, numYears * MIN_COL_W) + PADDING_HORIZONTAL
   // Actual chart area width for year position math.
-  const chartW = dataW - MARGIN_RIGHT;
-  const totalW = marginLeft + dataW;
+  const chartW = dataW - PADDING_HORIZONTAL
+  const totalW = marginLeft + dataW
 
-  // X coordinate within the data SVG (no marginLeft offset).
+  // X coordinate within the data SVG. PADDING_HORIZONTAL offsets the first year away from the names border.
+  // The range (chartW - PADDING_HORIZONTAL) preserves the right margin.
   const xForYear = (year) => {
-    if (numYears <= 1) return chartW / 2;
-    const idx = allYears.indexOf(year);
-    return idx * (chartW / (numYears - 1));
-  };
+    if (numYears <= 1) return PADDING_HORIZONTAL + chartW / 2
+    const idx = allYears.indexOf(year)
+    return PADDING_HORIZONTAL + idx * ((chartW - PADDING_HORIZONTAL) / (numYears - 1))
+  }
 
   const maxHeight = isFullscreen
     ? undefined
@@ -179,9 +180,15 @@ export default function DumbbellChartCard({ title, subtitle, data, allYears, emp
                       left: 0,
                       zIndex: 1,
                       backgroundColor: PALETTE.cardSoft,
+                    }}
+                  >
+                    <div
+                      style={{
                         overflowX: 'auto',
                         overflowY: 'hidden',
                         WebkitOverflowScrolling: 'touch',
+                        marginLeft: MARGIN_HORIZONTAL,
+                        marginRight: MARGIN_HORIZONTAL,
                       }}
                     >
                       <svg
@@ -203,6 +210,9 @@ export default function DumbbellChartCard({ title, subtitle, data, allYears, emp
                           </text>
                         ))}
                       </svg>
+                    </div>
+                  </div>
+
                   <div
                     style={{
                       gridColumn: 2,
@@ -231,6 +241,12 @@ export default function DumbbellChartCard({ title, subtitle, data, allYears, emp
                   </div>
 
                   {/* Data area: grid lines, row dividers, dots and connecting lines */}
+                  <div
+                    style={{
+                      gridColumn: 3,
+                      backgroundColor: PALETTE.cardBg,
+                    }}
+                  >
                     <svg
                       width={dataW}
                       height={chartH + MARGIN_BOTTOM}
@@ -306,6 +322,7 @@ export default function DumbbellChartCard({ title, subtitle, data, allYears, emp
                         )
                       })}
                     </svg>
+                  </div>
                 </div>
               </div>
             </div>
