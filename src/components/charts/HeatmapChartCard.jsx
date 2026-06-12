@@ -217,7 +217,7 @@ export default function HeatmapChartCard({ title, subtitle, data, allYears, empt
                         {data.map((person, i) => (
                           <text
                             key={person.label}
-                            x={8}
+                            x={3}
                             y={i * ROW_H + ROW_H / 2 + 4}
                             textAnchor="start"
                             fontSize={12}
