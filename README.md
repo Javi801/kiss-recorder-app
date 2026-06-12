@@ -42,7 +42,8 @@ At a glance:
 - Cross-platform: Android, iOS, and EMUI
 - People profiles with zodiac-aware age tracking
 - Event log with place, situation, and optional score
-- Rich analytics dashboard with four stat tabs
+- Rich analytics dashboard with fullscreen charts and PNG export
+- KissWrapped PDF slide deck and JSON backup export
 
 ## Features
 
@@ -65,22 +66,22 @@ At a glance:
     <td width="50%" valign="top">
       <picture><source media="(prefers-color-scheme: dark)" srcset="assets/readme/feature-stats-dark.svg"><img src="assets/readme/feature-stats-light.svg" width="55" alt="Stats icon"></picture><br>
       <strong>Analytics dashboard</strong><br>
-      Four stat tabs: Overview, Time, People, and Scores. Includes heatmaps, area charts, zodiac distributions, score dumbbells, and age-range boxplots.<br><br>
-      <code>Heatmap</code> <code>Distributions</code> <code>Age at event</code>
+      Four stat tabs: Overview, Time, People, and Scores. Includes heatmaps, area charts, zodiac distributions, score dumbbells, and age-range boxplots. Any chart can be expanded to fullscreen and exported as a PNG.<br><br>
+      <code>Heatmap</code> <code>Distributions</code> <code>Age at event</code> <code>Fullscreen</code> <code>PNG export</code>
     </td>
     <td width="50%" valign="top">
       <picture><source media="(prefers-color-scheme: dark)" srcset="assets/readme/feature-export-dark.svg"><img src="assets/readme/feature-export-light.svg" width="55" alt="Export icon"></picture><br>
       <strong>Export and share</strong><br>
-      Export your full data as a JSON backup and share it via the device's native share sheet.<br><br>
-      <code>JSON backup</code> <code>Native share</code>
+      Export your data as a JSON backup or as a KissWrapped PDF slide deck — a landscape-format presentation with themed styling and slide numbers. Charts can be exported individually as PNG images. All sharing uses the device's native share sheet.<br><br>
+      <code>JSON backup</code> <code>KissWrapped PDF</code> <code>Chart PNG</code> <code>Native share</code>
     </td>
   </tr>
   <tr>
     <td width="50%" valign="top">
       <picture><source media="(prefers-color-scheme: dark)" srcset="assets/readme/feature-crash-dark.svg"><img src="assets/readme/feature-crash-light.svg" width="55" alt="Crash reporting icon"></picture><br>
       <strong>Crash reporting</strong><br>
-      An ErrorBoundary wraps the entire app. If something crashes, the error is written to a local log file and the user can share it immediately via the native share sheet.<br><br>
-      <code>ErrorBoundary</code> <code>Local crash log</code> <code>Share to report</code>
+      An ErrorBoundary wraps the entire app. If something crashes, the error is written to a local log file and the user can share it immediately via the native share sheet. Chart export failures are similarly caught, logged, and shareable.<br><br>
+      <code>ErrorBoundary</code> <code>Local crash log</code> <code>Export error log</code> <code>Share to report</code>
     </td>
     <td width="50%" valign="top">
       <picture><source media="(prefers-color-scheme: dark)" srcset="assets/readme/feature-themes-dark.svg"><img src="assets/readme/feature-themes-light.svg" width="55" alt="Themes icon"></picture><br>
@@ -116,7 +117,7 @@ At a glance:
   </tr>
   <tr>
     <td><code>components/app/</code></td>
-    <td>Top-level screens: Home, AddPerson, Onboarding, Intro, Language, Theme, Color selectors, ErrorBoundary, and PrivacyScreen</td>
+    <td>Top-level screens: Home, AddPerson, Intro, Language, Theme, Color selectors, ErrorBoundary, and PrivacyScreen</td>
   </tr>
   <tr>
     <td><code>components/stats/</code></td>
@@ -128,7 +129,7 @@ At a glance:
   </tr>
   <tr>
     <td><code>components/charts/</code></td>
-    <td>Generic reusable chart cards: Bar, Pie, Radar, Area, Heatmap, Dumbbell</td>
+    <td>Generic reusable chart cards: Bar, Pie, Radar, Area, Heatmap, Dumbbell. FullscreenChartWrapper and FullscreenContext enable fullscreen expansion and PNG export for any chart</td>
   </tr>
   <tr>
     <td><code>lib/</code></td>
@@ -209,7 +210,7 @@ Coverage is scoped to `src/lib/` with these minimum thresholds enforced by CI:
 | Functions | 95% |
 | Lines | 95% |
 
-Unit tests in `src/lib/__tests__/` cover: `date.js`, `calendar.js`, `format.js`, `helpers.js`, `stats.js`, `constants.js`, `device-storage.js`, `pdf-export.js`, and `utils.js`.
+Unit tests in `src/lib/__tests__/` cover: `date.js`, `calendar.js`, `format.js`, `helpers.js`, `stats.js`, `constants.js`, `device-storage.js`, `pdf-export.js`, and `utils.js`. `device-storage.js` and `utils.js` are excluded from threshold enforcement since they depend on native plugins or external APIs.
 
 ## Data model
 
@@ -241,8 +242,6 @@ Settings {
   statsVisible:     boolean
   situationTags:    string[]
   placeTags:        string[]
-  onboardingDone:   boolean
-  onboardingVersion: number
 }
 ```
 
